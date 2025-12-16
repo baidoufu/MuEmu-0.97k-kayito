@@ -86,27 +86,27 @@ namespace kayitoTools.Forms
 			this.Load_Filter_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Load_Filter_Menu_Btn.Name = "Load_Filter_Menu_Btn";
 			this.Load_Filter_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Load_Filter_Menu_Btn.Text = "LOAD";
+			this.Load_Filter_Menu_Btn.Text = "加载";
 			// 
 			// loadFilterbmdToolStripMenuItem
 			// 
 			this.loadFilterbmdToolStripMenuItem.Name = "loadFilterbmdToolStripMenuItem";
 			this.loadFilterbmdToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.loadFilterbmdToolStripMenuItem.Text = "Load Filter.bmd";
+			this.loadFilterbmdToolStripMenuItem.Text = "加载 Filter.bmd";
 			this.loadFilterbmdToolStripMenuItem.Click += new System.EventHandler(this.Load_Filterbmd_Click);
 			// 
 			// loadFilterNamebmdToolStripMenuItem
 			// 
 			this.loadFilterNamebmdToolStripMenuItem.Name = "loadFilterNamebmdToolStripMenuItem";
 			this.loadFilterNamebmdToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.loadFilterNamebmdToolStripMenuItem.Text = "Load FilterName.bmd";
+			this.loadFilterNamebmdToolStripMenuItem.Text = "加载 FilterName.bmd";
 			this.loadFilterNamebmdToolStripMenuItem.Click += new System.EventHandler(this.Load_FilterNamebmd_Click);
 			// 
 			// loadFiltertxtToolStripMenuItem
 			// 
 			this.loadFiltertxtToolStripMenuItem.Name = "loadFiltertxtToolStripMenuItem";
 			this.loadFiltertxtToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.loadFiltertxtToolStripMenuItem.Text = "Load Filter.txt";
+			this.loadFiltertxtToolStripMenuItem.Text = "加载 Filter.txt";
 			this.loadFiltertxtToolStripMenuItem.Click += new System.EventHandler(this.Load_Filtertxt_Click);
 			// 
 			// Save_Filter_Menu_Btn
@@ -123,27 +123,27 @@ namespace kayitoTools.Forms
 			this.Save_Filter_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Save_Filter_Menu_Btn.Name = "Save_Filter_Menu_Btn";
 			this.Save_Filter_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Save_Filter_Menu_Btn.Text = "SAVE";
+			this.Save_Filter_Menu_Btn.Text = "保存";
 			// 
 			// saveFilterbmdToolStripMenuItem
 			// 
 			this.saveFilterbmdToolStripMenuItem.Name = "saveFilterbmdToolStripMenuItem";
 			this.saveFilterbmdToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.saveFilterbmdToolStripMenuItem.Text = "Save Filter.bmd";
+			this.saveFilterbmdToolStripMenuItem.Text = "保存 Filter.bmd";
 			this.saveFilterbmdToolStripMenuItem.Click += new System.EventHandler(this.SaveFilterbmd_Click);
 			// 
 			// saveFilterNamebmdToolStripMenuItem
 			// 
 			this.saveFilterNamebmdToolStripMenuItem.Name = "saveFilterNamebmdToolStripMenuItem";
 			this.saveFilterNamebmdToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.saveFilterNamebmdToolStripMenuItem.Text = "Save FilterName.bmd";
+			this.saveFilterNamebmdToolStripMenuItem.Text = "保存 FilterName.bmd";
 			this.saveFilterNamebmdToolStripMenuItem.Click += new System.EventHandler(this.SaveFilterNamebmd_Click);
 			// 
 			// saveFiltertxtToolStripMenuItem
 			// 
 			this.saveFiltertxtToolStripMenuItem.Name = "saveFiltertxtToolStripMenuItem";
 			this.saveFiltertxtToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.saveFiltertxtToolStripMenuItem.Text = "Save Filter.txt";
+			this.saveFiltertxtToolStripMenuItem.Text = "保存 Filter.txt";
 			this.saveFiltertxtToolStripMenuItem.Click += new System.EventHandler(this.SaveFiltertxt_Click);
 			// 
 			// Filter_List_Box
@@ -208,7 +208,7 @@ namespace kayitoTools.Forms
 			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.DimGray;
 			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
 			this.Row_Col.DefaultCellStyle = dataGridViewCellStyle2;
-			this.Row_Col.HeaderText = "Row";
+			this.Row_Col.HeaderText = "行";
 			this.Row_Col.Name = "Row_Col";
 			this.Row_Col.ReadOnly = true;
 			this.Row_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -219,7 +219,7 @@ namespace kayitoTools.Forms
 			// Text_Col
 			// 
 			this.Text_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Text_Col.HeaderText = "Text";
+			this.Text_Col.HeaderText = "文本";
 			this.Text_Col.Name = "Text_Col";
 			this.Text_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Text_Col.ToolTipText = "Message that the game will block";
@@ -261,7 +261,7 @@ namespace kayitoTools.Forms
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(55, 13);
 			this.label1.TabIndex = 9;
-			this.label1.Text = "Go to line:";
+			this.label1.Text = "跳转到行:";
 			// 
 			// Search_Box_Btn
 			// 
@@ -270,7 +270,7 @@ namespace kayitoTools.Forms
 			this.Search_Box_Btn.Name = "Search_Box_Btn";
 			this.Search_Box_Btn.Size = new System.Drawing.Size(75, 20);
 			this.Search_Box_Btn.TabIndex = 4;
-			this.Search_Box_Btn.Text = "Search";
+			this.Search_Box_Btn.Text = "搜索";
 			this.Search_Box_Btn.UseVisualStyleBackColor = true;
 			this.Search_Box_Btn.Click += new System.EventHandler(this.Search_Box_Btn_Click);
 			// 
@@ -302,7 +302,7 @@ namespace kayitoTools.Forms
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "FilterEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Filter Manager";
+			this.Text = "过滤管理器";
 			this.Load += new System.EventHandler(this.FilterEditor_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();

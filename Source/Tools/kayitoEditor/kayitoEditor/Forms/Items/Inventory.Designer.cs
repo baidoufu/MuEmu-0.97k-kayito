@@ -94,7 +94,7 @@ namespace kayito_Editor.Forms
 			this.Character_txt.Name = "Character_txt";
 			this.Character_txt.Size = new System.Drawing.Size(68, 17);
 			this.Character_txt.TabIndex = 458;
-			this.Character_txt.Text = "Character";
+			this.Character_txt.Text = "角色";
 			// 
 			// Btn_Close
 			// 
@@ -135,7 +135,7 @@ namespace kayito_Editor.Forms
 			this.Btn_Inventory_Save.Name = "Btn_Inventory_Save";
 			this.Btn_Inventory_Save.Size = new System.Drawing.Size(86, 34);
 			this.Btn_Inventory_Save.TabIndex = 5;
-			this.Btn_Inventory_Save.Text = "SAVE";
+			this.Btn_Inventory_Save.Text = "保存";
 			this.Btn_Inventory_Save.UseVisualStyleBackColor = false;
 			this.Btn_Inventory_Save.Click += new System.EventHandler(this.Btn_Inventory_Save_Click);
 			// 
@@ -159,7 +159,7 @@ namespace kayito_Editor.Forms
 			this.Btn_Inventory_Reset.Name = "Btn_Inventory_Reset";
 			this.Btn_Inventory_Reset.Size = new System.Drawing.Size(86, 34);
 			this.Btn_Inventory_Reset.TabIndex = 6;
-			this.Btn_Inventory_Reset.Text = "RESET";
+			this.Btn_Inventory_Reset.Text = "重置";
 			this.Btn_Inventory_Reset.UseVisualStyleBackColor = false;
 			this.Btn_Inventory_Reset.Click += new System.EventHandler(this.Btn_Inventory_Reset_Click);
 			// 
@@ -173,7 +173,7 @@ namespace kayito_Editor.Forms
 			this.Account_txt.Name = "Account_txt";
 			this.Account_txt.Size = new System.Drawing.Size(59, 17);
 			this.Account_txt.TabIndex = 451;
-			this.Account_txt.Text = "Account";
+			this.Account_txt.Text = "账号";
 			// 
 			// Warehouse_Panel_Back
 			// 
@@ -238,7 +238,7 @@ namespace kayito_Editor.Forms
 			this.Name = "Inventory";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Inventory Editor";
+			this.Text = "背包编辑器";
 			this.Load += new System.EventHandler(this.Inventory_Load);
 			this.Buttons_Panel.ResumeLayout(false);
 			this.Buttons_Panel.PerformLayout();

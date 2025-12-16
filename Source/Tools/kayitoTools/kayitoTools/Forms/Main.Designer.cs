@@ -74,7 +74,7 @@ namespace kayitoTools
 			this.Dialog_Menu_Btn.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.Dialog_Menu_Btn.Name = "Dialog_Menu_Btn";
 			this.Dialog_Menu_Btn.Size = new System.Drawing.Size(54, 22);
-			this.Dialog_Menu_Btn.Text = "DIALOG";
+			this.Dialog_Menu_Btn.Text = "对话";
 			this.Dialog_Menu_Btn.Click += new System.EventHandler(this.Dialog_Menu_Btn_Click);
 			// 
 			// Filter_Menu_Btn
@@ -84,7 +84,7 @@ namespace kayitoTools
 			this.Filter_Menu_Btn.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.Filter_Menu_Btn.Name = "Filter_Menu_Btn";
 			this.Filter_Menu_Btn.Size = new System.Drawing.Size(49, 22);
-			this.Filter_Menu_Btn.Text = "FILTER";
+			this.Filter_Menu_Btn.Text = "过滤";
 			this.Filter_Menu_Btn.Click += new System.EventHandler(this.Filter_Menu_Btn_Click);
 			// 
 			// Gate_Menu_Btn
@@ -95,7 +95,7 @@ namespace kayitoTools
 			this.Gate_Menu_Btn.Margin = new System.Windows.Forms.Padding(0);
 			this.Gate_Menu_Btn.Name = "Gate_Menu_Btn";
 			this.Gate_Menu_Btn.Size = new System.Drawing.Size(42, 25);
-			this.Gate_Menu_Btn.Text = "GATE";
+			this.Gate_Menu_Btn.Text = "传送门";
 			this.Gate_Menu_Btn.Click += new System.EventHandler(this.Gate_Menu_Btn_Click);
 			// 
 			// Item_Menu_Btn
@@ -106,8 +106,8 @@ namespace kayitoTools
 			this.Item_Menu_Btn.Margin = new System.Windows.Forms.Padding(0);
 			this.Item_Menu_Btn.Name = "Item_Menu_Btn";
 			this.Item_Menu_Btn.Size = new System.Drawing.Size(39, 25);
-			this.Item_Menu_Btn.Text = "ITEM";
-			this.Item_Menu_Btn.ToolTipText = "ITEM";
+			this.Item_Menu_Btn.Text = "物品";
+			this.Item_Menu_Btn.ToolTipText = "物品";
 			this.Item_Menu_Btn.Click += new System.EventHandler(this.Item_Menu_Btn_Click);
 			// 
 			// Monster_Menu_Btn
@@ -117,7 +117,7 @@ namespace kayitoTools
 			this.Monster_Menu_Btn.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.Monster_Menu_Btn.Name = "Monster_Menu_Btn";
 			this.Monster_Menu_Btn.Size = new System.Drawing.Size(66, 22);
-			this.Monster_Menu_Btn.Text = "MONSTER";
+			this.Monster_Menu_Btn.Text = "怪物";
 			this.Monster_Menu_Btn.Click += new System.EventHandler(this.Monster_Menu_Btn_Click);
 			// 
 			// Quest_Menu_Btn
@@ -127,7 +127,7 @@ namespace kayitoTools
 			this.Quest_Menu_Btn.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.Quest_Menu_Btn.Name = "Quest_Menu_Btn";
 			this.Quest_Menu_Btn.Size = new System.Drawing.Size(50, 22);
-			this.Quest_Menu_Btn.Text = "QUEST";
+			this.Quest_Menu_Btn.Text = "任务";
 			this.Quest_Menu_Btn.Click += new System.EventHandler(this.Quest_Menu_Btn_Click);
 			// 
 			// Skill_Menu_Btn
@@ -138,7 +138,7 @@ namespace kayitoTools
 			this.Skill_Menu_Btn.Margin = new System.Windows.Forms.Padding(0);
 			this.Skill_Menu_Btn.Name = "Skill_Menu_Btn";
 			this.Skill_Menu_Btn.Size = new System.Drawing.Size(41, 25);
-			this.Skill_Menu_Btn.Text = "SKILL";
+			this.Skill_Menu_Btn.Text = "技能";
 			this.Skill_Menu_Btn.Click += new System.EventHandler(this.Skill_Menu_Btn_Click);
 			// 
 			// Text_Menu_Btn
@@ -149,7 +149,7 @@ namespace kayitoTools
 			this.Text_Menu_Btn.Margin = new System.Windows.Forms.Padding(0);
 			this.Text_Menu_Btn.Name = "Text_Menu_Btn";
 			this.Text_Menu_Btn.Size = new System.Drawing.Size(41, 25);
-			this.Text_Menu_Btn.Text = "TEXT";
+			this.Text_Menu_Btn.Text = "文本";
 			this.Text_Menu_Btn.Click += new System.EventHandler(this.Text_Menu_Btn_Click);
 			// 
 			// Log_Text_Box
@@ -192,7 +192,7 @@ namespace kayitoTools
 			this.Event_Log_txt.Name = "Event_Log_txt";
 			this.Event_Log_txt.Size = new System.Drawing.Size(89, 19);
 			this.Event_Log_txt.TabIndex = 3;
-			this.Event_Log_txt.Text = "Event Log:";
+			this.Event_Log_txt.Text = "事件日志:";
 			// 
 			// Clear_Text_Box_Btn
 			// 
@@ -202,7 +202,7 @@ namespace kayitoTools
 			this.Clear_Text_Box_Btn.Name = "Clear_Text_Box_Btn";
 			this.Clear_Text_Box_Btn.Size = new System.Drawing.Size(75, 23);
 			this.Clear_Text_Box_Btn.TabIndex = 4;
-			this.Clear_Text_Box_Btn.Text = "Clear Log";
+			this.Clear_Text_Box_Btn.Text = "清空日志";
 			this.Clear_Text_Box_Btn.UseVisualStyleBackColor = true;
 			this.Clear_Text_Box_Btn.Click += new System.EventHandler(this.Clear_Text_Box_Btn_Click);
 			// 
@@ -224,7 +224,7 @@ namespace kayitoTools
 			this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
 			this.Name = "Main";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "kayito Tools";
+			this.Text = "kayito 工具集";
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);

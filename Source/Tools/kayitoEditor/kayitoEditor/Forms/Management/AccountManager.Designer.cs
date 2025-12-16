@@ -63,7 +63,7 @@
 			this.Account_Container.Size = new System.Drawing.Size(206, 233);
 			this.Account_Container.TabIndex = 0;
 			this.Account_Container.TabStop = false;
-			this.Account_Container.Text = "Account Manager";
+			this.Account_Container.Text = "账号管理器";
 			// 
 			// Code_Box
 			// 
@@ -105,7 +105,7 @@
 			this.Btn_Clear.Name = "Btn_Clear";
 			this.Btn_Clear.Size = new System.Drawing.Size(59, 30);
 			this.Btn_Clear.TabIndex = 6;
-			this.Btn_Clear.Text = "Clear";
+			this.Btn_Clear.Text = "清空";
 			this.Btn_Clear.UseVisualStyleBackColor = true;
 			this.Btn_Clear.Click += new System.EventHandler(this.Btn_Clear_Click);
 			// 
@@ -116,7 +116,7 @@
 			this.Btn_Close.Name = "Btn_Close";
 			this.Btn_Close.Size = new System.Drawing.Size(59, 30);
 			this.Btn_Close.TabIndex = 7;
-			this.Btn_Close.Text = "Close";
+			this.Btn_Close.Text = "关闭";
 			this.Btn_Close.UseVisualStyleBackColor = true;
 			this.Btn_Close.Click += new System.EventHandler(this.Btn_Close_Click);
 			// 
@@ -127,7 +127,7 @@
 			this.Btn_Create.Name = "Btn_Create";
 			this.Btn_Create.Size = new System.Drawing.Size(59, 30);
 			this.Btn_Create.TabIndex = 5;
-			this.Btn_Create.Text = "Create";
+			this.Btn_Create.Text = "创建";
 			this.Btn_Create.UseVisualStyleBackColor = true;
 			this.Btn_Create.Click += new System.EventHandler(this.Btn_Create_Click);
 			// 
@@ -139,7 +139,7 @@
 			this.Code_txt.Name = "Code_txt";
 			this.Code_txt.Size = new System.Drawing.Size(48, 17);
 			this.Code_txt.TabIndex = 3;
-			this.Code_txt.Text = "Code:";
+			this.Code_txt.Text = "身份码:";
 			// 
 			// Name_txt
 			// 
@@ -149,7 +149,7 @@
 			this.Name_txt.Name = "Name_txt";
 			this.Name_txt.Size = new System.Drawing.Size(48, 17);
 			this.Name_txt.TabIndex = 2;
-			this.Name_txt.Text = "Name:";
+			this.Name_txt.Text = "姓名:";
 			// 
 			// Password_txt
 			// 
@@ -159,7 +159,7 @@
 			this.Password_txt.Name = "Password_txt";
 			this.Password_txt.Size = new System.Drawing.Size(80, 17);
 			this.Password_txt.TabIndex = 1;
-			this.Password_txt.Text = "Password:";
+			this.Password_txt.Text = "密码:";
 			// 
 			// Account_txt
 			// 
@@ -169,7 +169,7 @@
 			this.Account_txt.Name = "Account_txt";
 			this.Account_txt.Size = new System.Drawing.Size(72, 17);
 			this.Account_txt.TabIndex = 0;
-			this.Account_txt.Text = "Account:";
+			this.Account_txt.Text = "账号:";
 			// 
 			// AccountManager
 			// 
@@ -183,7 +183,7 @@
 			this.MaximizeBox = false;
 			this.Name = "AccountManager";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Account Manager";
+			this.Text = "账号管理器";
 			this.Account_Container.ResumeLayout(false);
 			this.Account_Container.PerformLayout();
 			this.ResumeLayout(false);

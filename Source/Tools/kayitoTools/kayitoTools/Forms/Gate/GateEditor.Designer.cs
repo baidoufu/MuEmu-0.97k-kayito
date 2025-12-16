@@ -88,20 +88,20 @@ namespace kayitoTools.Forms
 			this.Load_Gate_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Load_Gate_Menu_Btn.Name = "Load_Gate_Menu_Btn";
 			this.Load_Gate_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Load_Gate_Menu_Btn.Text = "LOAD";
+			this.Load_Gate_Menu_Btn.Text = "加载";
 			// 
 			// gatetxtToolStripMenuItem
 			// 
 			this.gatetxtToolStripMenuItem.Name = "gatetxtToolStripMenuItem";
 			this.gatetxtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.gatetxtToolStripMenuItem.Text = "Load Gate.txt";
+			this.gatetxtToolStripMenuItem.Text = "加载 Gate.txt";
 			this.gatetxtToolStripMenuItem.Click += new System.EventHandler(this.LoadGatetxt_Click);
 			// 
 			// gatebmdToolStripMenuItem
 			// 
 			this.gatebmdToolStripMenuItem.Name = "gatebmdToolStripMenuItem";
 			this.gatebmdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.gatebmdToolStripMenuItem.Text = "Load Gate.bmd";
+			this.gatebmdToolStripMenuItem.Text = "加载 Gate.bmd";
 			this.gatebmdToolStripMenuItem.Click += new System.EventHandler(this.LoadGatebmd_Click);
 			// 
 			// Save_Gate_Menu_Btn
@@ -117,20 +117,20 @@ namespace kayitoTools.Forms
 			this.Save_Gate_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Save_Gate_Menu_Btn.Name = "Save_Gate_Menu_Btn";
 			this.Save_Gate_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Save_Gate_Menu_Btn.Text = "SAVE";
+			this.Save_Gate_Menu_Btn.Text = "保存";
 			// 
 			// gatetxtToolStripMenuItem1
 			// 
 			this.gatetxtToolStripMenuItem1.Name = "gatetxtToolStripMenuItem1";
 			this.gatetxtToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
-			this.gatetxtToolStripMenuItem1.Text = "Save Gate.txt";
+			this.gatetxtToolStripMenuItem1.Text = "保存 Gate.txt";
 			this.gatetxtToolStripMenuItem1.Click += new System.EventHandler(this.SaveGatetxt_Click);
 			// 
 			// gatebmdToolStripMenuItem1
 			// 
 			this.gatebmdToolStripMenuItem1.Name = "gatebmdToolStripMenuItem1";
 			this.gatebmdToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
-			this.gatebmdToolStripMenuItem1.Text = "Save Gate.bmd";
+			this.gatebmdToolStripMenuItem1.Text = "保存 Gate.bmd";
 			this.gatebmdToolStripMenuItem1.Click += new System.EventHandler(this.SaveGatebmd_Click);
 			// 
 			// Gate_List_Box
@@ -199,7 +199,7 @@ namespace kayitoTools.Forms
 			// Index_Col
 			// 
 			this.Index_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Index_Col.HeaderText = "Index";
+			this.Index_Col.HeaderText = "索引";
 			this.Index_Col.Name = "Index_Col";
 			this.Index_Col.ReadOnly = true;
 			this.Index_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -210,7 +210,7 @@ namespace kayitoTools.Forms
 			// Flag_Col
 			// 
 			this.Flag_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Flag_Col.HeaderText = "Flag";
+			this.Flag_Col.HeaderText = "标志";
 			this.Flag_Col.Name = "Flag_Col";
 			this.Flag_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Flag_Col.ToolTipText = "0 = Move Destination / 1 = Portal In / 2 = Portal Out";
@@ -219,7 +219,7 @@ namespace kayitoTools.Forms
 			// Map_Col
 			// 
 			this.Map_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Map_Col.HeaderText = "Map";
+			this.Map_Col.HeaderText = "地图";
 			this.Map_Col.Name = "Map_Col";
 			this.Map_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Map_Col.ToolTipText = "Map of the Gate";
@@ -228,7 +228,7 @@ namespace kayitoTools.Forms
 			// StartX_Col
 			// 
 			this.StartX_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.StartX_Col.HeaderText = "Start X";
+			this.StartX_Col.HeaderText = "起始X";
 			this.StartX_Col.Name = "StartX_Col";
 			this.StartX_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.StartX_Col.ToolTipText = "Position Start X of the Gate";
@@ -237,7 +237,7 @@ namespace kayitoTools.Forms
 			// StartY_Col
 			// 
 			this.StartY_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.StartY_Col.HeaderText = "Start Y";
+			this.StartY_Col.HeaderText = "起始Y";
 			this.StartY_Col.Name = "StartY_Col";
 			this.StartY_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.StartY_Col.ToolTipText = "Position Start Y of the Gate";
@@ -246,7 +246,7 @@ namespace kayitoTools.Forms
 			// EndX_Col
 			// 
 			this.EndX_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.EndX_Col.HeaderText = "End X";
+			this.EndX_Col.HeaderText = "结束X";
 			this.EndX_Col.Name = "EndX_Col";
 			this.EndX_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.EndX_Col.ToolTipText = "Position End X of the Gate";
@@ -255,7 +255,7 @@ namespace kayitoTools.Forms
 			// EndY_Col
 			// 
 			this.EndY_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.EndY_Col.HeaderText = "End Y";
+			this.EndY_Col.HeaderText = "结束Y";
 			this.EndY_Col.Name = "EndY_Col";
 			this.EndY_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.EndY_Col.ToolTipText = "Position End Y of the Gate";
@@ -264,7 +264,7 @@ namespace kayitoTools.Forms
 			// Target_Col
 			// 
 			this.Target_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Target_Col.HeaderText = "Target";
+			this.Target_Col.HeaderText = "目标";
 			this.Target_Col.Name = "Target_Col";
 			this.Target_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Target_Col.ToolTipText = "[if Flag = 1] Target Gate Index";
@@ -273,7 +273,7 @@ namespace kayitoTools.Forms
 			// Direction_Col
 			// 
 			this.Direction_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Direction_Col.HeaderText = "Direction";
+			this.Direction_Col.HeaderText = "方向";
 			this.Direction_Col.Name = "Direction_Col";
 			this.Direction_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Direction_Col.ToolTipText = "Direction of the player in the Gate";
@@ -282,7 +282,7 @@ namespace kayitoTools.Forms
 			// MinLevel_Col
 			// 
 			this.MinLevel_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MinLevel_Col.HeaderText = "Min Level";
+			this.MinLevel_Col.HeaderText = "最低等级";
 			this.MinLevel_Col.Name = "MinLevel_Col";
 			this.MinLevel_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MinLevel_Col.ToolTipText = "Min Level to use this Gate";
@@ -291,7 +291,7 @@ namespace kayitoTools.Forms
 			// MaxLevel_Col
 			// 
 			this.MaxLevel_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MaxLevel_Col.HeaderText = "Max Level";
+			this.MaxLevel_Col.HeaderText = "最高等级";
 			this.MaxLevel_Col.Name = "MaxLevel_Col";
 			this.MaxLevel_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MaxLevel_Col.ToolTipText = "Max Level to use this Gate";
@@ -300,7 +300,7 @@ namespace kayitoTools.Forms
 			// MinReset_Col
 			// 
 			this.MinReset_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MinReset_Col.HeaderText = "Min Reset";
+			this.MinReset_Col.HeaderText = "最低转生";
 			this.MinReset_Col.Name = "MinReset_Col";
 			this.MinReset_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MinReset_Col.ToolTipText = "[Only MuEmu] Min Reset to use this Gate";
@@ -309,7 +309,7 @@ namespace kayitoTools.Forms
 			// MaxReset_Col
 			// 
 			this.MaxReset_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MaxReset_Col.HeaderText = "Max Reset";
+			this.MaxReset_Col.HeaderText = "最高转生";
 			this.MaxReset_Col.Name = "MaxReset_Col";
 			this.MaxReset_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MaxReset_Col.ToolTipText = "[Only MuEmu] Max Reset to use this Gate";
@@ -318,7 +318,7 @@ namespace kayitoTools.Forms
 			// AccountLevel_Col
 			// 
 			this.AccountLevel_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.AccountLevel_Col.HeaderText = "Account Level";
+			this.AccountLevel_Col.HeaderText = "账号等级";
 			this.AccountLevel_Col.Name = "AccountLevel_Col";
 			this.AccountLevel_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.AccountLevel_Col.ToolTipText = "[Only MuEmu] Account Level required to use this Gate";
@@ -341,7 +341,7 @@ namespace kayitoTools.Forms
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GateEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Gate Manager";
+			this.Text = "传送门管理器";
 			this.Load += new System.EventHandler(this.GateEditor_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();

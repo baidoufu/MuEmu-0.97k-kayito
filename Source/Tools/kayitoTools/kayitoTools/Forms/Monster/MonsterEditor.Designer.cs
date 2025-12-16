@@ -111,20 +111,20 @@ namespace kayitoTools.Forms
 			this.Load_Monster_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Load_Monster_Menu_Btn.Name = "Load_Monster_Menu_Btn";
 			this.Load_Monster_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Load_Monster_Menu_Btn.Text = "LOAD";
+			this.Load_Monster_Menu_Btn.Text = "加载";
 			// 
 			// Load_Monstertxt_AV
 			// 
 			this.Load_Monstertxt_AV.Name = "Load_Monstertxt_AV";
 			this.Load_Monstertxt_AV.Size = new System.Drawing.Size(180, 22);
-			this.Load_Monstertxt_AV.Text = "Load Monster.txt";
+			this.Load_Monstertxt_AV.Text = "加载 Monster.txt";
 			this.Load_Monstertxt_AV.Click += new System.EventHandler(this.Load_Monstertxt_Click);
 			// 
 			// Load_NPCNametxt_AV
 			// 
 			this.Load_NPCNametxt_AV.Name = "Load_NPCNametxt_AV";
 			this.Load_NPCNametxt_AV.Size = new System.Drawing.Size(180, 22);
-			this.Load_NPCNametxt_AV.Text = "Load NPCName.txt";
+			this.Load_NPCNametxt_AV.Text = "加载 NPCName.txt";
 			this.Load_NPCNametxt_AV.Click += new System.EventHandler(this.Load_NPCNametxt_Click);
 			// 
 			// Save_Monster_Menu_Btn
@@ -140,13 +140,13 @@ namespace kayitoTools.Forms
 			this.Save_Monster_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Save_Monster_Menu_Btn.Name = "Save_Monster_Menu_Btn";
 			this.Save_Monster_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Save_Monster_Menu_Btn.Text = "SAVE";
+			this.Save_Monster_Menu_Btn.Text = "保存";
 			// 
 			// Save_Monstertxt_AV
 			// 
 			this.Save_Monstertxt_AV.Name = "Save_Monstertxt_AV";
 			this.Save_Monstertxt_AV.Size = new System.Drawing.Size(180, 22);
-			this.Save_Monstertxt_AV.Text = "Save Monster.txt";
+			this.Save_Monstertxt_AV.Text = "保存 Monster.txt";
 			this.Save_Monstertxt_AV.Click += new System.EventHandler(this.Save_Monstertxt_Click);
 			// 
 			// Search_Monster_Panel
@@ -181,7 +181,7 @@ namespace kayitoTools.Forms
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(55, 13);
 			this.label1.TabIndex = 9;
-			this.label1.Text = "Go to line:";
+			this.label1.Text = "跳转到行:";
 			// 
 			// Search_Box_Btn
 			// 
@@ -190,7 +190,7 @@ namespace kayitoTools.Forms
 			this.Search_Box_Btn.Name = "Search_Box_Btn";
 			this.Search_Box_Btn.Size = new System.Drawing.Size(75, 20);
 			this.Search_Box_Btn.TabIndex = 4;
-			this.Search_Box_Btn.Text = "Search";
+			this.Search_Box_Btn.Text = "搜索";
 			this.Search_Box_Btn.UseVisualStyleBackColor = true;
 			this.Search_Box_Btn.Click += new System.EventHandler(this.Search_Box_Btn_Click);
 			// 
@@ -296,7 +296,7 @@ namespace kayitoTools.Forms
 			dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.DimGray;
 			dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.White;
 			this.Row_Col.DefaultCellStyle = dataGridViewCellStyle6;
-			this.Row_Col.HeaderText = "Row";
+			this.Row_Col.HeaderText = "行";
 			this.Row_Col.Name = "Row_Col";
 			this.Row_Col.ReadOnly = true;
 			this.Row_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -307,7 +307,7 @@ namespace kayitoTools.Forms
 			// Type_Col
 			// 
 			this.Type_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Type_Col.HeaderText = "Type";
+			this.Type_Col.HeaderText = "类型";
 			this.Type_Col.Name = "Type_Col";
 			this.Type_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Type_Col.ToolTipText = "0 = NPC / 1 = Monster";
@@ -316,7 +316,7 @@ namespace kayitoTools.Forms
 			// Name_Col
 			// 
 			this.Name_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Name_Col.HeaderText = "Name";
+			this.Name_Col.HeaderText = "名称";
 			this.Name_Col.Name = "Name_Col";
 			this.Name_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Name_Col.ToolTipText = "Name of the Monster";
@@ -325,7 +325,7 @@ namespace kayitoTools.Forms
 			// Level_Col
 			// 
 			this.Level_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Level_Col.HeaderText = "Level";
+			this.Level_Col.HeaderText = "等级";
 			this.Level_Col.Name = "Level_Col";
 			this.Level_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Level_Col.Width = 80;
@@ -333,7 +333,7 @@ namespace kayitoTools.Forms
 			// MaxLife_Col
 			// 
 			this.MaxLife_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MaxLife_Col.HeaderText = "Max Life";
+			this.MaxLife_Col.HeaderText = "最大生命";
 			this.MaxLife_Col.Name = "MaxLife_Col";
 			this.MaxLife_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MaxLife_Col.Width = 80;
@@ -341,7 +341,7 @@ namespace kayitoTools.Forms
 			// MaxMana_Col
 			// 
 			this.MaxMana_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MaxMana_Col.HeaderText = "Max Mana";
+			this.MaxMana_Col.HeaderText = "最大魔法";
 			this.MaxMana_Col.Name = "MaxMana_Col";
 			this.MaxMana_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MaxMana_Col.Width = 80;
@@ -349,7 +349,7 @@ namespace kayitoTools.Forms
 			// MinDamage_Col
 			// 
 			this.MinDamage_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MinDamage_Col.HeaderText = "Min Damage";
+			this.MinDamage_Col.HeaderText = "最小攻击";
 			this.MinDamage_Col.Name = "MinDamage_Col";
 			this.MinDamage_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MinDamage_Col.Width = 80;
@@ -357,7 +357,7 @@ namespace kayitoTools.Forms
 			// MaxDamage_Col
 			// 
 			this.MaxDamage_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MaxDamage_Col.HeaderText = "Max Damage";
+			this.MaxDamage_Col.HeaderText = "最大攻击";
 			this.MaxDamage_Col.Name = "MaxDamage_Col";
 			this.MaxDamage_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MaxDamage_Col.Width = 80;
@@ -365,7 +365,7 @@ namespace kayitoTools.Forms
 			// Defense_Col
 			// 
 			this.Defense_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Defense_Col.HeaderText = "Defense";
+			this.Defense_Col.HeaderText = "防御";
 			this.Defense_Col.Name = "Defense_Col";
 			this.Defense_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Defense_Col.Width = 80;
@@ -373,7 +373,7 @@ namespace kayitoTools.Forms
 			// MagicDefense_Col
 			// 
 			this.MagicDefense_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MagicDefense_Col.HeaderText = "Magic Defense";
+			this.MagicDefense_Col.HeaderText = "魔法防御";
 			this.MagicDefense_Col.Name = "MagicDefense_Col";
 			this.MagicDefense_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MagicDefense_Col.Width = 80;
@@ -381,7 +381,7 @@ namespace kayitoTools.Forms
 			// AttackRate_Col
 			// 
 			this.AttackRate_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.AttackRate_Col.HeaderText = "Attack Rate";
+			this.AttackRate_Col.HeaderText = "攻击成功率";
 			this.AttackRate_Col.Name = "AttackRate_Col";
 			this.AttackRate_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.AttackRate_Col.Width = 80;
@@ -389,7 +389,7 @@ namespace kayitoTools.Forms
 			// DefenseRate_Col
 			// 
 			this.DefenseRate_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.DefenseRate_Col.HeaderText = "Defense Rate";
+			this.DefenseRate_Col.HeaderText = "防御成功率";
 			this.DefenseRate_Col.Name = "DefenseRate_Col";
 			this.DefenseRate_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.DefenseRate_Col.Width = 80;
@@ -397,7 +397,7 @@ namespace kayitoTools.Forms
 			// MoveRange_Col
 			// 
 			this.MoveRange_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MoveRange_Col.HeaderText = "Move Range";
+			this.MoveRange_Col.HeaderText = "移动范围";
 			this.MoveRange_Col.Name = "MoveRange_Col";
 			this.MoveRange_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MoveRange_Col.Width = 80;
@@ -405,7 +405,7 @@ namespace kayitoTools.Forms
 			// AttackType_Col
 			// 
 			this.AttackType_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.AttackType_Col.HeaderText = "Attack Type";
+			this.AttackType_Col.HeaderText = "攻击类型";
 			this.AttackType_Col.Name = "AttackType_Col";
 			this.AttackType_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.AttackType_Col.Width = 80;
@@ -413,7 +413,7 @@ namespace kayitoTools.Forms
 			// AttackRange_Col
 			// 
 			this.AttackRange_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.AttackRange_Col.HeaderText = "Attack Range";
+			this.AttackRange_Col.HeaderText = "攻击范围";
 			this.AttackRange_Col.Name = "AttackRange_Col";
 			this.AttackRange_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.AttackRange_Col.Width = 80;
@@ -421,7 +421,7 @@ namespace kayitoTools.Forms
 			// ViewRange_Col
 			// 
 			this.ViewRange_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.ViewRange_Col.HeaderText = "View Range";
+			this.ViewRange_Col.HeaderText = "视野范围";
 			this.ViewRange_Col.Name = "ViewRange_Col";
 			this.ViewRange_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.ViewRange_Col.Width = 80;
@@ -429,7 +429,7 @@ namespace kayitoTools.Forms
 			// MoveSpeed_Col
 			// 
 			this.MoveSpeed_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MoveSpeed_Col.HeaderText = "Move Speed";
+			this.MoveSpeed_Col.HeaderText = "移动速度";
 			this.MoveSpeed_Col.Name = "MoveSpeed_Col";
 			this.MoveSpeed_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MoveSpeed_Col.Width = 80;
@@ -437,7 +437,7 @@ namespace kayitoTools.Forms
 			// AttackSpeed_Col
 			// 
 			this.AttackSpeed_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.AttackSpeed_Col.HeaderText = "Attack Speed";
+			this.AttackSpeed_Col.HeaderText = "攻击速度";
 			this.AttackSpeed_Col.Name = "AttackSpeed_Col";
 			this.AttackSpeed_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.AttackSpeed_Col.Width = 80;
@@ -445,7 +445,7 @@ namespace kayitoTools.Forms
 			// RegenTime_Col
 			// 
 			this.RegenTime_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.RegenTime_Col.HeaderText = "Regen Time";
+			this.RegenTime_Col.HeaderText = "重生时间";
 			this.RegenTime_Col.Name = "RegenTime_Col";
 			this.RegenTime_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.RegenTime_Col.Width = 80;
@@ -453,7 +453,7 @@ namespace kayitoTools.Forms
 			// Attribute_Col
 			// 
 			this.Attribute_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Attribute_Col.HeaderText = "Attribute";
+			this.Attribute_Col.HeaderText = "属性";
 			this.Attribute_Col.Name = "Attribute_Col";
 			this.Attribute_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Attribute_Col.Width = 80;
@@ -461,7 +461,7 @@ namespace kayitoTools.Forms
 			// ItemRate_Col
 			// 
 			this.ItemRate_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.ItemRate_Col.HeaderText = "Item Rate";
+			this.ItemRate_Col.HeaderText = "掉落率";
 			this.ItemRate_Col.Name = "ItemRate_Col";
 			this.ItemRate_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.ItemRate_Col.Width = 80;
@@ -469,7 +469,7 @@ namespace kayitoTools.Forms
 			// Money_Col
 			// 
 			this.Money_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Money_Col.HeaderText = "Money";
+			this.Money_Col.HeaderText = "金币";
 			this.Money_Col.Name = "Money_Col";
 			this.Money_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Money_Col.Width = 80;
@@ -477,7 +477,7 @@ namespace kayitoTools.Forms
 			// MaxItemLevel_Col
 			// 
 			this.MaxItemLevel_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MaxItemLevel_Col.HeaderText = "Max Item Level";
+			this.MaxItemLevel_Col.HeaderText = "最大物品等级";
 			this.MaxItemLevel_Col.Name = "MaxItemLevel_Col";
 			this.MaxItemLevel_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MaxItemLevel_Col.Width = 80;
@@ -485,7 +485,7 @@ namespace kayitoTools.Forms
 			// MonsterSkill_Col
 			// 
 			this.MonsterSkill_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.MonsterSkill_Col.HeaderText = "Monster Skill";
+			this.MonsterSkill_Col.HeaderText = "怪物技能";
 			this.MonsterSkill_Col.Name = "MonsterSkill_Col";
 			this.MonsterSkill_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.MonsterSkill_Col.Width = 80;
@@ -493,7 +493,7 @@ namespace kayitoTools.Forms
 			// ResistanceIce_Col
 			// 
 			this.ResistanceIce_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.ResistanceIce_Col.HeaderText = "Resistance Ice";
+			this.ResistanceIce_Col.HeaderText = "冰抗";
 			this.ResistanceIce_Col.Name = "ResistanceIce_Col";
 			this.ResistanceIce_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.ResistanceIce_Col.Width = 80;
@@ -501,7 +501,7 @@ namespace kayitoTools.Forms
 			// ResistancePoison_Col
 			// 
 			this.ResistancePoison_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.ResistancePoison_Col.HeaderText = "Resistance Poison";
+			this.ResistancePoison_Col.HeaderText = "毒抗";
 			this.ResistancePoison_Col.Name = "ResistancePoison_Col";
 			this.ResistancePoison_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.ResistancePoison_Col.Width = 80;
@@ -509,7 +509,7 @@ namespace kayitoTools.Forms
 			// ResistanceLightning_Col
 			// 
 			this.ResistanceLightning_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.ResistanceLightning_Col.HeaderText = "Resistance Lightning";
+			this.ResistanceLightning_Col.HeaderText = "雷抗";
 			this.ResistanceLightning_Col.Name = "ResistanceLightning_Col";
 			this.ResistanceLightning_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.ResistanceLightning_Col.Width = 80;
@@ -517,7 +517,7 @@ namespace kayitoTools.Forms
 			// ResistanceFire_Col
 			// 
 			this.ResistanceFire_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.ResistanceFire_Col.HeaderText = "Resistance Fire";
+			this.ResistanceFire_Col.HeaderText = "火抗";
 			this.ResistanceFire_Col.Name = "ResistanceFire_Col";
 			this.ResistanceFire_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.ResistanceFire_Col.Width = 80;
@@ -530,7 +530,7 @@ namespace kayitoTools.Forms
 			// 
 			this.Save_NPCNametxt_AV.Name = "Save_NPCNametxt_AV";
 			this.Save_NPCNametxt_AV.Size = new System.Drawing.Size(180, 22);
-			this.Save_NPCNametxt_AV.Text = "Save NPCName.txt";
+			this.Save_NPCNametxt_AV.Text = "保存 NPCName.txt";
 			this.Save_NPCNametxt_AV.Click += new System.EventHandler(this.Save_NPCNametxt_Click);
 			// 
 			// MonsterEditor

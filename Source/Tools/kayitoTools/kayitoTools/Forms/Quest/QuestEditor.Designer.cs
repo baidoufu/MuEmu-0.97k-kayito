@@ -580,13 +580,13 @@ namespace kayitoTools.Forms
 			this.Load_Quest_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Load_Quest_Menu_Btn.Name = "Load_Quest_Menu_Btn";
 			this.Load_Quest_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Load_Quest_Menu_Btn.Text = "LOAD";
+			this.Load_Quest_Menu_Btn.Text = "加载";
 			// 
 			// loadQuestbmdToolStripMenuItem
 			// 
 			this.loadQuestbmdToolStripMenuItem.Name = "loadQuestbmdToolStripMenuItem";
 			this.loadQuestbmdToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-			this.loadQuestbmdToolStripMenuItem.Text = "Load Quest.bmd";
+			this.loadQuestbmdToolStripMenuItem.Text = "加载 Quest.bmd";
 			this.loadQuestbmdToolStripMenuItem.Click += new System.EventHandler(this.Load_Questbmd97_Click);
 			// 
 			// Save_Quest_Menu_Btn
@@ -601,13 +601,13 @@ namespace kayitoTools.Forms
 			this.Save_Quest_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Save_Quest_Menu_Btn.Name = "Save_Quest_Menu_Btn";
 			this.Save_Quest_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Save_Quest_Menu_Btn.Text = "SAVE";
+			this.Save_Quest_Menu_Btn.Text = "保存";
 			// 
 			// saveQuestbmdToolStripMenuItem
 			// 
 			this.saveQuestbmdToolStripMenuItem.Name = "saveQuestbmdToolStripMenuItem";
 			this.saveQuestbmdToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-			this.saveQuestbmdToolStripMenuItem.Text = "Save Quest.bmd";
+			this.saveQuestbmdToolStripMenuItem.Text = "保存 Quest.bmd";
 			this.saveQuestbmdToolStripMenuItem.Click += new System.EventHandler(this.Save_Questbmd_Click);
 			// 
 			// Quest_List_Box
@@ -4657,7 +4657,7 @@ namespace kayitoTools.Forms
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "QuestEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Quest Manager";
+			this.Text = "任务管理器";
 			this.Load += new System.EventHandler(this.QuestEditor_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();

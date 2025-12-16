@@ -55,7 +55,7 @@
 			this.About_Title.Name = "About_Title";
 			this.About_Title.Size = new System.Drawing.Size(151, 14);
 			this.About_Title.TabIndex = 1;
-			this.About_Title.Text = "kayito - Mu Editor";
+			this.About_Title.Text = "kayito - 奇迹编辑器";
 			// 
 			// About_Copy
 			// 
@@ -65,7 +65,7 @@
 			this.About_Copy.Name = "About_Copy";
 			this.About_Copy.Size = new System.Drawing.Size(167, 14);
 			this.About_Copy.TabIndex = 2;
-			this.About_Copy.Text = "Developed by: kayito";
+			this.About_Copy.Text = "开发者: kayito";
 			// 
 			// About_Collab
 			// 
@@ -75,7 +75,7 @@
 			this.About_Collab.Name = "About_Collab";
 			this.About_Collab.Size = new System.Drawing.Size(183, 14);
 			this.About_Collab.TabIndex = 3;
-			this.About_Collab.Text = "In collaboration with:";
+			this.About_Collab.Text = "合作者:";
 			// 
 			// label1
 			// 
@@ -104,7 +104,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "About";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "About";
+			this.Text = "关于";
 			((System.ComponentModel.ISupportInitialize)(this.About_Logo)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

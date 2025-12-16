@@ -59,7 +59,7 @@
 			this.Character_Container.Size = new System.Drawing.Size(206, 233);
 			this.Character_Container.TabIndex = 1;
 			this.Character_Container.TabStop = false;
-			this.Character_Container.Text = "Character Manager";
+			this.Character_Container.Text = "角色管理器";
 			// 
 			// Account_List
 			// 
@@ -97,7 +97,7 @@
 			this.Btn_Clear.Name = "Btn_Clear";
 			this.Btn_Clear.Size = new System.Drawing.Size(59, 30);
 			this.Btn_Clear.TabIndex = 5;
-			this.Btn_Clear.Text = "Clear";
+			this.Btn_Clear.Text = "清空";
 			this.Btn_Clear.UseVisualStyleBackColor = true;
 			this.Btn_Clear.Click += new System.EventHandler(this.Btn_Clear_Click);
 			// 
@@ -108,7 +108,7 @@
 			this.Btn_Close.Name = "Btn_Close";
 			this.Btn_Close.Size = new System.Drawing.Size(59, 30);
 			this.Btn_Close.TabIndex = 6;
-			this.Btn_Close.Text = "Close";
+			this.Btn_Close.Text = "关闭";
 			this.Btn_Close.UseVisualStyleBackColor = true;
 			this.Btn_Close.Click += new System.EventHandler(this.Btn_Close_Click);
 			// 
@@ -119,7 +119,7 @@
 			this.Btn_Create.Name = "Btn_Create";
 			this.Btn_Create.Size = new System.Drawing.Size(59, 30);
 			this.Btn_Create.TabIndex = 4;
-			this.Btn_Create.Text = "Create";
+			this.Btn_Create.Text = "创建";
 			this.Btn_Create.UseVisualStyleBackColor = true;
 			this.Btn_Create.Click += new System.EventHandler(this.Btn_Create_Click);
 			// 
@@ -131,7 +131,7 @@
 			this.Mail_txt.Name = "Mail_txt";
 			this.Mail_txt.Size = new System.Drawing.Size(56, 17);
 			this.Mail_txt.TabIndex = 2;
-			this.Mail_txt.Text = "Class:";
+			this.Mail_txt.Text = "职业:";
 			// 
 			// Password_txt
 			// 
@@ -141,7 +141,7 @@
 			this.Password_txt.Name = "Password_txt";
 			this.Password_txt.Size = new System.Drawing.Size(48, 17);
 			this.Password_txt.TabIndex = 1;
-			this.Password_txt.Text = "Name:";
+			this.Password_txt.Text = "名称:";
 			// 
 			// Account_txt
 			// 
@@ -151,7 +151,7 @@
 			this.Account_txt.Name = "Account_txt";
 			this.Account_txt.Size = new System.Drawing.Size(72, 17);
 			this.Account_txt.TabIndex = 0;
-			this.Account_txt.Text = "Account:";
+			this.Account_txt.Text = "账号:";
 			// 
 			// CharacterManager
 			// 
@@ -165,7 +165,7 @@
 			this.MaximizeBox = false;
 			this.Name = "CharacterManager";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Character Manager";
+			this.Text = "角色管理器";
 			this.Character_Container.ResumeLayout(false);
 			this.Character_Container.PerformLayout();
 			this.ResumeLayout(false);

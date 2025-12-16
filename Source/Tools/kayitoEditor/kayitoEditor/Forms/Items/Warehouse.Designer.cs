@@ -113,7 +113,7 @@
 			this.Btn_Ware_Save.Name = "Btn_Ware_Save";
 			this.Btn_Ware_Save.Size = new System.Drawing.Size(86, 34);
 			this.Btn_Ware_Save.TabIndex = 6;
-			this.Btn_Ware_Save.Text = "SAVE";
+			this.Btn_Ware_Save.Text = "保存";
 			this.Btn_Ware_Save.UseVisualStyleBackColor = false;
 			this.Btn_Ware_Save.Click += new System.EventHandler(this.Btn_Ware_Save_Click);
 			// 
@@ -137,7 +137,7 @@
 			this.Btn_Ware_Reset.Name = "Btn_Ware_Reset";
 			this.Btn_Ware_Reset.Size = new System.Drawing.Size(86, 34);
 			this.Btn_Ware_Reset.TabIndex = 7;
-			this.Btn_Ware_Reset.Text = "RESET";
+			this.Btn_Ware_Reset.Text = "重置";
 			this.Btn_Ware_Reset.UseVisualStyleBackColor = false;
 			this.Btn_Ware_Reset.Click += new System.EventHandler(this.Btn_Ware_Reset_Click);
 			// 
@@ -151,7 +151,7 @@
 			this.Warehouse_Pass_txt.Name = "Warehouse_Pass_txt";
 			this.Warehouse_Pass_txt.Size = new System.Drawing.Size(170, 17);
 			this.Warehouse_Pass_txt.TabIndex = 450;
-			this.Warehouse_Pass_txt.Text = "WAREHOUSE PASSWORD";
+			this.Warehouse_Pass_txt.Text = "仓库密码";
 			// 
 			// Account_txt
 			// 
@@ -163,7 +163,7 @@
 			this.Account_txt.Name = "Account_txt";
 			this.Account_txt.Size = new System.Drawing.Size(59, 17);
 			this.Account_txt.TabIndex = 451;
-			this.Account_txt.Text = "Account";
+			this.Account_txt.Text = "账号";
 			// 
 			// Warehouse_Pass
 			// 
@@ -259,7 +259,7 @@
 			this.Name = "Warehouse";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Warehouse Editor";
+			this.Text = "仓库编辑器";
 			this.Load += new System.EventHandler(this.Warehouse_Load);
 			this.Buttons_Panel.ResumeLayout(false);
 			this.Buttons_Panel.PerformLayout();

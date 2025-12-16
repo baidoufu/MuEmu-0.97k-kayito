@@ -83,20 +83,20 @@ namespace kayitoTools.Forms
 			this.Load_Text_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Load_Text_Menu_Btn.Name = "Load_Text_Menu_Btn";
 			this.Load_Text_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Load_Text_Menu_Btn.Text = "LOAD";
+			this.Load_Text_Menu_Btn.Text = "加载";
 			// 
 			// Load_Message_txt
 			// 
 			this.Load_Message_txt.Name = "Load_Message_txt";
 			this.Load_Message_txt.Size = new System.Drawing.Size(180, 22);
-			this.Load_Message_txt.Text = "Load Message.txt";
+			this.Load_Message_txt.Text = "加载 Message.txt";
 			this.Load_Message_txt.Click += new System.EventHandler(this.LoadMessagetxt_Click);
 			// 
 			// Load_Textbmd_97
 			// 
 			this.Load_Textbmd_97.Name = "Load_Textbmd_97";
 			this.Load_Textbmd_97.Size = new System.Drawing.Size(180, 22);
-			this.Load_Textbmd_97.Text = "Load Text.bmd";
+			this.Load_Textbmd_97.Text = "加载 Text.bmd";
 			this.Load_Textbmd_97.Click += new System.EventHandler(this.LoadTextbmd_Click);
 			// 
 			// Save_Text_Menu_Btn
@@ -112,20 +112,20 @@ namespace kayitoTools.Forms
 			this.Save_Text_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Save_Text_Menu_Btn.Name = "Save_Text_Menu_Btn";
 			this.Save_Text_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Save_Text_Menu_Btn.Text = "SAVE";
+			this.Save_Text_Menu_Btn.Text = "保存";
 			// 
 			// Save_Message_txt
 			// 
 			this.Save_Message_txt.Name = "Save_Message_txt";
 			this.Save_Message_txt.Size = new System.Drawing.Size(180, 22);
-			this.Save_Message_txt.Text = "Save Message.txt";
+			this.Save_Message_txt.Text = "保存 Message.txt";
 			this.Save_Message_txt.Click += new System.EventHandler(this.SaveMessagetxt_Click);
 			// 
 			// Save_Textbmd_97
 			// 
 			this.Save_Textbmd_97.Name = "Save_Textbmd_97";
 			this.Save_Textbmd_97.Size = new System.Drawing.Size(180, 22);
-			this.Save_Textbmd_97.Text = "Save Text.bmd";
+			this.Save_Textbmd_97.Text = "保存 Text.bmd";
 			this.Save_Textbmd_97.Click += new System.EventHandler(this.SaveTextbmd_Click);
 			// 
 			// Text_List_Box
@@ -190,7 +190,7 @@ namespace kayitoTools.Forms
 			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.DimGray;
 			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
 			this.Row_Col.DefaultCellStyle = dataGridViewCellStyle2;
-			this.Row_Col.HeaderText = "Row";
+			this.Row_Col.HeaderText = "行";
 			this.Row_Col.Name = "Row_Col";
 			this.Row_Col.ReadOnly = true;
 			this.Row_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -201,7 +201,7 @@ namespace kayitoTools.Forms
 			// Text_Col
 			// 
 			this.Text_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Text_Col.HeaderText = "Text";
+			this.Text_Col.HeaderText = "文本";
 			this.Text_Col.Name = "Text_Col";
 			this.Text_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Text_Col.ToolTipText = "Message that the game will show";
@@ -226,7 +226,7 @@ namespace kayitoTools.Forms
 			this.Search_Box_Btn.Name = "Search_Box_Btn";
 			this.Search_Box_Btn.Size = new System.Drawing.Size(75, 20);
 			this.Search_Box_Btn.TabIndex = 4;
-			this.Search_Box_Btn.Text = "Search";
+			this.Search_Box_Btn.Text = "搜索";
 			this.Search_Box_Btn.UseVisualStyleBackColor = true;
 			this.Search_Box_Btn.Click += new System.EventHandler(this.Search_Box_Btn_Click);
 			// 
@@ -254,7 +254,7 @@ namespace kayitoTools.Forms
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(55, 13);
 			this.label1.TabIndex = 9;
-			this.label1.Text = "Go to line:";
+			this.label1.Text = "跳转到行:";
 			// 
 			// Search_Text_Panel
 			// 
@@ -284,7 +284,7 @@ namespace kayitoTools.Forms
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "TextEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Text Manager";
+			this.Text = "文本管理器";
 			this.Load += new System.EventHandler(this.TextEditor_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
