@@ -163,6 +163,7 @@ void CServerInfo::ReadCommonInfo()
 	gMessage.Load(gPath.GetFullPath("Message_Eng.txt"), LANGUAGE_ENGLISH);
 	gMessage.Load(gPath.GetFullPath("Message_Spn.txt"), LANGUAGE_SPANISH);
 	gMessage.Load(gPath.GetFullPath("Message_Por.txt"), LANGUAGE_PORTUGUESE);
+	gMessage.Load(gPath.GetFullPath("Message_Cn.txt"), LANGUAGE_CN);
 
 	gObjSetExperienceTable();
 

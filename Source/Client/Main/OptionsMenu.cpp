@@ -477,7 +477,7 @@ void COptionsMenu::RenderLanguage(float PosX, float PosY)
 		}
 	}
 
-	if (gLanguage.LangNum < LANGUAGE_PORTUGUESE)
+	if (gLanguage.LangNum < LANGUAGE_CN)
 	{
 		if (IsWorkZone((int)PosX + (this->BoxWidth - this->BoxHeight), (int)PosY, this->BoxHeight, this->BoxHeight))
 		{
@@ -522,7 +522,7 @@ bool COptionsMenu::CheckLanguage(int PosX, int PosY)
 		}
 	}
 
-	if (gLanguage.LangNum < LANGUAGE_PORTUGUESE)
+	if (gLanguage.LangNum < LANGUAGE_CN)
 	{
 		if (IsWorkZone(PosX + (this->BoxWidth - this->BoxHeight), PosY, this->BoxHeight, this->BoxHeight))
 		{

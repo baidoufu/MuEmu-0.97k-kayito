@@ -33,7 +33,7 @@
 #include "Viewport.h"
 #include "Warehouse.h"
 
-void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int serial)
+void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int serial)//接收包/处理客户端发来的包”的入口函数
 {
 	ConsoleProtocolLog(CON_PROTO_TCP_RECV, aIndex, lpMsg, size);
 
@@ -1240,7 +1240,7 @@ void CGSetLangRecv(PMSG_SET_LANG_RECV* lpMsg, int aIndex)
 		return;
 	}
 
-	if (lpMsg->lang < LANGUAGE_ENGLISH || lpMsg->lang > LANGUAGE_PORTUGUESE)
+	if (lpMsg->lang < LANGUAGE_ENGLISH || lpMsg->lang > LANGUAGE_CN)
 	{
 		return;
 	}

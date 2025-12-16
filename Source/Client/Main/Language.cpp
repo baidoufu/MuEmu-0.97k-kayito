@@ -9,6 +9,7 @@ Language::Language()
 	this->iLanguageValues[LANGUAGE_ENGLISH] = std::make_pair<std::string, std::string>("English", "Eng");
 	this->iLanguageValues[LANGUAGE_SPANISH] = std::make_pair<std::string, std::string>("Spanish", "Spn");
 	this->iLanguageValues[LANGUAGE_PORTUGUESE] = std::make_pair<std::string, std::string>("Portuguese", "Por");
+	this->iLanguageValues[LANGUAGE_CN] = std::make_pair<std::string, std::string>("Portuguese", "Cn");
 
 	this->LangNum = LANGUAGE_ENGLISH;
 
@@ -65,6 +66,14 @@ void Language::SetLanguage()
 		strcpy_s(this->m_DialogBMD, "Data\\Local\\Dialog_Por.bmd");
 
 		this->LangNum = LANGUAGE_PORTUGUESE;
+	}
+	else if (_strcmpi(this->m_Language, "Cn") == 0)
+	{
+		strcpy_s(this->m_TextBMD, "Data\\Local\\Text_Cn.bmd");
+
+		strcpy_s(this->m_DialogBMD, "Data\\Local\\Dialog_Cn.bmd");
+
+		this->LangNum = LANGUAGE_CN;
 	}
 	else
 	{
