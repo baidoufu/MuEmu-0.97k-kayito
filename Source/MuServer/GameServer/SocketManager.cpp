@@ -832,7 +832,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 
 		if (inet_ntop(AF_INET, &SocketAddr.sin_addr, IPAddress, INET_ADDRSTRLEN) == NULL)
 		{
-			LogAdd(LOG_RED, "[SocketManager] inet_ntop() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManager] inet_ntop() 失败, 错误码: %d", WSAGetLastError());
 
 			closesocket(socket);
 

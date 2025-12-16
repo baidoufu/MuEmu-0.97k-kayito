@@ -334,7 +334,7 @@ void CDevilSquare::ProcState_STAND(DEVIL_SQUARE_LEVEL* lpLevel)
 
 	if (this->GetUserCount(lpLevel) == 0)
 	{
-		LogAdd(LOG_EVENT, "[Devil Square] (%d) Not enough users", (lpLevel->Level + 1));
+		LogAdd(LOG_EVENT, "[恶魔广场] (%d) 用户数量不足", (lpLevel->Level + 1));
 
 		this->SetState(lpLevel, DS_STATE_EMPTY);
 
@@ -368,7 +368,7 @@ void CDevilSquare::ProcState_START(DEVIL_SQUARE_LEVEL* lpLevel)
 
 	if (this->GetUserCount(lpLevel) == 0)
 	{
-		LogAdd(LOG_EVENT, "[Devil Square] (%d) Not enough users", (lpLevel->Level + 1));
+		LogAdd(LOG_EVENT, "[恶魔广场] (%d) 用户数量不足", (lpLevel->Level + 1));
 
 		this->SetState(lpLevel, DS_STATE_EMPTY);
 
@@ -482,7 +482,7 @@ void CDevilSquare::SetState(DEVIL_SQUARE_LEVEL* lpLevel, int state)
 
 void CDevilSquare::SetState_BLANK(DEVIL_SQUARE_LEVEL* lpLevel)
 {
-	LogAdd(LOG_EVENT, "[Devil Square] (%d) SetState BLANK", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[恶魔广场] (%d) 设置状态为 空白", (lpLevel->Level + 1));
 }
 
 void CDevilSquare::SetState_EMPTY(DEVIL_SQUARE_LEVEL* lpLevel)
@@ -501,7 +501,7 @@ void CDevilSquare::SetState_EMPTY(DEVIL_SQUARE_LEVEL* lpLevel)
 
 	this->CheckSync(lpLevel);
 
-	LogAdd(LOG_EVENT, "[Devil Square] (%d) SetState EMPTY", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[恶魔广场] (%d) 设置状态为 空闲", (lpLevel->Level + 1));
 }
 
 void CDevilSquare::SetState_STAND(DEVIL_SQUARE_LEVEL* lpLevel)
@@ -516,7 +516,7 @@ void CDevilSquare::SetState_STAND(DEVIL_SQUARE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)(time(0) + lpLevel->RemainTime);
 
-	LogAdd(LOG_EVENT, "[Devil Square] (%d) SetState STAND", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[恶魔广场] (%d) 设置状态为 等待", (lpLevel->Level + 1));
 }
 
 void CDevilSquare::SetState_START(DEVIL_SQUARE_LEVEL* lpLevel)
@@ -533,7 +533,7 @@ void CDevilSquare::SetState_START(DEVIL_SQUARE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)(time(0) + lpLevel->RemainTime);
 
-	LogAdd(LOG_EVENT, "[Devil Square] (%d) SetState START", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[恶魔广场] (%d) 设置状态为 开始", (lpLevel->Level + 1));
 }
 
 void CDevilSquare::SetState_CLEAN(DEVIL_SQUARE_LEVEL* lpLevel)
@@ -560,7 +560,7 @@ void CDevilSquare::SetState_CLEAN(DEVIL_SQUARE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)(time(0) + lpLevel->RemainTime);
 
-	LogAdd(LOG_EVENT, "[Devil Square] (%d) SetState CLEAN", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[恶魔广场] (%d) 设置状态为 清理", (lpLevel->Level + 1));
 }
 
 void CDevilSquare::SetStage0(DEVIL_SQUARE_LEVEL* lpLevel)
@@ -633,7 +633,7 @@ void CDevilSquare::CheckSync(DEVIL_SQUARE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)ScheduleTime.GetTime();
 
-	LogAdd(LOG_EVENT, "[Devil Square] (%d) Sync Start Time. [%d] min remain", (lpLevel->Level + 1), (lpLevel->RemainTime / 60));
+	LogAdd(LOG_EVENT, "[恶魔广场] (%d) 同步开始时间. 剩余 [%d] 分钟", (lpLevel->Level + 1), (lpLevel->RemainTime / 60));
 }
 
 int CDevilSquare::GetState(int level)
@@ -1616,7 +1616,7 @@ void CDevilSquare::StartDS()
 
 	this->m_DevilSquareStartTime.push_back(info);
 
-	LogAdd(LOG_EVENT, "[Set DS Start] At %2d:%2d:00", hour, minute);
+	LogAdd(LOG_EVENT, "[设置恶魔广场开始] 时间 %2d:%2d:00", hour, minute);
 
 	this->Init();
 }

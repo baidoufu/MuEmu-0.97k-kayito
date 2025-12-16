@@ -90,7 +90,7 @@ bool CSocketManagerUdp::Connect(char* IpAddress, WORD port)
 
 		if (err != 0)
 		{
-			LogAdd(LOG_RED, "[SocketManagerUdp] getaddrinfo() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManagerUdp] getaddrinfo() 失败, 错误码: %d", WSAGetLastError());
 
 			this->Clean();
 

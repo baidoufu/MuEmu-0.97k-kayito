@@ -1059,7 +1059,7 @@ void CCommandManager::DGCommandResetRecv(SDHP_COMMAND_RESET_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == false)
 	{
-		LogAdd(LOG_RED, "[DGCommandResetRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGCommandResetRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -1340,7 +1340,7 @@ void CCommandManager::DGCommandGrandResetRecv(SDHP_COMMAND_RESET_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGCommandGrandResetRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGCommandGrandResetRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 

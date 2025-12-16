@@ -131,7 +131,7 @@ void CServerInfo::ReadChaosMixInfo()
 {
 	this->ReadChaosMixInfo("GameServerInfo", ".\\Data\\GameServerInfo - ChaosMix.dat");
 
-	LogAdd(LOG_BLUE, "[ServerInfo] ChaosMix loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 混沌合成 加载成功");
 }
 
 void CServerInfo::ReadCharacterInfo()
@@ -140,7 +140,7 @@ void CServerInfo::ReadCharacterInfo()
 
 	gDefaultClassInfo.Load(gPath.GetFullPath("Character\\DefaultClassInfo.txt"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Character loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 角色配置 加载成功");
 }
 
 void CServerInfo::ReadCommandInfo()
@@ -149,7 +149,7 @@ void CServerInfo::ReadCommandInfo()
 
 	gCommandManager.Load(gPath.GetFullPath("Command.txt"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Command loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 命令配置 加载成功");
 }
 
 void CServerInfo::ReadCommonInfo()
@@ -166,7 +166,7 @@ void CServerInfo::ReadCommonInfo()
 
 	gObjSetExperienceTable();
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Common loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 通用配置 加载成功");
 }
 
 void CServerInfo::ReadCustomInfo()
@@ -177,7 +177,7 @@ void CServerInfo::ReadCustomInfo()
 
 	gSafeZone.Load(gPath.GetFullPath("Custom\\CustomSafeZone.txt"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Custom loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 自定义配置 加载成功");
 }
 
 void CServerInfo::ReadEventInfo()
@@ -198,7 +198,7 @@ void CServerInfo::ReadEventInfo()
 
 	gGoldenArcherBingo.Load(gPath.GetFullPath("Event\\GoldenArcherBingo.dat"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Event loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 活动配置 加载成功");
 }
 
 void CServerInfo::ReadEventItemBagInfo()
@@ -207,7 +207,7 @@ void CServerInfo::ReadEventItemBagInfo()
 
 	gItemBagManager.LoadEventItemBag();
 
-	LogAdd(LOG_BLUE, "[ServerInfo] EventItemBag loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 活动物品包 加载成功");
 }
 
 void CServerInfo::ReadHackInfo()
@@ -220,7 +220,7 @@ void CServerInfo::ReadHackInfo()
 
 	gPacketManager.LoadDecryptionKey(gPath.GetFullPath("Hack\\Dec1.dat"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Hack loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 反作弊配置 加载成功");
 }
 
 void CServerInfo::ReadItemInfo()
@@ -251,7 +251,7 @@ void CServerInfo::ReadItemInfo()
 		}
 	}
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Item loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 物品配置 加载成功");
 }
 
 void CServerInfo::ReadMapInfo()
@@ -283,7 +283,7 @@ void CServerInfo::ReadMonsterInfo()
 
 	gMonsterSetBase.Load(gPath.GetFullPath("Monster\\MonsterSetBase.txt"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Monster loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 怪物配置 加载成功");
 }
 
 void CServerInfo::ReadMoveInfo()
@@ -294,7 +294,7 @@ void CServerInfo::ReadMoveInfo()
 
 	gMove.ReloadMoveList();
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Move loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 移动配置 加载成功");
 }
 
 void CServerInfo::ReadQuestInfo()
@@ -305,7 +305,7 @@ void CServerInfo::ReadQuestInfo()
 
 	gQuestReward.Load(gPath.GetFullPath("Quest\\QuestReward.txt"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Quest loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 任务配置 加载成功");
 }
 
 void CServerInfo::ReadShopInfo()
@@ -316,7 +316,7 @@ void CServerInfo::ReadShopInfo()
 
 	gShopManager.ReloadShopInterface();
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Shop loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 商店配置 加载成功");
 }
 
 void CServerInfo::ReadSkillInfo()
@@ -327,7 +327,7 @@ void CServerInfo::ReadSkillInfo()
 
 	gSkillManager.Load(gPath.GetFullPath("Skill\\Skill.txt"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Skill loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 技能配置 加载成功");
 }
 
 void CServerInfo::ReadUtilInfo()
@@ -344,7 +344,7 @@ void CServerInfo::ReadUtilInfo()
 
 	gBlackList.Load(gPath.GetFullPath("Util\\BlackList.dat"));
 
-	LogAdd(LOG_BLUE, "[ServerInfo] Util loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerInfo] 工具配置 加载成功");
 }
 
 void CServerInfo::ReloadMonsterInfo()

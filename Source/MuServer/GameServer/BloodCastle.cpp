@@ -376,7 +376,7 @@ void CBloodCastle::ProcState_STAND(BLOOD_CASTLE_LEVEL* lpLevel)
 
 	if (this->GetUserCount(lpLevel) == 0)
 	{
-		LogAdd(LOG_EVENT, "[Blood Castle] (%d) Not enough users", (lpLevel->Level + 1));
+		LogAdd(LOG_EVENT, "[血色城堡] (%d) 用户数量不足", (lpLevel->Level + 1));
 
 		this->SetState(lpLevel, BC_STATE_EMPTY);
 
@@ -410,7 +410,7 @@ void CBloodCastle::ProcState_START(BLOOD_CASTLE_LEVEL* lpLevel)
 
 	if (this->GetUserCount(lpLevel) == 0)
 	{
-		LogAdd(LOG_EVENT, "[Blood Castle] (%d) Not enough users", (lpLevel->Level + 1));
+		LogAdd(LOG_EVENT, "[血色城堡] (%d) 用户数量不足", (lpLevel->Level + 1));
 
 		this->SetState(lpLevel, BC_STATE_EMPTY);
 
@@ -560,7 +560,7 @@ void CBloodCastle::SetState(BLOOD_CASTLE_LEVEL* lpLevel, int state)
 
 void CBloodCastle::SetState_BLANK(BLOOD_CASTLE_LEVEL* lpLevel)
 {
-	LogAdd(LOG_EVENT, "[Blood Castle] (%d) SetState BLANK", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[血色城堡] (%d) 设置状态为 空白", (lpLevel->Level + 1));
 }
 
 void CBloodCastle::SetState_EMPTY(BLOOD_CASTLE_LEVEL* lpLevel)
@@ -617,7 +617,7 @@ void CBloodCastle::SetState_EMPTY(BLOOD_CASTLE_LEVEL* lpLevel)
 
 	this->CheckSync(lpLevel);
 
-	LogAdd(LOG_EVENT, "[Blood Castle] (%d) SetState EMPTY", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[血色城堡] (%d) 设置状态为 空闲", (lpLevel->Level + 1));
 }
 
 void CBloodCastle::SetState_STAND(BLOOD_CASTLE_LEVEL* lpLevel)
@@ -632,7 +632,7 @@ void CBloodCastle::SetState_STAND(BLOOD_CASTLE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)(time(0) + lpLevel->RemainTime);
 
-	LogAdd(LOG_EVENT, "[Blood Castle] (%d) SetState STAND", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[血色城堡] (%d) 设置状态为 等待", (lpLevel->Level + 1));
 }
 
 void CBloodCastle::SetState_START(BLOOD_CASTLE_LEVEL* lpLevel)
@@ -659,7 +659,7 @@ void CBloodCastle::SetState_START(BLOOD_CASTLE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)(time(0) + lpLevel->RemainTime);
 
-	LogAdd(LOG_EVENT, "[Blood Castle] (%d) SetState START", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[血色城堡] (%d) 设置状态为 开始", (lpLevel->Level + 1));
 }
 
 void CBloodCastle::SetState_CLEAN(BLOOD_CASTLE_LEVEL* lpLevel)
@@ -720,7 +720,7 @@ void CBloodCastle::SetState_CLEAN(BLOOD_CASTLE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)(time(0) + lpLevel->RemainTime);
 
-	LogAdd(LOG_EVENT, "[Blood Castle] (%d) SetState CLEAN", (lpLevel->Level + 1));
+	LogAdd(LOG_EVENT, "[血色城堡] (%d) 设置状态为 清理", (lpLevel->Level + 1));
 }
 
 void CBloodCastle::SetStage0(BLOOD_CASTLE_LEVEL* lpLevel)
@@ -834,7 +834,7 @@ void CBloodCastle::CheckSync(BLOOD_CASTLE_LEVEL* lpLevel)
 
 	lpLevel->TargetTime = (int)ScheduleTime.GetTime();
 
-	LogAdd(LOG_EVENT, "[Blood Castle] (%d) Sync Start Time. [%d] min remain", (lpLevel->Level + 1), (lpLevel->RemainTime / 60));
+	LogAdd(LOG_EVENT, "[血色城堡] (%d) 同步开始时间. 剩余 [%d] 分钟", (lpLevel->Level + 1), (lpLevel->RemainTime / 60));
 }
 
 int CBloodCastle::GetState(int level)
@@ -2389,7 +2389,7 @@ void CBloodCastle::StartBC()
 
 	this->m_BloodCastleStartTime.push_back(info);
 
-	LogAdd(LOG_EVENT, "[Set BC Start] At %2d:%2d:00", hour, minute);
+	LogAdd(LOG_EVENT, "[设置血色城堡开始] 时间 %2d:%2d:00", hour, minute);
 
 	this->Init();
 }

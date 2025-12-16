@@ -637,7 +637,7 @@ void CInvasionManager::SetMonster(INVASION_INFO* lpInfo, INVASION_RESPWAN_INFO* 
 
 		if (lpObj->Class == lpInfo->BossIndex)
 		{
-			LogAdd(LOG_EVENT, "[Invasion Manager] (%s) Boss Position (Map: %d, X: %d, Y: %d", lpInfo->InvasionName, lpObj->Map, lpObj->X, lpObj->Y);
+			LogAdd(LOG_EVENT, "[入侵管理器] (%s) Boss位置 (地图: %d, X: %d, Y: %d", lpInfo->InvasionName, lpObj->Map, lpObj->X, lpObj->Y);
 		}
 
 		if (gServerInfo.m_FlyingDragonsOnlyBossMapSpawn != 0)
@@ -729,7 +729,7 @@ void CInvasionManager::StartInvasion(int InvasionIndex)
 
 	this->m_InvasionInfo[InvasionIndex].StartTime.push_back(info);
 
-	LogAdd(LOG_EVENT, "[Set Invasion Start][%s] At %2d:%2d:00", this->m_InvasionInfo[InvasionIndex].InvasionName, hour, minute);
+	LogAdd(LOG_EVENT, "[设置入侵开始][%s] 时间 %2d:%2d:00", this->m_InvasionInfo[InvasionIndex].InvasionName, hour, minute);
 
 	this->Init();
 }

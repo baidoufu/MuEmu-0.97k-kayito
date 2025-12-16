@@ -342,7 +342,7 @@ void CWarehouse::DGWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGWarehouseItemRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGWarehouseItemRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -404,7 +404,7 @@ void CWarehouse::DGWarehouseFreeRecv(SDHP_WAREHOUSE_FREE_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGWarehouseFreeRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGWarehouseFreeRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
