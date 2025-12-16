@@ -139,7 +139,7 @@
 			this.Search_Box.Size = new System.Drawing.Size(399, 79);
 			this.Search_Box.TabIndex = 1;
 			this.Search_Box.TabStop = false;
-			this.Search_Box.Text = "Search";
+			this.Search_Box.Text = "搜索";
 			// 
 			// Btn_Char_Reload
 			// 
@@ -149,7 +149,7 @@
 			this.Btn_Char_Reload.Name = "Btn_Char_Reload";
 			this.Btn_Char_Reload.Size = new System.Drawing.Size(110, 21);
 			this.Btn_Char_Reload.TabIndex = 4;
-			this.Btn_Char_Reload.Text = "Reload Characters";
+			this.Btn_Char_Reload.Text = "刷新角色";
 			this.Btn_Char_Reload.UseVisualStyleBackColor = false;
 			this.Btn_Char_Reload.Click += new System.EventHandler(this.Btn_Char_Reload_Click);
 			// 
@@ -161,7 +161,7 @@
 			this.Btn_Acc_Reload.Name = "Btn_Acc_Reload";
 			this.Btn_Acc_Reload.Size = new System.Drawing.Size(110, 21);
 			this.Btn_Acc_Reload.TabIndex = 2;
-			this.Btn_Acc_Reload.Text = "Reload Accounts";
+			this.Btn_Acc_Reload.Text = "刷新账号";
 			this.Btn_Acc_Reload.UseVisualStyleBackColor = false;
 			this.Btn_Acc_Reload.Click += new System.EventHandler(this.Btn_Acc_Reload_Click);
 			// 
@@ -197,7 +197,7 @@
 			this.Character_txt.Name = "Character_txt";
 			this.Character_txt.Size = new System.Drawing.Size(88, 17);
 			this.Character_txt.TabIndex = 2;
-			this.Character_txt.Text = "Character:";
+			this.Character_txt.Text = "角色:";
 			// 
 			// Account_txt
 			// 
@@ -207,7 +207,7 @@
 			this.Account_txt.Name = "Account_txt";
 			this.Account_txt.Size = new System.Drawing.Size(72, 17);
 			this.Account_txt.TabIndex = 1;
-			this.Account_txt.Text = "Account:";
+			this.Account_txt.Text = "账号:";
 			// 
 			// Account_Info_Box
 			// 
@@ -248,7 +248,7 @@
 			this.Account_Info_Box.Size = new System.Drawing.Size(536, 495);
 			this.Account_Info_Box.TabIndex = 2;
 			this.Account_Info_Box.TabStop = false;
-			this.Account_Info_Box.Text = "Account Information";
+			this.Account_Info_Box.Text = "账号信息";
 			// 
 			// Btn_Vault_Edit
 			// 
@@ -259,7 +259,7 @@
 			this.Btn_Vault_Edit.Name = "Btn_Vault_Edit";
 			this.Btn_Vault_Edit.Size = new System.Drawing.Size(133, 50);
 			this.Btn_Vault_Edit.TabIndex = 18;
-			this.Btn_Vault_Edit.Text = "Edit Vault";
+			this.Btn_Vault_Edit.Text = "编辑仓库";
 			this.Btn_Vault_Edit.UseVisualStyleBackColor = true;
 			this.Btn_Vault_Edit.Click += new System.EventHandler(this.Btn_Vault_Edit_Click);
 			// 
@@ -271,7 +271,7 @@
 			this.Ban_Date_txt.Name = "Ban_Date_txt";
 			this.Ban_Date_txt.Size = new System.Drawing.Size(96, 17);
 			this.Ban_Date_txt.TabIndex = 40;
-			this.Ban_Date_txt.Text = "Ban Expire:";
+			this.Ban_Date_txt.Text = "封禁到期:";
 			// 
 			// Ban_Date
 			// 
@@ -345,7 +345,7 @@
 			this.Vip_Date_txt.Name = "Vip_Date_txt";
 			this.Vip_Date_txt.Size = new System.Drawing.Size(96, 17);
 			this.Vip_Date_txt.TabIndex = 29;
-			this.Vip_Date_txt.Text = "VIP Expire:";
+			this.Vip_Date_txt.Text = "VIP到期:";
 			// 
 			// lastCharacter_txt
 			// 
@@ -355,7 +355,7 @@
 			this.lastCharacter_txt.Name = "lastCharacter_txt";
 			this.lastCharacter_txt.Size = new System.Drawing.Size(128, 17);
 			this.lastCharacter_txt.TabIndex = 28;
-			this.lastCharacter_txt.Text = "Last Character:";
+			this.lastCharacter_txt.Text = "最后角色:";
 			// 
 			// lastOffline_txt
 			// 
@@ -365,7 +365,7 @@
 			this.lastOffline_txt.Name = "lastOffline_txt";
 			this.lastOffline_txt.Size = new System.Drawing.Size(112, 17);
 			this.lastOffline_txt.TabIndex = 27;
-			this.lastOffline_txt.Text = "Last OFFLINE:";
+			this.lastOffline_txt.Text = "最后离线:";
 			// 
 			// lastOnline_txt
 			// 
@@ -375,7 +375,7 @@
 			this.lastOnline_txt.Name = "lastOnline_txt";
 			this.lastOnline_txt.Size = new System.Drawing.Size(104, 17);
 			this.lastOnline_txt.TabIndex = 26;
-			this.lastOnline_txt.Text = "Last ONLINE:";
+			this.lastOnline_txt.Text = "最后在线:";
 			// 
 			// IP_txt
 			// 
@@ -395,7 +395,7 @@
 			this.Server_txt.Name = "Server_txt";
 			this.Server_txt.Size = new System.Drawing.Size(64, 17);
 			this.Server_txt.TabIndex = 24;
-			this.Server_txt.Text = "Server:";
+			this.Server_txt.Text = "服务器:";
 			// 
 			// Acc_Status_value
 			// 
@@ -416,7 +416,7 @@
 			this.Acc_Status_txt.Name = "Acc_Status_txt";
 			this.Acc_Status_txt.Size = new System.Drawing.Size(64, 17);
 			this.Acc_Status_txt.TabIndex = 22;
-			this.Acc_Status_txt.Text = "Status:";
+			this.Acc_Status_txt.Text = "状态:";
 			// 
 			// Btn_Acc_Apply
 			// 
@@ -428,7 +428,7 @@
 			this.Btn_Acc_Apply.Name = "Btn_Acc_Apply";
 			this.Btn_Acc_Apply.Size = new System.Drawing.Size(133, 50);
 			this.Btn_Acc_Apply.TabIndex = 19;
-			this.Btn_Acc_Apply.Text = "Apply";
+			this.Btn_Acc_Apply.Text = "应用";
 			this.Btn_Acc_Apply.UseVisualStyleBackColor = false;
 			this.Btn_Acc_Apply.Click += new System.EventHandler(this.Btn_Acc_Apply_Click);
 			// 
@@ -497,7 +497,7 @@
 			this.Ban_txt.Name = "Ban_txt";
 			this.Ban_txt.Size = new System.Drawing.Size(40, 17);
 			this.Ban_txt.TabIndex = 6;
-			this.Ban_txt.Text = "BAN:";
+			this.Ban_txt.Text = "封禁:";
 			// 
 			// Vip_txt
 			// 
@@ -517,7 +517,7 @@
 			this.Code_txt.Name = "Code_txt";
 			this.Code_txt.Size = new System.Drawing.Size(48, 17);
 			this.Code_txt.TabIndex = 4;
-			this.Code_txt.Text = "Code:";
+			this.Code_txt.Text = "身份码:";
 			// 
 			// Pass_txt
 			// 
@@ -527,7 +527,7 @@
 			this.Pass_txt.Name = "Pass_txt";
 			this.Pass_txt.Size = new System.Drawing.Size(48, 17);
 			this.Pass_txt.TabIndex = 2;
-			this.Pass_txt.Text = "Pass:";
+			this.Pass_txt.Text = "密码:";
 			// 
 			// User_txt
 			// 
@@ -537,7 +537,7 @@
 			this.User_txt.Name = "User_txt";
 			this.User_txt.Size = new System.Drawing.Size(48, 17);
 			this.User_txt.TabIndex = 1;
-			this.User_txt.Text = "User:";
+			this.User_txt.Text = "用户:";
 			// 
 			// Tab_Control
 			// 
@@ -559,7 +559,7 @@
 			this.AccountInfo.Padding = new System.Windows.Forms.Padding(3);
 			this.AccountInfo.Size = new System.Drawing.Size(548, 507);
 			this.AccountInfo.TabIndex = 0;
-			this.AccountInfo.Text = "Account Info";
+			this.AccountInfo.Text = "账号信息";
 			// 
 			// CharacterInfo
 			// 
@@ -574,7 +574,7 @@
 			this.CharacterInfo.Padding = new System.Windows.Forms.Padding(3);
 			this.CharacterInfo.Size = new System.Drawing.Size(548, 507);
 			this.CharacterInfo.TabIndex = 1;
-			this.CharacterInfo.Text = "Character Info";
+			this.CharacterInfo.Text = "角色信息";
 			// 
 			// Btn_CreateCharacter
 			// 
@@ -587,7 +587,7 @@
 			this.Btn_CreateCharacter.Name = "Btn_CreateCharacter";
 			this.Btn_CreateCharacter.Size = new System.Drawing.Size(133, 25);
 			this.Btn_CreateCharacter.TabIndex = 21;
-			this.Btn_CreateCharacter.Text = "Create Character";
+			this.Btn_CreateCharacter.Text = "创建角色";
 			this.Btn_CreateCharacter.UseVisualStyleBackColor = false;
 			this.Btn_CreateCharacter.Click += new System.EventHandler(this.Btn_CreateCharacter_Click);
 			// 
@@ -641,7 +641,7 @@
 			this.Character_Info_Box.Size = new System.Drawing.Size(536, 457);
 			this.Character_Info_Box.TabIndex = 3;
 			this.Character_Info_Box.TabStop = false;
-			this.Character_Info_Box.Text = "Character Information";
+			this.Character_Info_Box.Text = "角色信息";
 			// 
 			// Btn_Inventory_Edit
 			// 
@@ -652,7 +652,7 @@
 			this.Btn_Inventory_Edit.Name = "Btn_Inventory_Edit";
 			this.Btn_Inventory_Edit.Size = new System.Drawing.Size(133, 50);
 			this.Btn_Inventory_Edit.TabIndex = 35;
-			this.Btn_Inventory_Edit.Text = "Edit Inventory";
+			this.Btn_Inventory_Edit.Text = "编辑背包";
 			this.Btn_Inventory_Edit.UseVisualStyleBackColor = true;
 			this.Btn_Inventory_Edit.Click += new System.EventHandler(this.Btn_Inventory_Edit_Click);
 			// 
@@ -672,7 +672,7 @@
 			this.GrandReset_Txt.Name = "GrandReset_Txt";
 			this.GrandReset_Txt.Size = new System.Drawing.Size(96, 17);
 			this.GrandReset_Txt.TabIndex = 42;
-			this.GrandReset_Txt.Text = "GrandReset:";
+			this.GrandReset_Txt.Text = "大转生:";
 			// 
 			// PosY_txt
 			// 
@@ -710,7 +710,7 @@
 			this.Reset_Txt.Name = "Reset_Txt";
 			this.Reset_Txt.Size = new System.Drawing.Size(56, 17);
 			this.Reset_Txt.TabIndex = 36;
-			this.Reset_Txt.Text = "Reset:";
+			this.Reset_Txt.Text = "转生:";
 			// 
 			// PosY_Box
 			// 
@@ -830,7 +830,7 @@
 			this.Ubication_txt.Name = "Ubication_txt";
 			this.Ubication_txt.Size = new System.Drawing.Size(88, 17);
 			this.Ubication_txt.TabIndex = 24;
-			this.Ubication_txt.Text = "Ubication:";
+			this.Ubication_txt.Text = "位置:";
 			// 
 			// Type_txt
 			// 
@@ -840,7 +840,7 @@
 			this.Type_txt.Name = "Type_txt";
 			this.Type_txt.Size = new System.Drawing.Size(48, 17);
 			this.Type_txt.TabIndex = 23;
-			this.Type_txt.Text = "Type:";
+			this.Type_txt.Text = "类型:";
 			// 
 			// Energy_txt
 			// 
@@ -850,7 +850,7 @@
 			this.Energy_txt.Name = "Energy_txt";
 			this.Energy_txt.Size = new System.Drawing.Size(64, 17);
 			this.Energy_txt.TabIndex = 21;
-			this.Energy_txt.Text = "Energy:";
+			this.Energy_txt.Text = "智力:";
 			// 
 			// Vitality_txt
 			// 
@@ -860,7 +860,7 @@
 			this.Vitality_txt.Name = "Vitality_txt";
 			this.Vitality_txt.Size = new System.Drawing.Size(80, 17);
 			this.Vitality_txt.TabIndex = 20;
-			this.Vitality_txt.Text = "Vitality:";
+			this.Vitality_txt.Text = "体力:";
 			// 
 			// Dexterity_txt
 			// 
@@ -870,7 +870,7 @@
 			this.Dexterity_txt.Name = "Dexterity_txt";
 			this.Dexterity_txt.Size = new System.Drawing.Size(88, 17);
 			this.Dexterity_txt.TabIndex = 19;
-			this.Dexterity_txt.Text = "Dexterity:";
+			this.Dexterity_txt.Text = "敏捷:";
 			// 
 			// Strength_txt
 			// 
@@ -880,7 +880,7 @@
 			this.Strength_txt.Name = "Strength_txt";
 			this.Strength_txt.Size = new System.Drawing.Size(80, 17);
 			this.Strength_txt.TabIndex = 18;
-			this.Strength_txt.Text = "Strength:";
+			this.Strength_txt.Text = "力量:";
 			// 
 			// Btn_Char_Apply
 			// 
@@ -892,7 +892,7 @@
 			this.Btn_Char_Apply.Name = "Btn_Char_Apply";
 			this.Btn_Char_Apply.Size = new System.Drawing.Size(133, 50);
 			this.Btn_Char_Apply.TabIndex = 36;
-			this.Btn_Char_Apply.Text = "Apply";
+			this.Btn_Char_Apply.Text = "应用";
 			this.Btn_Char_Apply.UseVisualStyleBackColor = false;
 			this.Btn_Char_Apply.Click += new System.EventHandler(this.Btn_Char_Apply_Click);
 			// 
@@ -904,7 +904,7 @@
 			this.Point_txt.Name = "Point_txt";
 			this.Point_txt.Size = new System.Drawing.Size(64, 17);
 			this.Point_txt.TabIndex = 4;
-			this.Point_txt.Text = "Points:";
+			this.Point_txt.Text = "点数:";
 			// 
 			// Class_txt
 			// 
@@ -914,7 +914,7 @@
 			this.Class_txt.Name = "Class_txt";
 			this.Class_txt.Size = new System.Drawing.Size(56, 17);
 			this.Class_txt.TabIndex = 3;
-			this.Class_txt.Text = "Class:";
+			this.Class_txt.Text = "职业:";
 			// 
 			// Level_txt
 			// 
@@ -924,7 +924,7 @@
 			this.Level_txt.Name = "Level_txt";
 			this.Level_txt.Size = new System.Drawing.Size(56, 17);
 			this.Level_txt.TabIndex = 2;
-			this.Level_txt.Text = "Level:";
+			this.Level_txt.Text = "等级:";
 			// 
 			// Name_txt
 			// 
@@ -934,7 +934,7 @@
 			this.Name_txt.Name = "Name_txt";
 			this.Name_txt.Size = new System.Drawing.Size(48, 17);
 			this.Name_txt.TabIndex = 1;
-			this.Name_txt.Text = "Name:";
+			this.Name_txt.Text = "名称:";
 			// 
 			// Btn_File
 			// 
@@ -951,13 +951,13 @@
 			this.Btn_File.Margin = new System.Windows.Forms.Padding(10, 1, 10, 2);
 			this.Btn_File.Name = "Btn_File";
 			this.Btn_File.Size = new System.Drawing.Size(80, 20);
-			this.Btn_File.Text = "File";
+			this.Btn_File.Text = "文件";
 			// 
 			// Btn_CreateAccount
 			// 
 			this.Btn_CreateAccount.Name = "Btn_CreateAccount";
 			this.Btn_CreateAccount.Size = new System.Drawing.Size(156, 22);
-			this.Btn_CreateAccount.Text = "Create Account";
+			this.Btn_CreateAccount.Text = "创建账号";
 			this.Btn_CreateAccount.Click += new System.EventHandler(this.Btn_CreateAccount_Click);
 			// 
 			// toolStripSeparator2
@@ -969,7 +969,7 @@
 			// 
 			this.Btn_ServerStats.Name = "Btn_ServerStats";
 			this.Btn_ServerStats.Size = new System.Drawing.Size(156, 22);
-			this.Btn_ServerStats.Text = "Server Stats";
+			this.Btn_ServerStats.Text = "服务器统计";
 			this.Btn_ServerStats.Click += new System.EventHandler(this.Btn_ServerStats_Click);
 			// 
 			// toolStripSeparator5
@@ -981,7 +981,7 @@
 			// 
 			this.Btn_Exit.Name = "Btn_Exit";
 			this.Btn_Exit.Size = new System.Drawing.Size(156, 22);
-			this.Btn_Exit.Text = "Exit";
+			this.Btn_Exit.Text = "退出";
 			this.Btn_Exit.Click += new System.EventHandler(this.Btn_Exit_Click);
 			// 
 			// toolStripSeparator1
@@ -1003,7 +1003,7 @@
 			this.Btn_About.Margin = new System.Windows.Forms.Padding(10, 1, 10, 2);
 			this.Btn_About.Name = "Btn_About";
 			this.Btn_About.Size = new System.Drawing.Size(80, 20);
-			this.Btn_About.Text = "About";
+			this.Btn_About.Text = "关于";
 			this.Btn_About.Click += new System.EventHandler(this.Btn_About_Click);
 			// 
 			// Menu_Bar
@@ -1033,20 +1033,20 @@
 			this.Btn_DeleteAll.Margin = new System.Windows.Forms.Padding(10, 1, 10, 2);
 			this.Btn_DeleteAll.Name = "Btn_DeleteAll";
 			this.Btn_DeleteAll.Size = new System.Drawing.Size(76, 19);
-			this.Btn_DeleteAll.Text = "Delete ALL";
+			this.Btn_DeleteAll.Text = "删除全部";
 			// 
 			// Btn_DeleteAllChar
 			// 
 			this.Btn_DeleteAllChar.Name = "Btn_DeleteAllChar";
 			this.Btn_DeleteAllChar.Size = new System.Drawing.Size(183, 22);
-			this.Btn_DeleteAllChar.Text = "Delete All Characters";
+			this.Btn_DeleteAllChar.Text = "删除所有角色";
 			this.Btn_DeleteAllChar.Click += new System.EventHandler(this.Btn_DeleteAllChar_Click);
 			// 
 			// Btn_DeleteAllDB
 			// 
 			this.Btn_DeleteAllDB.Name = "Btn_DeleteAllDB";
 			this.Btn_DeleteAllDB.Size = new System.Drawing.Size(183, 22);
-			this.Btn_DeleteAllDB.Text = "Delete All DataBase";
+			this.Btn_DeleteAllDB.Text = "删除所有数据库";
 			this.Btn_DeleteAllDB.Click += new System.EventHandler(this.Btn_DeleteAllDB_Click);
 			// 
 			// Main
@@ -1064,7 +1064,7 @@
 			this.MaximizeBox = false;
 			this.Name = "Main";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Mu Online Editor";
+			this.Text = "奇迹在线编辑器";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Main_Close);
 			this.Load += new System.EventHandler(this.Main_Load);
 			this.Search_Box.ResumeLayout(false);

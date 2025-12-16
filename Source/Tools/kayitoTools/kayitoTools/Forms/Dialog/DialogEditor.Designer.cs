@@ -104,13 +104,13 @@ namespace kayitoTools.Forms
 			this.Load_Dialog_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Load_Dialog_Menu_Btn.Name = "Load_Dialog_Menu_Btn";
 			this.Load_Dialog_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Load_Dialog_Menu_Btn.Text = "LOAD";
+			this.Load_Dialog_Menu_Btn.Text = "加载";
 			// 
 			// loadDialogbmdToolStripMenuItem
 			// 
 			this.loadDialogbmdToolStripMenuItem.Name = "loadDialogbmdToolStripMenuItem";
 			this.loadDialogbmdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.loadDialogbmdToolStripMenuItem.Text = "Load Dialog.bmd";
+			this.loadDialogbmdToolStripMenuItem.Text = "加载 Dialog.bmd";
 			this.loadDialogbmdToolStripMenuItem.Click += new System.EventHandler(this.Load_Dialogbmd);
 			// 
 			// Save_Dialog_Menu_Btn
@@ -125,13 +125,13 @@ namespace kayitoTools.Forms
 			this.Save_Dialog_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Save_Dialog_Menu_Btn.Name = "Save_Dialog_Menu_Btn";
 			this.Save_Dialog_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Save_Dialog_Menu_Btn.Text = "SAVE";
+			this.Save_Dialog_Menu_Btn.Text = "保存";
 			// 
 			// saveDialogbmdToolStripMenuItem
 			// 
 			this.saveDialogbmdToolStripMenuItem.Name = "saveDialogbmdToolStripMenuItem";
 			this.saveDialogbmdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.saveDialogbmdToolStripMenuItem.Text = "Save Dialog.bmd";
+			this.saveDialogbmdToolStripMenuItem.Text = "保存 Dialog.bmd";
 			this.saveDialogbmdToolStripMenuItem.Click += new System.EventHandler(this.SaveDialogbmd_Click);
 			// 
 			// Dialog_List_Box
@@ -224,7 +224,7 @@ namespace kayitoTools.Forms
 			dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.DimGray;
 			dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.White;
 			this.Row_Col.DefaultCellStyle = dataGridViewCellStyle6;
-			this.Row_Col.HeaderText = "Row";
+			this.Row_Col.HeaderText = "行";
 			this.Row_Col.Name = "Row_Col";
 			this.Row_Col.ReadOnly = true;
 			this.Row_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -235,7 +235,7 @@ namespace kayitoTools.Forms
 			// NPCDialog_Col
 			// 
 			this.NPCDialog_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCDialog_Col.HeaderText = "NPC Dialog";
+			this.NPCDialog_Col.HeaderText = "NPC对话";
 			this.NPCDialog_Col.Name = "NPCDialog_Col";
 			this.NPCDialog_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.NPCDialog_Col.ToolTipText = "Message that the game will show";
@@ -244,28 +244,28 @@ namespace kayitoTools.Forms
 			// AnswersQuant_Col
 			// 
 			this.AnswersQuant_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.AnswersQuant_Col.HeaderText = "Answers Quantity";
+			this.AnswersQuant_Col.HeaderText = "回答数量";
 			this.AnswersQuant_Col.Name = "AnswersQuant_Col";
 			this.AnswersQuant_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCResponse1_Col
 			// 
 			this.NPCResponse1_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse1_Col.HeaderText = "NPC Response 1";
+			this.NPCResponse1_Col.HeaderText = "NPC回复1";
 			this.NPCResponse1_Col.Name = "NPCResponse1_Col";
 			this.NPCResponse1_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition1_Col
 			// 
 			this.NPCCondition1_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition1_Col.HeaderText = "NPC Condition 1";
+			this.NPCCondition1_Col.HeaderText = "NPC条件1";
 			this.NPCCondition1_Col.Name = "NPCCondition1_Col";
 			this.NPCCondition1_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse1_Col
 			// 
 			this.PlayerResponse1_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse1_Col.HeaderText = "Player Response 1";
+			this.PlayerResponse1_Col.HeaderText = "玩家回复1";
 			this.PlayerResponse1_Col.Name = "PlayerResponse1_Col";
 			this.PlayerResponse1_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse1_Col.Width = 300;
@@ -273,21 +273,21 @@ namespace kayitoTools.Forms
 			// NPCResponse2_Col
 			// 
 			this.NPCResponse2_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse2_Col.HeaderText = "NPC Response 2";
+			this.NPCResponse2_Col.HeaderText = "NPC回复2";
 			this.NPCResponse2_Col.Name = "NPCResponse2_Col";
 			this.NPCResponse2_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition2_Col
 			// 
 			this.NPCCondition2_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition2_Col.HeaderText = "NPC Condition 2";
+			this.NPCCondition2_Col.HeaderText = "NPC条件2";
 			this.NPCCondition2_Col.Name = "NPCCondition2_Col";
 			this.NPCCondition2_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse2_Col
 			// 
 			this.PlayerResponse2_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse2_Col.HeaderText = "Player Response 2";
+			this.PlayerResponse2_Col.HeaderText = "玩家回复2";
 			this.PlayerResponse2_Col.Name = "PlayerResponse2_Col";
 			this.PlayerResponse2_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse2_Col.Width = 300;
@@ -295,21 +295,21 @@ namespace kayitoTools.Forms
 			// NPCResponse3_Col
 			// 
 			this.NPCResponse3_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse3_Col.HeaderText = "NPC Response 3";
+			this.NPCResponse3_Col.HeaderText = "NPC回复3";
 			this.NPCResponse3_Col.Name = "NPCResponse3_Col";
 			this.NPCResponse3_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition3_Col
 			// 
 			this.NPCCondition3_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition3_Col.HeaderText = "NPC Condition 3";
+			this.NPCCondition3_Col.HeaderText = "NPC条件3";
 			this.NPCCondition3_Col.Name = "NPCCondition3_Col";
 			this.NPCCondition3_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse3_Col
 			// 
 			this.PlayerResponse3_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse3_Col.HeaderText = "Player Response 3";
+			this.PlayerResponse3_Col.HeaderText = "玩家回复3";
 			this.PlayerResponse3_Col.Name = "PlayerResponse3_Col";
 			this.PlayerResponse3_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse3_Col.Width = 300;
@@ -317,21 +317,21 @@ namespace kayitoTools.Forms
 			// NPCResponse4_Col
 			// 
 			this.NPCResponse4_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse4_Col.HeaderText = "NPC Response 4";
+			this.NPCResponse4_Col.HeaderText = "NPC回复4";
 			this.NPCResponse4_Col.Name = "NPCResponse4_Col";
 			this.NPCResponse4_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition4_Col
 			// 
 			this.NPCCondition4_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition4_Col.HeaderText = "NPC Condition 4";
+			this.NPCCondition4_Col.HeaderText = "NPC条件4";
 			this.NPCCondition4_Col.Name = "NPCCondition4_Col";
 			this.NPCCondition4_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse4_Col
 			// 
 			this.PlayerResponse4_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse4_Col.HeaderText = "Player Response 4";
+			this.PlayerResponse4_Col.HeaderText = "玩家回复4";
 			this.PlayerResponse4_Col.Name = "PlayerResponse4_Col";
 			this.PlayerResponse4_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse4_Col.Width = 300;
@@ -339,21 +339,21 @@ namespace kayitoTools.Forms
 			// NPCResponse5_Col
 			// 
 			this.NPCResponse5_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse5_Col.HeaderText = "NPC Response 5";
+			this.NPCResponse5_Col.HeaderText = "NPC回复5";
 			this.NPCResponse5_Col.Name = "NPCResponse5_Col";
 			this.NPCResponse5_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition5_Col
 			// 
 			this.NPCCondition5_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition5_Col.HeaderText = "NPC Condition 5";
+			this.NPCCondition5_Col.HeaderText = "NPC条件5";
 			this.NPCCondition5_Col.Name = "NPCCondition5_Col";
 			this.NPCCondition5_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse5_Col
 			// 
 			this.PlayerResponse5_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse5_Col.HeaderText = "Player Response 5";
+			this.PlayerResponse5_Col.HeaderText = "玩家回复5";
 			this.PlayerResponse5_Col.Name = "PlayerResponse5_Col";
 			this.PlayerResponse5_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse5_Col.Width = 300;
@@ -361,21 +361,21 @@ namespace kayitoTools.Forms
 			// NPCResponse6_Col
 			// 
 			this.NPCResponse6_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse6_Col.HeaderText = "NPC Response 6";
+			this.NPCResponse6_Col.HeaderText = "NPC回复6";
 			this.NPCResponse6_Col.Name = "NPCResponse6_Col";
 			this.NPCResponse6_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition6_Col
 			// 
 			this.NPCCondition6_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition6_Col.HeaderText = "NPC Condition 6";
+			this.NPCCondition6_Col.HeaderText = "NPC条件6";
 			this.NPCCondition6_Col.Name = "NPCCondition6_Col";
 			this.NPCCondition6_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse6_Col
 			// 
 			this.PlayerResponse6_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse6_Col.HeaderText = "Player Response 6";
+			this.PlayerResponse6_Col.HeaderText = "玩家回复6";
 			this.PlayerResponse6_Col.Name = "PlayerResponse6_Col";
 			this.PlayerResponse6_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse6_Col.Width = 300;
@@ -383,21 +383,21 @@ namespace kayitoTools.Forms
 			// NPCResponse7_Col
 			// 
 			this.NPCResponse7_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse7_Col.HeaderText = "NPC Response 7";
+			this.NPCResponse7_Col.HeaderText = "NPC回复7";
 			this.NPCResponse7_Col.Name = "NPCResponse7_Col";
 			this.NPCResponse7_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition7_Col
 			// 
 			this.NPCCondition7_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition7_Col.HeaderText = "NPC Condition 7";
+			this.NPCCondition7_Col.HeaderText = "NPC条件7";
 			this.NPCCondition7_Col.Name = "NPCCondition7_Col";
 			this.NPCCondition7_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse7_Col
 			// 
 			this.PlayerResponse7_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse7_Col.HeaderText = "Player Response 7";
+			this.PlayerResponse7_Col.HeaderText = "玩家回复7";
 			this.PlayerResponse7_Col.Name = "PlayerResponse7_Col";
 			this.PlayerResponse7_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse7_Col.Width = 300;
@@ -405,21 +405,21 @@ namespace kayitoTools.Forms
 			// NPCResponse8_Col
 			// 
 			this.NPCResponse8_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse8_Col.HeaderText = "NPC Response 8";
+			this.NPCResponse8_Col.HeaderText = "NPC回复8";
 			this.NPCResponse8_Col.Name = "NPCResponse8_Col";
 			this.NPCResponse8_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition8_Col
 			// 
 			this.NPCCondition8_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition8_Col.HeaderText = "NPC Condition 8";
+			this.NPCCondition8_Col.HeaderText = "NPC条件8";
 			this.NPCCondition8_Col.Name = "NPCCondition8_Col";
 			this.NPCCondition8_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse8_Col
 			// 
 			this.PlayerResponse8_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse8_Col.HeaderText = "Player Response 8";
+			this.PlayerResponse8_Col.HeaderText = "玩家回复8";
 			this.PlayerResponse8_Col.Name = "PlayerResponse8_Col";
 			this.PlayerResponse8_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse8_Col.Width = 300;
@@ -427,21 +427,21 @@ namespace kayitoTools.Forms
 			// NPCResponse9_Col
 			// 
 			this.NPCResponse9_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse9_Col.HeaderText = "NPC Response 9";
+			this.NPCResponse9_Col.HeaderText = "NPC回复9";
 			this.NPCResponse9_Col.Name = "NPCResponse9_Col";
 			this.NPCResponse9_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition9_Col
 			// 
 			this.NPCCondition9_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition9_Col.HeaderText = "NPC Condition 9";
+			this.NPCCondition9_Col.HeaderText = "NPC条件9";
 			this.NPCCondition9_Col.Name = "NPCCondition9_Col";
 			this.NPCCondition9_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse9_Col
 			// 
 			this.PlayerResponse9_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse9_Col.HeaderText = "Player Response 9";
+			this.PlayerResponse9_Col.HeaderText = "玩家回复9";
 			this.PlayerResponse9_Col.Name = "PlayerResponse9_Col";
 			this.PlayerResponse9_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse9_Col.Width = 300;
@@ -449,21 +449,21 @@ namespace kayitoTools.Forms
 			// NPCResponse10_Col
 			// 
 			this.NPCResponse10_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCResponse10_Col.HeaderText = "NPC Response 10";
+			this.NPCResponse10_Col.HeaderText = "NPC回复10";
 			this.NPCResponse10_Col.Name = "NPCResponse10_Col";
 			this.NPCResponse10_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// NPCCondition10_Col
 			// 
 			this.NPCCondition10_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.NPCCondition10_Col.HeaderText = "NPC Condition 10";
+			this.NPCCondition10_Col.HeaderText = "NPC条件10";
 			this.NPCCondition10_Col.Name = "NPCCondition10_Col";
 			this.NPCCondition10_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// PlayerResponse10_Col
 			// 
 			this.PlayerResponse10_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.PlayerResponse10_Col.HeaderText = "Player Response 10";
+			this.PlayerResponse10_Col.HeaderText = "玩家回复10";
 			this.PlayerResponse10_Col.Name = "PlayerResponse10_Col";
 			this.PlayerResponse10_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.PlayerResponse10_Col.Width = 300;
@@ -485,7 +485,7 @@ namespace kayitoTools.Forms
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "DialogEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "DialogEditor";
+			this.Text = "对话编辑器";
 			this.Load += new System.EventHandler(this.DialogEditor_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();

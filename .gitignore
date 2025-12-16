@@ -1,0 +1,17 @@
+# NuGet
+.nuget/nuget.exe
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# User-specific files
+*.rsuser
+*.sln.docstates.suo

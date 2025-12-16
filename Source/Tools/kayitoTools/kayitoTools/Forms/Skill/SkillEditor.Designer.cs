@@ -90,20 +90,20 @@ namespace kayitoTools.Forms
 			this.Load_Skill_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Load_Skill_Menu_Btn.Name = "Load_Skill_Menu_Btn";
 			this.Load_Skill_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Load_Skill_Menu_Btn.Text = "LOAD";
+			this.Load_Skill_Menu_Btn.Text = "加载";
 			// 
 			// loadSkilltxtToolStripMenuItem
 			// 
 			this.loadSkilltxtToolStripMenuItem.Name = "loadSkilltxtToolStripMenuItem";
 			this.loadSkilltxtToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.loadSkilltxtToolStripMenuItem.Text = "Load Skill.txt";
+			this.loadSkilltxtToolStripMenuItem.Text = "加载 Skill.txt";
 			this.loadSkilltxtToolStripMenuItem.Click += new System.EventHandler(this.LoadSkilltxt_Click);
 			// 
 			// loadSkillbmdToolStripMenuItem
 			// 
 			this.loadSkillbmdToolStripMenuItem.Name = "loadSkillbmdToolStripMenuItem";
 			this.loadSkillbmdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.loadSkillbmdToolStripMenuItem.Text = "Load Skill.bmd";
+			this.loadSkillbmdToolStripMenuItem.Text = "加载 Skill.bmd";
 			this.loadSkillbmdToolStripMenuItem.Click += new System.EventHandler(this.LoadSkillbmd_Click);
 			// 
 			// Save_Skill_Menu_Btn
@@ -119,20 +119,20 @@ namespace kayitoTools.Forms
 			this.Save_Skill_Menu_Btn.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
 			this.Save_Skill_Menu_Btn.Name = "Save_Skill_Menu_Btn";
 			this.Save_Skill_Menu_Btn.Size = new System.Drawing.Size(130, 22);
-			this.Save_Skill_Menu_Btn.Text = "SAVE";
+			this.Save_Skill_Menu_Btn.Text = "保存";
 			// 
 			// saveSkilltxtToolStripMenuItem
 			// 
 			this.saveSkilltxtToolStripMenuItem.Name = "saveSkilltxtToolStripMenuItem";
 			this.saveSkilltxtToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.saveSkilltxtToolStripMenuItem.Text = "Save Skill.txt";
+			this.saveSkilltxtToolStripMenuItem.Text = "保存 Skill.txt";
 			this.saveSkilltxtToolStripMenuItem.Click += new System.EventHandler(this.SaveSkilltxt_Click);
 			// 
 			// saveSkillbmdToolStripMenuItem
 			// 
 			this.saveSkillbmdToolStripMenuItem.Name = "saveSkillbmdToolStripMenuItem";
 			this.saveSkillbmdToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.saveSkillbmdToolStripMenuItem.Text = "Save Skill.bmd";
+			this.saveSkillbmdToolStripMenuItem.Text = "保存 Skill.bmd";
 			this.saveSkillbmdToolStripMenuItem.Click += new System.EventHandler(this.SaveSkillbmd_Click);
 			// 
 			// Skill_List_Box
@@ -209,7 +209,7 @@ namespace kayitoTools.Forms
 			// Index_Col
 			// 
 			this.Index_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Index_Col.HeaderText = "Index";
+			this.Index_Col.HeaderText = "索引";
 			this.Index_Col.Name = "Index_Col";
 			this.Index_Col.ReadOnly = true;
 			this.Index_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -220,7 +220,7 @@ namespace kayitoTools.Forms
 			// Name_Col
 			// 
 			this.Name_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Name_Col.HeaderText = "Name";
+			this.Name_Col.HeaderText = "名称";
 			this.Name_Col.Name = "Name_Col";
 			this.Name_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.Name_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -230,7 +230,7 @@ namespace kayitoTools.Forms
 			// Damage_Col
 			// 
 			this.Damage_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Damage_Col.HeaderText = "Damage";
+			this.Damage_Col.HeaderText = "伤害";
 			this.Damage_Col.Name = "Damage_Col";
 			this.Damage_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.Damage_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -240,7 +240,7 @@ namespace kayitoTools.Forms
 			// Mana_Col
 			// 
 			this.Mana_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Mana_Col.HeaderText = "MP";
+			this.Mana_Col.HeaderText = "魔法";
 			this.Mana_Col.Name = "Mana_Col";
 			this.Mana_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.Mana_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -260,7 +260,7 @@ namespace kayitoTools.Forms
 			// Range_Col
 			// 
 			this.Range_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Range_Col.HeaderText = "Range";
+			this.Range_Col.HeaderText = "距离";
 			this.Range_Col.Name = "Range_Col";
 			this.Range_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.Range_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -270,7 +270,7 @@ namespace kayitoTools.Forms
 			// Radio_Col
 			// 
 			this.Radio_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Radio_Col.HeaderText = "Radio";
+			this.Radio_Col.HeaderText = "范围";
 			this.Radio_Col.Name = "Radio_Col";
 			this.Radio_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.Radio_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -280,7 +280,7 @@ namespace kayitoTools.Forms
 			// Delay_Col
 			// 
 			this.Delay_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Delay_Col.HeaderText = "Delay";
+			this.Delay_Col.HeaderText = "延迟";
 			this.Delay_Col.Name = "Delay_Col";
 			this.Delay_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.Delay_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -290,7 +290,7 @@ namespace kayitoTools.Forms
 			// Attribute_Col
 			// 
 			this.Attribute_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Attribute_Col.HeaderText = "Attribute";
+			this.Attribute_Col.HeaderText = "属性";
 			this.Attribute_Col.Name = "Attribute_Col";
 			this.Attribute_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.Attribute_Col.ToolTipText = "-1 = None / 0 = Ice / 1 = Poison / 2 = Lightning / 3 = Fire / 4 = Earth / 5 = Win" +
@@ -300,7 +300,7 @@ namespace kayitoTools.Forms
 			// Effect_Col
 			// 
 			this.Effect_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.Effect_Col.HeaderText = "Effect";
+			this.Effect_Col.HeaderText = "效果";
 			this.Effect_Col.Name = "Effect_Col";
 			this.Effect_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.Effect_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -310,7 +310,7 @@ namespace kayitoTools.Forms
 			// RequireLevel_Col
 			// 
 			this.RequireLevel_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.RequireLevel_Col.HeaderText = "Require Level";
+			this.RequireLevel_Col.HeaderText = "需求等级";
 			this.RequireLevel_Col.Name = "RequireLevel_Col";
 			this.RequireLevel_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.RequireLevel_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -320,7 +320,7 @@ namespace kayitoTools.Forms
 			// RequireEnergy_Col
 			// 
 			this.RequireEnergy_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.RequireEnergy_Col.HeaderText = "Require Energy";
+			this.RequireEnergy_Col.HeaderText = "需求智力";
 			this.RequireEnergy_Col.Name = "RequireEnergy_Col";
 			this.RequireEnergy_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.RequireEnergy_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -330,7 +330,7 @@ namespace kayitoTools.Forms
 			// RequireDW_Col
 			// 
 			this.RequireDW_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.RequireDW_Col.HeaderText = "Require DW";
+			this.RequireDW_Col.HeaderText = "需求法师";
 			this.RequireDW_Col.Name = "RequireDW_Col";
 			this.RequireDW_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.RequireDW_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -341,7 +341,7 @@ namespace kayitoTools.Forms
 			// RequireDK_Col
 			// 
 			this.RequireDK_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.RequireDK_Col.HeaderText = "Require DK";
+			this.RequireDK_Col.HeaderText = "需求战士";
 			this.RequireDK_Col.Name = "RequireDK_Col";
 			this.RequireDK_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.RequireDK_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -352,7 +352,7 @@ namespace kayitoTools.Forms
 			// RequireELF_Col
 			// 
 			this.RequireELF_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.RequireELF_Col.HeaderText = "Require ELF";
+			this.RequireELF_Col.HeaderText = "需求弓手";
 			this.RequireELF_Col.Name = "RequireELF_Col";
 			this.RequireELF_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.RequireELF_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -363,7 +363,7 @@ namespace kayitoTools.Forms
 			// RequireMG_Col
 			// 
 			this.RequireMG_Col.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-			this.RequireMG_Col.HeaderText = "Require MG";
+			this.RequireMG_Col.HeaderText = "需求魔剑";
 			this.RequireMG_Col.Name = "RequireMG_Col";
 			this.RequireMG_Col.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.RequireMG_Col.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -384,7 +384,7 @@ namespace kayitoTools.Forms
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "SkillEditor";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Skill Manager";
+			this.Text = "技能管理器";
 			this.Load += new System.EventHandler(this.SkillEditor_Load);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();

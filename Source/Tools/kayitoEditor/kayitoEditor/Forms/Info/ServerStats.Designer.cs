@@ -75,12 +75,12 @@
 			// 
 			// Class
 			// 
-			this.Class.Text = "Class";
+			this.Class.Text = "职业";
 			this.Class.Width = 135;
 			// 
 			// Rate
 			// 
-			this.Rate.Text = "Rate (Quant)";
+			this.Rate.Text = "比例(数量)";
 			this.Rate.Width = 90;
 			// 
 			// Onlines_Cant
@@ -124,7 +124,7 @@
 			this.Onlines_txt.Name = "Onlines_txt";
 			this.Onlines_txt.Size = new System.Drawing.Size(64, 17);
 			this.Onlines_txt.TabIndex = 3;
-			this.Onlines_txt.Text = "Online:";
+			this.Onlines_txt.Text = "在线:";
 			// 
 			// Characters_txt
 			// 
@@ -134,7 +134,7 @@
 			this.Characters_txt.Name = "Characters_txt";
 			this.Characters_txt.Size = new System.Drawing.Size(96, 17);
 			this.Characters_txt.TabIndex = 2;
-			this.Characters_txt.Text = "Characters:";
+			this.Characters_txt.Text = "角色数:";
 			// 
 			// Accounts_txt
 			// 
@@ -144,7 +144,7 @@
 			this.Accounts_txt.Name = "Accounts_txt";
 			this.Accounts_txt.Size = new System.Drawing.Size(80, 17);
 			this.Accounts_txt.TabIndex = 1;
-			this.Accounts_txt.Text = "Accounts:";
+			this.Accounts_txt.Text = "账号数:";
 			// 
 			// ServerStats
 			// 
@@ -157,7 +157,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ServerStats";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Server Statistics";
+			this.Text = "服务器统计";
 			this.Load += new System.EventHandler(this.ServerStats_Load);
 			this.ServerStats_Box.ResumeLayout(false);
 			this.ServerStats_Box.PerformLayout();

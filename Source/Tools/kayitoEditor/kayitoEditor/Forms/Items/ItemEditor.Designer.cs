@@ -80,7 +80,7 @@ namespace kayito_Editor.Forms
 			this.Item_Info_Box.Size = new System.Drawing.Size(237, 539);
 			this.Item_Info_Box.TabIndex = 4;
 			this.Item_Info_Box.TabStop = false;
-			this.Item_Info_Box.Text = "Item Information";
+			this.Item_Info_Box.Text = "物品信息";
 			// 
 			// Excellent_Options_Box
 			// 
@@ -97,7 +97,7 @@ namespace kayito_Editor.Forms
 			this.Excellent_Options_Box.Size = new System.Drawing.Size(225, 244);
 			this.Excellent_Options_Box.TabIndex = 39;
 			this.Excellent_Options_Box.TabStop = false;
-			this.Excellent_Options_Box.Text = "Excellent Options";
+			this.Excellent_Options_Box.Text = "卓越属性";
 			// 
 			// Btn_Excellent_Not
 			// 
@@ -106,7 +106,7 @@ namespace kayito_Editor.Forms
 			this.Btn_Excellent_Not.Name = "Btn_Excellent_Not";
 			this.Btn_Excellent_Not.Size = new System.Drawing.Size(75, 23);
 			this.Btn_Excellent_Not.TabIndex = 15;
-			this.Btn_Excellent_Not.Text = "Unselect All";
+			this.Btn_Excellent_Not.Text = "取消全选";
 			this.Btn_Excellent_Not.UseVisualStyleBackColor = true;
 			this.Btn_Excellent_Not.Click += new System.EventHandler(this.Btn_Excellent_Unselect_All);
 			// 
@@ -117,7 +117,7 @@ namespace kayito_Editor.Forms
 			this.Btn_Excellent_All.Name = "Btn_Excellent_All";
 			this.Btn_Excellent_All.Size = new System.Drawing.Size(75, 23);
 			this.Btn_Excellent_All.TabIndex = 14;
-			this.Btn_Excellent_All.Text = "Select All";
+			this.Btn_Excellent_All.Text = "全选";
 			this.Btn_Excellent_All.UseVisualStyleBackColor = true;
 			this.Btn_Excellent_All.Click += new System.EventHandler(this.Btn_Excellent_Select_All);
 			// 
@@ -130,7 +130,7 @@ namespace kayito_Editor.Forms
 			this.Excellent6_Box.Name = "Excellent6_Box";
 			this.Excellent6_Box.Size = new System.Drawing.Size(59, 16);
 			this.Excellent6_Box.TabIndex = 13;
-			this.Excellent6_Box.Text = "No Info";
+			this.Excellent6_Box.Text = "无信息";
 			this.Excellent6_Box.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.Excellent6_Box.UseVisualStyleBackColor = true;
 			// 
@@ -143,7 +143,7 @@ namespace kayito_Editor.Forms
 			this.Excellent5_Box.Name = "Excellent5_Box";
 			this.Excellent5_Box.Size = new System.Drawing.Size(59, 16);
 			this.Excellent5_Box.TabIndex = 12;
-			this.Excellent5_Box.Text = "No Info";
+			this.Excellent5_Box.Text = "无信息";
 			this.Excellent5_Box.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.Excellent5_Box.UseVisualStyleBackColor = true;
 			// 
@@ -156,7 +156,7 @@ namespace kayito_Editor.Forms
 			this.Excellent4_Box.Name = "Excellent4_Box";
 			this.Excellent4_Box.Size = new System.Drawing.Size(59, 16);
 			this.Excellent4_Box.TabIndex = 11;
-			this.Excellent4_Box.Text = "No Info";
+			this.Excellent4_Box.Text = "无信息";
 			this.Excellent4_Box.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.Excellent4_Box.UseVisualStyleBackColor = true;
 			// 
@@ -169,7 +169,7 @@ namespace kayito_Editor.Forms
 			this.Excellent3_Box.Name = "Excellent3_Box";
 			this.Excellent3_Box.Size = new System.Drawing.Size(59, 16);
 			this.Excellent3_Box.TabIndex = 10;
-			this.Excellent3_Box.Text = "No Info";
+			this.Excellent3_Box.Text = "无信息";
 			this.Excellent3_Box.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.Excellent3_Box.UseVisualStyleBackColor = true;
 			// 
@@ -182,7 +182,7 @@ namespace kayito_Editor.Forms
 			this.Excellent2_Box.Name = "Excellent2_Box";
 			this.Excellent2_Box.Size = new System.Drawing.Size(59, 16);
 			this.Excellent2_Box.TabIndex = 9;
-			this.Excellent2_Box.Text = "No Info";
+			this.Excellent2_Box.Text = "无信息";
 			this.Excellent2_Box.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.Excellent2_Box.UseVisualStyleBackColor = true;
 			// 
@@ -196,7 +196,7 @@ namespace kayito_Editor.Forms
 			this.Excellent1_Box.Name = "Excellent1_Box";
 			this.Excellent1_Box.Size = new System.Drawing.Size(59, 16);
 			this.Excellent1_Box.TabIndex = 8;
-			this.Excellent1_Box.Text = "No Info";
+			this.Excellent1_Box.Text = "无信息";
 			this.Excellent1_Box.TextAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.Excellent1_Box.UseVisualStyleBackColor = true;
 			// 
@@ -210,7 +210,7 @@ namespace kayito_Editor.Forms
 			this.Luck_Box.Name = "Luck_Box";
 			this.Luck_Box.Size = new System.Drawing.Size(73, 23);
 			this.Luck_Box.TabIndex = 7;
-			this.Luck_Box.Text = "Luck:";
+			this.Luck_Box.Text = "幸运:";
 			this.Luck_Box.UseVisualStyleBackColor = true;
 			// 
 			// Skill_Box
@@ -223,7 +223,7 @@ namespace kayito_Editor.Forms
 			this.Skill_Box.Name = "Skill_Box";
 			this.Skill_Box.Size = new System.Drawing.Size(82, 23);
 			this.Skill_Box.TabIndex = 5;
-			this.Skill_Box.Text = "Skill:";
+			this.Skill_Box.Text = "技能:";
 			this.Skill_Box.UseVisualStyleBackColor = true;
 			// 
 			// Durability_txt
@@ -234,7 +234,7 @@ namespace kayito_Editor.Forms
 			this.Durability_txt.Name = "Durability_txt";
 			this.Durability_txt.Size = new System.Drawing.Size(56, 17);
 			this.Durability_txt.TabIndex = 32;
-			this.Durability_txt.Text = "Durab:";
+			this.Durability_txt.Text = "耐久:";
 			// 
 			// Durability_Box
 			// 
@@ -296,7 +296,7 @@ namespace kayito_Editor.Forms
 			this.Option_txt.Name = "Option_txt";
 			this.Option_txt.Size = new System.Drawing.Size(64, 17);
 			this.Option_txt.TabIndex = 28;
-			this.Option_txt.Text = "Option:";
+			this.Option_txt.Text = "追加:";
 			// 
 			// Level_txt
 			// 
@@ -306,7 +306,7 @@ namespace kayito_Editor.Forms
 			this.Level_txt.Name = "Level_txt";
 			this.Level_txt.Size = new System.Drawing.Size(56, 17);
 			this.Level_txt.TabIndex = 26;
-			this.Level_txt.Text = "Level:";
+			this.Level_txt.Text = "等级:";
 			// 
 			// Item_Box
 			// 
@@ -330,7 +330,7 @@ namespace kayito_Editor.Forms
 			this.Item_txt.Name = "Item_txt";
 			this.Item_txt.Size = new System.Drawing.Size(48, 17);
 			this.Item_txt.TabIndex = 22;
-			this.Item_txt.Text = "Item:";
+			this.Item_txt.Text = "物品:";
 			// 
 			// Section_box
 			// 
@@ -354,7 +354,7 @@ namespace kayito_Editor.Forms
 			this.Section_txt.Name = "Section_txt";
 			this.Section_txt.Size = new System.Drawing.Size(72, 17);
 			this.Section_txt.TabIndex = 20;
-			this.Section_txt.Text = "Section:";
+			this.Section_txt.Text = "分类:";
 			// 
 			// ItemEditor
 			// 
