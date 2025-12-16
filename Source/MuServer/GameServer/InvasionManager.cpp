@@ -637,7 +637,7 @@ void CInvasionManager::SetMonster(INVASION_INFO* lpInfo, INVASION_RESPWAN_INFO* 
 
 		if (lpObj->Class == lpInfo->BossIndex)
 		{
-			LogAdd(LOG_EVENT, "[入侵管理器] (%s) Boss位置 (地图: %d, X: %d, Y: %d", lpInfo->InvasionName, lpObj->Map, lpObj->X, lpObj->Y);
+			LogAdd(LOG_EVENT, "[入侵管理器] (%s) Boss位置 (地图: %d, X: %d, Y: %d)", lpInfo->InvasionName, lpObj->Map, lpObj->X, lpObj->Y);
 		}
 
 		if (gServerInfo.m_FlyingDragonsOnlyBossMapSpawn != 0)
