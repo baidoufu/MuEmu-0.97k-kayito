@@ -319,7 +319,7 @@ void DGCharacterListRecv(SDHP_CHARACTER_LIST_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGCharacterListRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGCharacterListRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -516,7 +516,7 @@ void DGCharacterCreateRecv(SDHP_CHARACTER_CREATE_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGCharacterCreateRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGCharacterCreateRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -578,7 +578,7 @@ void DGCharacterDeleteRecv(SDHP_CHARACTER_DELETE_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGCharacterDeleteRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGCharacterDeleteRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -618,7 +618,7 @@ void DGCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGCharacterInfoRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGCharacterInfoRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -897,7 +897,7 @@ void DGCreateItemRecv(SDHP_CREATE_ITEM_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGCreateItemRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGCreateItemRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -1018,7 +1018,7 @@ void DGOptionDataRecv(SDHP_OPTION_DATA_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGOptionDataRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGOptionDataRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -1168,7 +1168,7 @@ void DGGlobalWhisperRecv(SDHP_GLOBAL_WHISPER_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGGlobalWhisperRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGGlobalWhisperRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -1191,7 +1191,7 @@ void DGGlobalWhisperEchoRecv(SDHP_GLOBAL_WHISPER_ECHO_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[DGGlobalWhisperEchoRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[DGGlobalWhisperEchoRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 

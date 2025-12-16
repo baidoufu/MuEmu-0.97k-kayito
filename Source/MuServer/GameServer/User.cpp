@@ -232,10 +232,10 @@ void gObjSetExperienceTable()
 {
 	memset(gLevelExperience, 0, sizeof(gLevelExperience));
 
-	// Par�metros ajustables
-	double maxExperience = DWORD_MAX * 0.95; // Aproximar al m�ximo seguro
+	// Par�metros ajustables
+	double maxExperience = DWORD_MAX * 0.95; // Aproximar al m�ximo seguro
 
-	// Ajustar el multiplicador din�micamente
+	// Ajustar el multiplicador din�micamente
 	double scaleFactor = maxExperience / pow(gServerInfo.m_MaxCharacterLevel, 3);
 
 	for (int level = 1; level <= gServerInfo.m_MaxCharacterLevel; level++)
@@ -2372,7 +2372,7 @@ void gObjSecondProc()
 
 			if (lpObj->CheckSumTime > 0 && GetTickCount() - lpObj->CheckSumTime > 5000)
 			{
-				LogAdd(LOG_BLACK, "[%s][%s] CheckSumTime Error", lpObj->Account, lpObj->Name);
+				LogAdd(LOG_BLACK, "[%s][%s] 校验时间错误", lpObj->Account, lpObj->Name);
 
 				GCCloseClientSend(n, 0);
 			}
@@ -2394,7 +2394,7 @@ void gObjSecondProc()
 					{
 						CloseClient(n);
 
-						LogAdd(LOG_BLACK, "Game response error causes conclusion [%d][%s][%s][%s]", lpObj->Index, lpObj->Account, lpObj->Name, lpObj->IpAddr);
+						LogAdd(LOG_BLACK, "游戏响应错误导致断开连接 [%d][%s][%s][%s]", lpObj->Index, lpObj->Account, lpObj->Name, lpObj->IpAddr);
 					}
 				}
 				else
@@ -2403,7 +2403,7 @@ void gObjSecondProc()
 					{
 						CloseClient(n);
 
-						LogAdd(LOG_BLACK, "Response error after connection causes conclusion [%d][%s][%s][%s]", lpObj->Index, lpObj->Account, lpObj->Name, lpObj->IpAddr);
+						LogAdd(LOG_BLACK, "连接后响应错误导致断开连接 [%d][%s][%s][%s]", lpObj->Index, lpObj->Account, lpObj->Name, lpObj->IpAddr);
 					}
 				}
 			}
@@ -2747,7 +2747,7 @@ void gObjCheckSelfDefense(LPOBJ lpObj, int aTargetIndex)
 
 	gNotice.GCNoticeSend(lpObj->Index, 1, szTemp);
 
-	LogAdd(LOG_BLACK, "[%s][%s] Set SelfDefence [%s][%s]", lpObj->Account, lpObj->Name, gObj[aTargetIndex].Account, gObj[aTargetIndex].Name);
+	LogAdd(LOG_BLACK, "[%s][%s] 设置自卫模式 [%s][%s]", lpObj->Account, lpObj->Name, gObj[aTargetIndex].Account, gObj[aTargetIndex].Name);
 }
 
 void gObjTimeCheckSelfDefense(LPOBJ lpObj)
@@ -2766,7 +2766,7 @@ void gObjTimeCheckSelfDefense(LPOBJ lpObj)
 
 				gNotice.GCNoticeSend(lpObj->SelfDefense[n], 1, szTemp);
 
-				LogAdd(LOG_BLACK, "[%s][%s] ReSet SelfDefence [%s][%s]", lpObj->Account, lpObj->Name, gObj[lpObj->SelfDefense[n]].Account, gObj[lpObj->SelfDefense[n]].Name);
+				LogAdd(LOG_BLACK, "[%s][%s] 重置自卫模式 [%s][%s]", lpObj->Account, lpObj->Name, gObj[lpObj->SelfDefense[n]].Account, gObj[lpObj->SelfDefense[n]].Name);
 
 				lpObj->SelfDefense[n] = -1;
 			}

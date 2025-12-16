@@ -61,7 +61,7 @@ int main()
 	{
 		if (gSocketManager.Start((WORD)gServerInfo.m_ServerPort) == 0)
 		{
-			LogAdd(LOG_RED, "Could not start GameServer");
+			LogAdd(LOG_RED, "无法启动游戏服务器");
 		}
 		else
 		{
@@ -94,7 +94,7 @@ int main()
 	}
 	else
 	{
-		LogAdd(LOG_RED, "WSAStartup() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "WSAStartup() 失败, 错误码: %d", WSAGetLastError());
 	}
 
 	MSG msg;

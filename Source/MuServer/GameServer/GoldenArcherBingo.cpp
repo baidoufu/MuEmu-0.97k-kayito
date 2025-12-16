@@ -304,7 +304,7 @@ void CGoldenArcherBingo::ProcState_STAND()
 	{
 		if (this->m_GoldenArcherBingoWinners.empty())
 		{
-			LogAdd(LOG_EVENT, "[Bingo] There were no winners");
+			LogAdd(LOG_EVENT, "[Bingo] 没有获胜者");
 
 			gNotice.GCNoticeSendToAll(0, 31, this->m_GoldenArcherBingoInfo.EventName);
 
@@ -388,7 +388,7 @@ void CGoldenArcherBingo::SetState(int state)
 
 void CGoldenArcherBingo::SetState_BLANK()
 {
-	LogAdd(LOG_EVENT, "[Bingo] SetState BLANK");
+	LogAdd(LOG_EVENT, "[Bingo] 设置状态为 空白");
 }
 
 void CGoldenArcherBingo::SetState_EMPTY()
@@ -408,7 +408,7 @@ void CGoldenArcherBingo::SetState_EMPTY()
 
 	this->CheckSync();
 
-	LogAdd(LOG_EVENT, "[Bingo] SetState EMPTY");
+	LogAdd(LOG_EVENT, "[Bingo] 设置状态为 空闲");
 }
 
 void CGoldenArcherBingo::SetState_STAND()
@@ -425,7 +425,7 @@ void CGoldenArcherBingo::SetState_STAND()
 
 	this->m_TargetTime = (int)(time(0) + this->m_RemainTime);
 
-	LogAdd(LOG_EVENT, "[Bingo] SetState STAND");
+	LogAdd(LOG_EVENT, "[Bingo] 设置状态为 等待");
 }
 
 void CGoldenArcherBingo::SetState_START()
@@ -449,7 +449,7 @@ void CGoldenArcherBingo::SetState_START()
 
 	this->m_TargetTime = (int)(time(0) + this->m_RemainTime);
 
-	LogAdd(LOG_EVENT, "[Bingo] SetState START");
+	LogAdd(LOG_EVENT, "[Bingo] 设置状态为 开始");
 }
 
 void CGoldenArcherBingo::SetState_CLEAN()
@@ -478,7 +478,7 @@ void CGoldenArcherBingo::SetState_CLEAN()
 
 	this->m_TargetTime = (int)(time(0) + this->m_RemainTime);
 
-	LogAdd(LOG_EVENT, "[Bingo] SetState CLEAN");
+	LogAdd(LOG_EVENT, "[Bingo] 设置状态为 清理");
 }
 
 void CGoldenArcherBingo::CheckSync()
@@ -510,7 +510,7 @@ void CGoldenArcherBingo::CheckSync()
 
 	this->m_TargetTime = (int)ScheduleTime.GetTime();
 
-	LogAdd(LOG_EVENT, "[Bingo] Sync Start Time. [%d] min remain", (this->m_RemainTime / 60));
+	LogAdd(LOG_EVENT, "[Bingo] 同步开始时间. 剩余 [%d] 分钟", (this->m_RemainTime / 60));
 }
 
 void CGoldenArcherBingo::SetGoldenArcher()
@@ -590,11 +590,11 @@ void CGoldenArcherBingo::DGBingoClearRegisteredRecv(SDHP_BINGO_CLEAR_REGISTERED_
 {
 	if (lpMsg->result == 0)
 	{
-		LogAdd(LOG_EVENT, "[Bingo] Cleared all registered Lucky Numbers");
+		LogAdd(LOG_EVENT, "[Bingo] 已清除所有已注册的幸运号码");
 	}
 	else
 	{
-		LogAdd(LOG_EVENT, "[Bingo] Error while cleaning registered Lucky Numbers");
+		LogAdd(LOG_EVENT, "[Bingo] 清除已注册幸运号码时出错");
 	}
 
 	this->m_WaitForDSResponse = false;
@@ -637,7 +637,7 @@ void CGoldenArcherBingo::StartGoldenArcherBingo()
 
 	this->m_GoldenArcherBingoStartTime.push_back(info);
 
-	LogAdd(LOG_EVENT, "[Set %s Start] At %2d:%2d:00", this->m_GoldenArcherBingoInfo.EventName, hour, minute);
+	LogAdd(LOG_EVENT, "[设置 %s 开始] 时间 %2d:%2d:00", this->m_GoldenArcherBingoInfo.EventName, hour, minute);
 
 	this->Init();
 }

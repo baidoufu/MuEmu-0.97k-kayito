@@ -96,7 +96,7 @@ void CQueryManager::Diagnostic(char* query)
 
 	while (SQLGetDiagRec(SQL_HANDLE_STMT, this->m_STMT, (RecNumber++), SqlState, &NativeError, MessageText, sizeof(MessageText), &BufferLength) != SQL_NO_DATA)
 	{
-		LogAdd(LOG_RED, "[QueryManager] State (%s), Diagnostic: %s", SqlState, MessageText);
+		LogAdd(LOG_RED, "[QueryManager] 状态 (%s), 诊断信息: %s", SqlState, MessageText);
 	}
 
 	if (strcmp((char*)SqlState, "08S01") == 0)
@@ -383,7 +383,7 @@ bool CQueryManager::Connect()
 	}
 	catch (sql::SQLException e)
 	{
-		LogAdd(LOG_RED, "[QueryManager] Connection to DataBase failed: %s", e.what());
+		LogAdd(LOG_RED, "[QueryManager] 连接数据库失败: %s", e.what());
 
 		return false;
 	}
@@ -440,7 +440,7 @@ bool CQueryManager::ExecPreparedUpdateQuery()
 	}
 	catch (...)
 	{
-		LogAdd(LOG_RED, "[ExecPreparedUpdateQuery] Exception thrown");
+		LogAdd(LOG_RED, "[ExecPreparedUpdateQuery] 抛出异常");
 
 		return false;
 	}
@@ -473,7 +473,7 @@ bool CQueryManager::ExecPreparedResultQuery()
 	}
 	catch (...)
 	{
-		LogAdd(LOG_RED, "[ExecPreparedResultQuery] Exception thrown");
+		LogAdd(LOG_RED, "[ExecPreparedResultQuery] 抛出异常");
 
 		return false;
 	}
@@ -509,7 +509,7 @@ bool CQueryManager::ExecUpdateQuery(std::string query, ...)
 	}
 	catch (...)
 	{
-		LogAdd(LOG_RED, "[ExecUpdateQuery] Exception thrown");
+		LogAdd(LOG_RED, "[ExecUpdateQuery] 抛出异常");
 
 		return false;
 	}
@@ -554,7 +554,7 @@ bool CQueryManager::ExecResultQuery(std::string query, ...)
 	}
 	catch (...)
 	{
-		LogAdd(LOG_RED, "[ExecResultQuery] Exception thrown");
+		LogAdd(LOG_RED, "[ExecResultQuery] 抛出异常");
 
 		return false;
 	}
@@ -601,7 +601,7 @@ bool CQueryManager::ExecQuery(std::string query, ...)
 	}
 	catch (...)
 	{
-		LogAdd(LOG_RED, "[ExecQuery] Exception thrown");
+		LogAdd(LOG_RED, "[ExecQuery] 抛出异常");
 
 		return false;
 	}
@@ -618,7 +618,7 @@ void CQueryManager::Diagnostic(sql::SQLException& e, char* Query)
 
 	std::string SqlState = e.getSQLState();
 
-	LogAdd(LOG_RED, "[QueryManager] State (%s), Diagnostic: %s", SqlState.c_str(), e.what());
+	LogAdd(LOG_RED, "[QueryManager] 状态 (%s), 诊断信息: %s", SqlState.c_str(), e.what());
 
 	if (SqlState.compare("HY000") == 0)
 	{

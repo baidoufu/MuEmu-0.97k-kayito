@@ -90,7 +90,7 @@ void CServerList::Load(char* path)
 
 	delete lpReadScript;
 
-	LogAdd(LOG_BLUE, "[ServerList] ServerList loaded successfully");
+	LogAdd(LOG_BLUE, "[ServerList] 服务器列表加载成功");
 }
 
 void CServerList::MainProc()
@@ -101,7 +101,7 @@ void CServerList::MainProc()
 
 		this->m_JoinServerStateTime = 0;
 
-		LogAdd(LOG_RED, "[ServerList] JoinServer offline");
+		LogAdd(LOG_RED, "[ServerList] 登录服务器离线");
 	}
 
 	for (std::map<int, SERVER_LIST_INFO>::iterator it = this->m_ServerListInfo.begin(); it != this->m_ServerListInfo.end(); it++)
@@ -112,7 +112,7 @@ void CServerList::MainProc()
 
 			it->second.ServerStateTime = 0;
 
-			LogAdd(LOG_BLACK, "[ServerList] GameServer offline (%s) (%d)", it->second.ServerName, it->second.ServerCode);
+			LogAdd(LOG_BLACK, "[ServerList] 游戏服务器离线 (%s) (%d)", it->second.ServerName, it->second.ServerCode);
 		}
 	}
 }
@@ -233,7 +233,7 @@ void CServerList::GCGameServerLiveRecv(SDHP_GAME_SERVER_LIVE_RECV* lpMsg)
 
 	if (lpServerListInfo->ServerState == false)
 	{
-		LogAdd(LOG_BLACK, "[ServerList] GameServer online (%s) (%d)", lpServerListInfo->ServerName, lpServerListInfo->ServerCode);
+		LogAdd(LOG_BLACK, "[ServerList] 游戏服务器上线 (%s) (%d)", lpServerListInfo->ServerName, lpServerListInfo->ServerCode);
 	}
 
 	lpServerListInfo->ServerState = true;
@@ -253,7 +253,7 @@ void CServerList::JCJoinServerLiveRecv(SDHP_JOIN_SERVER_LIVE_RECV* lpMsg)
 {
 	if (this->m_JoinServerState == false)
 	{
-		LogAdd(LOG_GREEN, "[ServerList] JoinServer online");
+		LogAdd(LOG_GREEN, "[ServerList] 登录服务器上线");
 	}
 
 	this->m_JoinServerState = true;

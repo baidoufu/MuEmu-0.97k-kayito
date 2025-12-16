@@ -21,7 +21,7 @@ bool CSocketManagerUdp::Start(WORD port)
 {
 	if ((this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED, "[SocketManagerUdp] WSASocket() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManagerUdp] WSASocket() 失败, 错误码: %d", WSAGetLastError());
 
 		this->Clean();
 
@@ -36,7 +36,7 @@ bool CSocketManagerUdp::Start(WORD port)
 
 	if (bind(this->m_socket, (sockaddr*)&this->m_SocketAddr, sizeof(this->m_SocketAddr)) == SOCKET_ERROR)
 	{
-		LogAdd(LOG_RED, "[SocketManagerUdp] bind() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManagerUdp] bind() 失败, 错误码: %d", WSAGetLastError());
 
 		this->Clean();
 
@@ -45,7 +45,7 @@ bool CSocketManagerUdp::Start(WORD port)
 
 	if ((this->m_ServerRecvThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)this->ServerRecvThread, this, 0, 0)) == 0)
 	{
-		LogAdd(LOG_RED, "[SocketManagerUdp] CreateThread() failed with error: %d", GetLastError());
+		LogAdd(LOG_RED, "[SocketManagerUdp] CreateThread() 失败, 错误码: %d", GetLastError());
 
 		this->Clean();
 
@@ -63,7 +63,7 @@ bool CSocketManagerUdp::Connect(char* IpAddress, WORD port)
 {
 	if ((this->m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP)) == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED, "[SocketManagerUdp] WSASocket() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManagerUdp] WSASocket() 失败, 错误码: %d", WSAGetLastError());
 
 		this->Clean();
 
@@ -90,7 +90,7 @@ bool CSocketManagerUdp::Connect(char* IpAddress, WORD port)
 
 		if (err != 0)
 		{
-			LogAdd(LOG_RED, "[SocketManagerUdp] getaddrinfo() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManagerUdp] getaddrinfo() 失败, 错误码: %d", WSAGetLastError());
 
 			this->Clean();
 
@@ -159,7 +159,7 @@ bool CSocketManagerUdp::DataRecv()
 		}
 		else
 		{
-			LogAdd(LOG_RED, "[SocketManagerUdp] Protocol header error (Header: %x)", lpMsg[count]);
+			LogAdd(LOG_RED, "[SocketManagerUdp] 协议头错误 (头: %x)", lpMsg[count]);
 
 			memset(this->m_RecvBuff, 0, sizeof(this->m_RecvBuff));
 
@@ -170,7 +170,7 @@ bool CSocketManagerUdp::DataRecv()
 
 		if (size < 3 || size > MAX_UDP_PACKET_SIZE)
 		{
-			LogAdd(LOG_RED, "[SocketManagerUdp] Protocol size error (Header: %x, Size: %d, Head: %x)", header, size, head);
+			LogAdd(LOG_RED, "[SocketManagerUdp] 协议大小错误 (头: %x, 大小: %d, Head: %x)", header, size, head);
 
 			memset(this->m_RecvBuff, 0, sizeof(this->m_RecvBuff));
 
@@ -215,7 +215,7 @@ bool CSocketManagerUdp::DataSend(BYTE* lpMsg, int size)
 
 	if ((this->m_SendSize + size) > MAX_UDP_PACKET_SIZE)
 	{
-		LogAdd(LOG_RED, "[SocketManagerUdp] Max msg size (Size: %d)", size);
+		LogAdd(LOG_RED, "[SocketManagerUdp] 消息过大 (大小: %d)", size);
 
 		memset(this->m_SendBuff, 0, sizeof(this->m_SendBuff));
 
@@ -234,7 +234,7 @@ bool CSocketManagerUdp::DataSend(BYTE* lpMsg, int size)
 	{
 		if (WSAGetLastError() != WSAEWOULDBLOCK)
 		{
-			LogAdd(LOG_RED, "[SocketManagerUdp] sendto() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManagerUdp] sendto() 失败, 错误码: %d", WSAGetLastError());
 
 			memset(this->m_SendBuff, 0, sizeof(this->m_SendBuff));
 
@@ -265,7 +265,7 @@ DWORD WINAPI CSocketManagerUdp::ServerRecvThread(CSocketManagerUdp* lpSocketMana
 
 		if (result == SOCKET_ERROR)
 		{
-			LogAdd(LOG_RED, "[SocketManagerUdp] recvfrom() failed with error: %d", GetLastError());
+			LogAdd(LOG_RED, "[SocketManagerUdp] recvfrom() 失败, 错误码: %d", GetLastError());
 
 			memset(lpSocketManagerUdp->m_RecvBuff, 0, sizeof(lpSocketManagerUdp->m_RecvBuff));
 

@@ -188,7 +188,7 @@ void JGAccountLevelRecv(SDHP_ACCOUNT_LEVEL_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[JGAccountLevelRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[JGAccountLevelRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 
@@ -239,7 +239,7 @@ void JGAccountAlreadyConnectedRecv(SDHP_ACCOUNT_ALREADY_CONNECTED_RECV* lpMsg)
 {
 	if (gObjIsAccountValid(lpMsg->index, lpMsg->account) == 0)
 	{
-		LogAdd(LOG_RED, "[JGAccountAlreadyConnectedRecv] Invalid Account [%d](%s)", lpMsg->index, lpMsg->account);
+		LogAdd(LOG_RED, "[JGAccountAlreadyConnectedRecv] 无效账号 [%d](%s)", lpMsg->index, lpMsg->account);
 
 		CloseClient(lpMsg->index);
 

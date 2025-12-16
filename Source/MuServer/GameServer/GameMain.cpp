@@ -67,12 +67,12 @@ bool JoinServerConnect()
 {
 	if (!gJoinServerConnection.Connect(gServerInfo.m_JoinServerAddress, (WORD)gServerInfo.m_JoinServerPort))
 	{
-		LogAdd(LOG_RED, "[JoinServerConnection] Connect Failed");
+		LogAdd(LOG_RED, "[JoinServerConnection] 连接失败");
 
 		return false;
 	}
 
-	LogAdd(LOG_GREEN, "[JoinServerConnection] Connected");
+	LogAdd(LOG_GREEN, "[JoinServerConnection] 连接成功");
 
 	GJServerInfoSend();
 
@@ -83,12 +83,12 @@ bool DataServerConnect()
 {
 	if (!gDataServerConnection.Connect(gServerInfo.m_DataServerAddress, (WORD)gServerInfo.m_DataServerPort))
 	{
-		LogAdd(LOG_RED, "[DataServerConnection] Connect Failed");
+		LogAdd(LOG_RED, "[DataServerConnection] 连接失败");
 
 		return false;
 	}
 
-	LogAdd(LOG_GREEN, "[DataServerConnection] Connected");
+	LogAdd(LOG_GREEN, "[DataServerConnection] 连接成功");
 
 	GDServerInfoSend();
 

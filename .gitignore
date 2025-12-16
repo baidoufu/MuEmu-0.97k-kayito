@@ -15,3 +15,6 @@
 # User-specific files
 *.rsuser
 *.sln.docstates.suo
+
+# CodeQL
+_codeql_detected_source_root

@@ -122,14 +122,14 @@ bool CConnection::CreateEventHandler()
 {
 	if ((this->m_EventHandlerThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)this->SocketEventsThread, this, 0, 0)) == NULL)
 	{
-		LogAdd(LOG_RED, "[%s] CreateThread() failed with error: %d", this->sConnectionName.c_str(), GetLastError());
+		LogAdd(LOG_RED, "[%s] CreateThread() 失败, 错误码: %d", this->sConnectionName.c_str(), GetLastError());
 
 		return false;
 	}
 
 	if (SetThreadPriority(this->m_EventHandlerThread, THREAD_PRIORITY_HIGHEST) == FALSE)
 	{
-		LogAdd(LOG_RED, "[%s] SetThreadPriority() failed with error: %d", this->sConnectionName.c_str(), GetLastError());
+		LogAdd(LOG_RED, "[%s] SetThreadPriority() 失败, 错误码: %d", this->sConnectionName.c_str(), GetLastError());
 
 		return false;
 	}
@@ -147,7 +147,7 @@ DWORD WINAPI CConnection::SocketEventsThread(CConnection* lpConnection)
 
 		if (dwWait == WSA_WAIT_FAILED)
 		{
-			LogAdd(LOG_RED, "[%s] WSAWaitForMultipleEvents() failed with error: %d", lpConnection->sConnectionName.c_str(), GetLastError());
+			LogAdd(LOG_RED, "[%s] WSAWaitForMultipleEvents() 失败, 错误码: %d", lpConnection->sConnectionName.c_str(), GetLastError());
 
 			break;
 		}
@@ -170,7 +170,7 @@ DWORD WINAPI CConnection::SocketEventsThread(CConnection* lpConnection)
 
 			if (netEvents.lNetworkEvents & FD_CLOSE)
 			{
-				LogAdd(LOG_RED, "[%s] Disconnected", lpConnection->sConnectionName.c_str());
+				LogAdd(LOG_RED, "[%s] 已断开连接", lpConnection->sConnectionName.c_str());
 
 				if (lpConnection->m_socket != INVALID_SOCKET)
 				{

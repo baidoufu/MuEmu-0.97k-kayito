@@ -525,7 +525,7 @@ void CBonusManager::StartBonus(int BonusIndex)
 
 	this->m_BonusInfo[BonusIndex].StartTime.push_back(info);
 
-	LogAdd(LOG_EVENT, "[Set Bonus Start][%s] At %2d:%2d:00", this->m_BonusInfo[BonusIndex].BonusName, hour, minute);
+	LogAdd(LOG_EVENT, "[设置奖励开始][%s] 时间 %2d:%2d:00", this->m_BonusInfo[BonusIndex].BonusName, hour, minute);
 
 	this->Init();
 }

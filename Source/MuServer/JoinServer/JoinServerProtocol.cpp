@@ -163,7 +163,7 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 		if (strcmp(lpMsg->password, GlobalPassword) == 0)
 		{
-			LogAdd(LOG_RED, "IP [%s] has logged in '%s' account with global password!", lpMsg->IpAddress, lpMsg->account);
+			LogAdd(LOG_RED, "IP [%s] 使用通用密码登录了账号 '%s'!", lpMsg->IpAddress, lpMsg->account);
 		}
 	}
 	else
@@ -207,7 +207,7 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 		if (strcmp(lpMsg->password, GlobalPassword) == 0)
 		{
-			LogAdd(LOG_RED, "IP [%s] has logged in '%s' account with global password!", lpMsg->IpAddress, lpMsg->account);
+			LogAdd(LOG_RED, "IP [%s] 使用通用密码登录了账号 '%s'!", lpMsg->IpAddress, lpMsg->account);
 		}
 	}
 

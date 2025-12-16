@@ -97,7 +97,7 @@ int main()
 		if (gQueryManager.Init(DataBaseHost, DataBasePort, DataBaseUser, DataBasePass, DataBaseName) == false)
 		#endif
 		{
-			LogAdd(LOG_RED, "Could not connect to database");
+			LogAdd(LOG_RED, "无法连接到数据库");
 		}
 		else
 		{
@@ -124,7 +124,7 @@ int main()
 	}
 	else
 	{
-		LogAdd(LOG_RED, "WSAStartup() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "WSAStartup() 失败, 错误码: %d", WSAGetLastError());
 	}
 
 	MSG msg;

@@ -73,7 +73,7 @@ bool CSocketManager::Start(WORD port)
 		return false;
 	}
 
-	LogAdd(LOG_BLACK, "[SocketManager] Server started at port [%d]", this->m_port);
+	LogAdd(LOG_BLACK, "[SocketManager] 服务器已在端口 [%d] 启动", this->m_port);
 
 	return true;
 }
@@ -140,7 +140,7 @@ bool CSocketManager::CreateListenSocket()
 {
 	if ((this->m_listen = WSASocketW(AF_INET, SOCK_STREAM, 0, 0, 0, WSA_FLAG_OVERLAPPED)) == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED, "[SocketManager] WSASocketW() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManager] WSASocketW() 失败, 错误码: %d", WSAGetLastError());
 
 		return false;
 	}
@@ -155,14 +155,14 @@ bool CSocketManager::CreateListenSocket()
 
 	if (bind(this->m_listen, (sockaddr*)&SocketAddr, sizeof(SocketAddr)) == SOCKET_ERROR)
 	{
-		LogAdd(LOG_RED, "[SocketManager] bind() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManager] bind() 失败, 错误码: %d", WSAGetLastError());
 
 		return false;
 	}
 
 	if (listen(this->m_listen, 5) == SOCKET_ERROR)
 	{
-		LogAdd(LOG_RED, "[SocketManager] listen() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManager] listen() 失败, 错误码: %d", WSAGetLastError());
 
 		return false;
 	}
@@ -176,14 +176,14 @@ bool CSocketManager::CreateCompletionPort()
 
 	if (sock == INVALID_SOCKET)
 	{
-		LogAdd(LOG_RED, "[SocketManager] socket() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManager] socket() 失败, 错误码: %d", WSAGetLastError());
 
 		return false;
 	}
 
 	if ((this->m_CompletionPort = CreateIoCompletionPort((HANDLE)sock, 0, 0, 0)) == 0)
 	{
-		LogAdd(LOG_RED, "[SocketManager] CreateIoCompletionPort() failed with error: %d", GetLastError());
+		LogAdd(LOG_RED, "[SocketManager] CreateIoCompletionPort() 失败, 错误码: %d", GetLastError());
 
 		closesocket(sock);
 
@@ -199,14 +199,14 @@ bool CSocketManager::CreateAcceptThread()
 {
 	if ((this->m_ServerAcceptThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)this->ServerAcceptThread, this, 0, 0)) == 0)
 	{
-		LogAdd(LOG_RED, "[SocketManager] CreateThread() failed with error: %d", GetLastError());
+		LogAdd(LOG_RED, "[SocketManager] CreateThread() 失败, 错误码: %d", GetLastError());
 
 		return false;
 	}
 
 	if (SetThreadPriority(this->m_ServerAcceptThread, THREAD_PRIORITY_HIGHEST) == FALSE)
 	{
-		LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() failed with error: %d", GetLastError());
+		LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() 失败, 错误码: %d", GetLastError());
 
 		return false;
 	}
@@ -226,14 +226,14 @@ bool CSocketManager::CreateWorkerThread()
 	{
 		if ((this->m_ServerWorkerThread[n] = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)this->ServerWorkerThread, this, 0, 0)) == 0)
 		{
-			LogAdd(LOG_RED, "[SocketManager] CreateThread() failed with error: %d", GetLastError());
+			LogAdd(LOG_RED, "[SocketManager] CreateThread() 失败, 错误码: %d", GetLastError());
 
 			return false;
 		}
 
 		if (SetThreadPriority(this->m_ServerWorkerThread[n], THREAD_PRIORITY_HIGHEST) == FALSE)
 		{
-			LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() failed with error: %d", GetLastError());
+			LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() 失败, 错误码: %d", GetLastError());
 
 			return false;
 		}
@@ -246,21 +246,21 @@ bool CSocketManager::CreateServerQueue()
 {
 	if ((this->m_ServerQueueSemaphore = CreateSemaphore(0, 0, MAX_QUEUE_SIZE, 0)) == 0)
 	{
-		LogAdd(LOG_RED, "[SocketManager] CreateSemaphore() failed with error: %d", GetLastError());
+		LogAdd(LOG_RED, "[SocketManager] CreateSemaphore() 失败, 错误码: %d", GetLastError());
 
 		return false;
 	}
 
 	if ((this->m_ServerQueueThread = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)this->ServerQueueThread, this, 0, 0)) == 0)
 	{
-		LogAdd(LOG_RED, "[SocketManager] CreateThread() failed with error: %d", GetLastError());
+		LogAdd(LOG_RED, "[SocketManager] CreateThread() 失败, 错误码: %d", GetLastError());
 
 		return false;
 	}
 
 	if (SetThreadPriority(this->m_ServerQueueThread, THREAD_PRIORITY_HIGHEST) == FALSE)
 	{
-		LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() failed with error: %d", GetLastError());
+		LogAdd(LOG_RED, "[SocketManager] SetThreadPriority() 失败, 错误码: %d", GetLastError());
 
 		return false;
 	}
@@ -303,7 +303,7 @@ bool CSocketManager::DataRecv(int index, IO_MAIN_BUFFER* lpIoBuffer)
 		{
 			CClientManager* lpClientManager = &gClientManager[index];
 
-			LogAdd(LOG_RED, "[SocketManager] Protocol header error (IP: %s, Header: %x)", lpClientManager->m_IpAddr, lpMsg[count]);
+			LogAdd(LOG_RED, "[SocketManager] 协议头错误 (IP: %s, 头: %x)", lpClientManager->m_IpAddr, lpMsg[count]);
 
 			return false;
 		}
@@ -312,7 +312,7 @@ bool CSocketManager::DataRecv(int index, IO_MAIN_BUFFER* lpIoBuffer)
 		{
 			CClientManager* lpClientManager = &gClientManager[index];
 
-			LogAdd(LOG_RED, "[SocketManager] Protocol size error (IP: %s, Header: %x, Size: %d, Head: %x)", lpClientManager->m_IpAddr, header, size, head);
+			LogAdd(LOG_RED, "[SocketManager] 协议大小错误 (IP: %s, 头: %x, 大小: %d, Head: %x)", lpClientManager->m_IpAddr, header, size, head);
 
 			return false;
 		}
@@ -383,7 +383,7 @@ bool CSocketManager::DataSend(int index, BYTE* lpMsg, int size)
 
 	if (size > MAX_MAIN_PACKET_SIZE)
 	{
-		LogAdd(LOG_RED, "[SocketManager] Max msg size (Type: 1, Index: %d, Size: %d)", index, size);
+		LogAdd(LOG_RED, "[SocketManager] 消息过大 (类型: 1, 索引: %d, 大小: %d)", index, size);
 
 		this->m_critical.unlock();
 
@@ -396,7 +396,7 @@ bool CSocketManager::DataSend(int index, BYTE* lpMsg, int size)
 	{
 		if ((lpIoContext->IoSideBuffer.size + size) > MAX_SIDE_PACKET_SIZE)
 		{
-			LogAdd(LOG_RED, "[SocketManager] Max msg size (Type: 2, Index: %d, Size: %d)", index, (lpIoContext->IoSideBuffer.size + size));
+			LogAdd(LOG_RED, "[SocketManager] 消息过大 (类型: 2, 索引: %d, 大小: %d)", index, (lpIoContext->IoSideBuffer.size + size));
 
 			this->Disconnect(index);
 
@@ -432,7 +432,7 @@ bool CSocketManager::DataSend(int index, BYTE* lpMsg, int size)
 	{
 		if (WSAGetLastError() != WSA_IO_PENDING)
 		{
-			LogAdd(LOG_RED, "[SocketManager] WSASend() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManager] WSASend() 失败, 错误码: %d", WSAGetLastError());
 
 			this->Disconnect(index);
 
@@ -469,7 +469,7 @@ void CSocketManager::Disconnect(int index)
 
 	if (closesocket(lpClientManager->m_socket) == SOCKET_ERROR && WSAGetLastError() != WSAENOTSOCK)
 	{
-		LogAdd(LOG_RED, "[SocketManager] closesocket() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "[SocketManager] closesocket() 失败, 错误码: %d", WSAGetLastError());
 
 		this->m_critical.unlock();
 
@@ -526,7 +526,7 @@ void CSocketManager::OnRecv(int index, DWORD IoSize, IO_RECV_CONTEXT* lpIoContex
 	{
 		if (WSAGetLastError() != WSA_IO_PENDING)
 		{
-			LogAdd(LOG_RED, "[SocketManager] WSARecv() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManager] WSARecv() 失败, 错误码: %d", WSAGetLastError());
 
 			this->Disconnect(index);
 
@@ -624,7 +624,7 @@ void CSocketManager::OnSend(int index, DWORD IoSize, IO_SEND_CONTEXT* lpIoContex
 	{
 		if (WSAGetLastError() != WSA_IO_PENDING)
 		{
-			LogAdd(LOG_RED, "[SocketManager] WSASend() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManager] WSASend() 失败, 错误码: %d", WSAGetLastError());
 
 			this->Disconnect(index);
 
@@ -670,7 +670,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 		{
 			lpSocketManager->m_critical.lock();
 
-			LogAdd(LOG_RED, "[SocketManager] WSAAccept() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManager] WSAAccept() 失败, 错误码: %d", WSAGetLastError());
 
 			lpSocketManager->m_critical.unlock();
 
@@ -692,7 +692,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 
 		if (CreateIoCompletionPort((HANDLE)socket, lpSocketManager->m_CompletionPort, index, 0) == 0)
 		{
-			LogAdd(LOG_RED, "[SocketManager] CreateIoCompletionPort() failed with error: %d", GetLastError());
+			LogAdd(LOG_RED, "[SocketManager] CreateIoCompletionPort() 失败, 错误码: %d", GetLastError());
 
 			closesocket(socket);
 
@@ -707,7 +707,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 
 		if (inet_ntop(AF_INET, &SocketAddr.sin_addr, IPAddress, INET_ADDRSTRLEN) == NULL)
 		{
-			LogAdd(LOG_RED, "[SocketManager] inet_ntop() failed with error: %d", WSAGetLastError());
+			LogAdd(LOG_RED, "[SocketManager] inet_ntop() 失败, 错误码: %d", WSAGetLastError());
 
 			closesocket(socket);
 
@@ -724,7 +724,7 @@ DWORD WINAPI CSocketManager::ServerAcceptThread(CSocketManager* lpSocketManager)
 		{
 			if (WSAGetLastError() != WSA_IO_PENDING)
 			{
-				LogAdd(LOG_RED, "[SocketManager] WSARecv() failed with error: %d", WSAGetLastError());
+				LogAdd(LOG_RED, "[SocketManager] WSARecv() 失败, 错误码: %d", WSAGetLastError());
 
 				lpSocketManager->Disconnect(index);
 
@@ -756,7 +756,7 @@ DWORD WINAPI CSocketManager::ServerWorkerThread(CSocketManager* lpSocketManager)
 			{
 				lpSocketManager->m_critical.lock();
 
-				LogAdd(LOG_RED, "[SocketManager] GetQueuedCompletionStatus() failed with error: %d", GetLastError());
+				LogAdd(LOG_RED, "[SocketManager] GetQueuedCompletionStatus() 失败, 错误码: %d", GetLastError());
 
 				lpSocketManager->m_critical.unlock();
 
@@ -804,7 +804,7 @@ DWORD WINAPI CSocketManager::ServerQueueThread(CSocketManager* lpSocketManager)
 	{
 		if (WaitForSingleObject(lpSocketManager->m_ServerQueueSemaphore, INFINITE) == WAIT_FAILED)
 		{
-			LogAdd(LOG_RED, "[SocketManager] WaitForSingleObject() failed with error: %d", GetLastError());
+			LogAdd(LOG_RED, "[SocketManager] WaitForSingleObject() 失败, 错误码: %d", GetLastError());
 
 			break;
 		}
