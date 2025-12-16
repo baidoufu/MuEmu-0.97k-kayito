@@ -66,7 +66,7 @@ int main()
 	}
 	else
 	{
-		LogAdd(LOG_RED, "WSAStartup() failed with error: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "WSAStartup() 失败, 错误码: %d", WSAGetLastError());
 	}
 
 	MSG msg;

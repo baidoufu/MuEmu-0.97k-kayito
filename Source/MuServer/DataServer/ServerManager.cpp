@@ -94,12 +94,12 @@ void CServerManager::AddServer(int index, char* ip, SOCKET socket)
 
 	this->m_PacketTime = 0;
 
-	LogAdd(LOG_BLACK, "[ServerManager][%d] AddServer (%s)", this->m_index, this->m_IpAddr);
+	LogAdd(LOG_BLACK, "[ServerManager][%d] 服务器已连接 (%s)", this->m_index, this->m_IpAddr);
 }
 
 void CServerManager::DelServer()
 {
-	LogAdd(LOG_BLACK, "[ServerManager][%d] DelServer (%s)", this->m_index, this->m_IpAddr);
+	LogAdd(LOG_BLACK, "[ServerManager][%d] 服务器已断开 (%s)", this->m_index, this->m_IpAddr);
 
 	WORD ServerCode = this->m_ServerCode;
 
@@ -132,5 +132,5 @@ void CServerManager::SetServerInfo(char* name, WORD port, WORD code)
 
 	this->m_ServerCode = code;
 
-	LogAdd(LOG_BLACK, "[ServerManager][%d] ServerInfo (%s) (%d) (%d)", this->m_index, this->m_ServerName, this->m_ServerPort, this->m_ServerCode);
+	LogAdd(LOG_BLACK, "[ServerManager][%d] 服务器信息 (%s) (%d) (%d)", this->m_index, this->m_ServerName, this->m_ServerPort, this->m_ServerCode);
 }
