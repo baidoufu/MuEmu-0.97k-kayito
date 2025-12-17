@@ -98,15 +98,15 @@ eTokenResult CReadScript::GetToken(bool wReturn)
 			continue;
 		}
 	}
-	while (isspace(ch) != 0);
+	while (isspace((unsigned char)ch) != 0);
 
-	if (isdigit(ch) != 0 || ch == '.' || ch == '-' || ch == '*')
+	if (isdigit((unsigned char)ch) != 0 || ch == '.' || ch == '-' || ch == '*')
 	{
 		ungetc(ch, this->m_file);
 
 		p = str;
 
-		while (((ch = getc(this->m_file)) != EOF) && (isdigit(ch) != 0 || ch == '.' || ch == '-' || ch == '*'))
+		while (((ch = getc(this->m_file)) != EOF) && (isdigit((unsigned char)ch) != 0 || ch == '.' || ch == '-' || ch == '*'))
 		{
 			if (p - str < sizeof(str) - 1)
 			{
@@ -164,13 +164,13 @@ eTokenResult CReadScript::GetToken(bool wReturn)
 
 		return this->m_lastToken;
 	}
-	else if (isalpha(ch) != 0)
+	else if (isalpha((unsigned char)ch) != 0)
 	{
 		p = this->m_string;
 
 		*p++ = ch;
 
-		while (((ch = getc(this->m_file)) != EOF) && (ch == '.' || ch == '_' || isalnum(ch) != 0))
+		while (((ch = getc(this->m_file)) != EOF) && (ch == '.' || ch == '_' || isalnum((unsigned char)ch) != 0))
 		{
 			*p++ = ch;
 		}

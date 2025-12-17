@@ -90,7 +90,7 @@ void CShopManager::LoadShop()
 	{
 		if ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
 		{
-			if (isdigit(data.cFileName[0]) != 0 && isdigit(data.cFileName[1]) != 0 && isdigit(data.cFileName[2]) != 0)
+			if (isdigit((unsigned char)data.cFileName[0]) != 0 && isdigit((unsigned char)data.cFileName[1]) != 0 && isdigit((unsigned char)data.cFileName[2]) != 0)
 			{
 				if (data.cFileName[3] == ' ' && data.cFileName[4] == '-' && data.cFileName[5] == ' ')
 				{
