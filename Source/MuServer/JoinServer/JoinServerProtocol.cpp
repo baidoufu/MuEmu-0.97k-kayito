@@ -297,7 +297,6 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 	// SQLite: Implement WZ_CONNECT_MEMB logic directly
 	// First try to update existing MEMB_STAT record
 	gQueryManager.ExecQuery("UPDATE MEMB_STAT SET ServerName='%s', IP='%s', ConnectStat=1, ConnectTM=datetime('now') WHERE memb___id='%s'", gServerManager[index].m_ServerName, lpMsg->IpAddress, lpMsg->account);
-	gQueryManager.Close();
 	// If no row was updated, insert a new record
 	gQueryManager.ExecQuery("INSERT OR IGNORE INTO MEMB_STAT (memb___id, ServerName, IP, ConnectStat, ConnectTM) VALUES ('%s', '%s', '%s', 1, datetime('now'))", lpMsg->account, gServerManager[index].m_ServerName, lpMsg->IpAddress);
 #elif !defined(MYSQL)
