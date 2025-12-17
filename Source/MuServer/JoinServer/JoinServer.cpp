@@ -64,29 +64,51 @@ int main()
 		if (DataBasePathTemp[0] == '.' && (DataBasePathTemp[1] == '\\' || DataBasePathTemp[1] == '/'))
 		{
 			char ExePath[MAX_PATH] = { 0 };
-			GetModuleFileName(NULL, ExePath, MAX_PATH);
-			char* LastSlash = strrchr(ExePath, '\\');
-			if (LastSlash != NULL)
+			DWORD result = GetModuleFileName(NULL, ExePath, MAX_PATH);
+			if (result > 0 && result < MAX_PATH)
 			{
-				*(LastSlash + 1) = '\0';
-			}
-			sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 2);
-		}
-		else if (DataBasePathTemp[0] == '.' && DataBasePathTemp[1] == '.' && (DataBasePathTemp[2] == '\\' || DataBasePathTemp[2] == '/'))
-		{
-			char ExePath[MAX_PATH] = { 0 };
-			GetModuleFileName(NULL, ExePath, MAX_PATH);
-			char* LastSlash = strrchr(ExePath, '\\');
-			if (LastSlash != NULL)
-			{
-				*LastSlash = '\0';
-				LastSlash = strrchr(ExePath, '\\');
+				char* LastSlash = strrchr(ExePath, '\\');
 				if (LastSlash != NULL)
 				{
 					*(LastSlash + 1) = '\0';
 				}
+				sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 2);
 			}
-			sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 3);
+			else
+			{
+				strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
+			}
+		}
+		else if (DataBasePathTemp[0] == '.' && DataBasePathTemp[1] == '.' && (DataBasePathTemp[2] == '\\' || DataBasePathTemp[2] == '/'))
+		{
+			char ExePath[MAX_PATH] = { 0 };
+			DWORD result = GetModuleFileName(NULL, ExePath, MAX_PATH);
+			if (result > 0 && result < MAX_PATH)
+			{
+				char* LastSlash = strrchr(ExePath, '\\');
+				if (LastSlash != NULL)
+				{
+					*LastSlash = '\0';
+					LastSlash = strrchr(ExePath, '\\');
+					if (LastSlash != NULL)
+					{
+						*(LastSlash + 1) = '\0';
+						sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 3);
+					}
+					else
+					{
+						strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
+					}
+				}
+				else
+				{
+					strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
+				}
+			}
+			else
+			{
+				strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
+			}
 		}
 		else
 		{
