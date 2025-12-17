@@ -30,7 +30,9 @@ void CGuildManager::Init()
 {
 	this->vGuildList.clear();
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT * FROM Guild") != false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT * FROM Guild") != false)
 #else
 	if (gQueryManager.ExecResultQuery("SELECT * FROM Guild") != false)
@@ -38,10 +40,10 @@ void CGuildManager::Init()
 	{
 		GUILD_INFO* GuildInfo;
 
-	#ifndef MYSQL
-		while (gQueryManager.Fetch() != SQL_NO_DATA)
-	#else
+	#if defined(SQLITE) || defined(MYSQL)
 		while (gQueryManager.Fetch() != false)
+	#else
+		while (gQueryManager.Fetch() != SQL_NO_DATA)
 	#endif
 		{
 			GuildInfo = new GUILD_INFO();
@@ -64,16 +66,18 @@ void CGuildManager::Init()
 
 	gQueryManager.Close();
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT * FROM GuildMember") != false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT * FROM GuildMember") != false)
 #else
 	if (gQueryManager.ExecResultQuery("SELECT * FROM GuildMember") != false)
 #endif
 	{
-	#ifndef MYSQL
-		while (gQueryManager.Fetch() != SQL_NO_DATA)
-	#else
+	#if defined(SQLITE) || defined(MYSQL)
 		while (gQueryManager.Fetch() != false)
+	#else
+		while (gQueryManager.Fetch() != SQL_NO_DATA)
 	#endif
 		{
 			char GuildName[9] = { 0 };
@@ -216,11 +220,59 @@ BYTE CGuildManager::AddGuild(int index, char* szGuildName, char* szMasterName, B
 		return 5;
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_GuildCreate logic directly (no stored procedures)
+	// Check if character is already in a guild
+	if (gQueryManager.ExecQuery("SELECT Name FROM GuildMember WHERE Name='%s'", szMasterName) != false)
+	{
+		if (gQueryManager.Fetch() != false)
+		{
+			gQueryManager.Close();
+			return 3; // Already in a guild
+		}
+	}
+	gQueryManager.Close();
+
+	// Insert into Guild table
+	if (gQueryManager.ExecQuery("INSERT INTO Guild (G_Name, G_Master) VALUES ('%s', '%s')", szGuildName, szMasterName) == false)
+	{
+		gQueryManager.Close();
+		return 6;
+	}
+	gQueryManager.Close();
+
+	// Insert into GuildMember table
+	if (gQueryManager.ExecQuery("INSERT INTO GuildMember (Name, G_Name, G_Status) VALUES ('%s', '%s', %d)", szMasterName, szGuildName, 0x80) == false)
+	{
+		gQueryManager.Close();
+		return 6;
+	}
+	gQueryManager.Close();
+
+	// Update guild mark
+	gQueryManager.BindParameterAsBinary(1, lpMark, 32);
+	gQueryManager.ExecQuery("UPDATE Guild SET G_Mark=? WHERE G_Name='%s'", szGuildName);
+	gQueryManager.Close();
+
+	// Get guild number
+	GUILD_INFO* GuildInfo = new GUILD_INFO();
+	gQueryManager.ExecQuery("SELECT Number FROM Guild WHERE G_Name='%s'", szGuildName);
+	gQueryManager.Fetch();
+	GuildInfo->dwNumber = gQueryManager.GetAsInteger("Number");
+	gQueryManager.Close();
+
+	memcpy(GuildInfo->szName, szGuildName, sizeof(GuildInfo->szName));
+	memcpy(GuildInfo->szMaster, szMasterName, sizeof(GuildInfo->szMaster));
+	memcpy(GuildInfo->arMark, lpMark, sizeof(GuildInfo->arMark));
+	memcpy(GuildInfo->arGuildMember[0].szGuildMember, szMasterName, sizeof(GuildInfo->arGuildMember[0].szGuildMember));
+	GuildInfo->arGuildMember[0].btStatus = 0x80;
+	GuildInfo->arGuildMember[0].btServer = 0xFFFF;
+	this->vGuildList.push_back(GuildInfo);
+
+	return 1;
+
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("WZ_GuildCreate '%s','%s'", szGuildName, szMasterName) == false || gQueryManager.Fetch() == SQL_NO_DATA)
-#else
-	if (gQueryManager.ExecResultQuery("CALL WZ_GuildCreate('%s', '%s')", szGuildName, szMasterName) == false || gQueryManager.Fetch() == false)
-#endif
 	{
 		gQueryManager.Close();
 
@@ -228,57 +280,25 @@ BYTE CGuildManager::AddGuild(int index, char* szGuildName, char* szMasterName, B
 	}
 	else
 	{
-	#ifndef MYSQL
 		int result = gQueryManager.GetResult(0);
-	#else
-		int result = gQueryManager.GetAsInteger("Result");
-	#endif
 
 		if (result == 1)
 		{
 			gQueryManager.Close();
 
-		#ifndef MYSQL
-
 			gQueryManager.BindParameterAsBinary(1, lpMark, 32);
 
 			gQueryManager.ExecQuery("UPDATE Guild SET G_Mark=? WHERE G_Name='%s'", szGuildName);
 
-		#else
-
-			gQueryManager.PrepareQuery("UPDATE Guild SET G_Mark=? WHERE G_Name='%s'", szGuildName);
-
-			gQueryManager.SetAsBinary(1, lpMark, 32);
-
-			gQueryManager.ExecPreparedUpdateQuery();
-
-		#endif
-
 			gQueryManager.Close();
 
-		#ifndef MYSQL
-
 			gQueryManager.ExecQuery("UPDATE GuildMember SET G_Status=%d WHERE Name='%s'", 0x80, szMasterName);
-
-		#else
-
-			gQueryManager.ExecUpdateQuery("UPDATE GuildMember SET G_Status=%d WHERE Name='%s'", 0x80, szMasterName);
-
-		#endif
 
 			gQueryManager.Close();
 
 			GUILD_INFO* GuildInfo = new GUILD_INFO();
 
-		#ifndef MYSQL
-
 			gQueryManager.ExecQuery("SELECT Number FROM Guild WHERE G_Name='%s'", szGuildName);
-
-		#else
-
-			gQueryManager.ExecResultQuery("SELECT Number FROM Guild WHERE G_Name='%s'", szGuildName);
-
-		#endif
 
 			gQueryManager.Fetch();
 
@@ -309,6 +329,67 @@ BYTE CGuildManager::AddGuild(int index, char* szGuildName, char* szMasterName, B
 			return result;
 		}
 	}
+#else
+	if (gQueryManager.ExecResultQuery("CALL WZ_GuildCreate('%s', '%s')", szGuildName, szMasterName) == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+
+		return 6;
+	}
+	else
+	{
+		int result = gQueryManager.GetAsInteger("Result");
+
+		if (result == 1)
+		{
+			gQueryManager.Close();
+
+			gQueryManager.PrepareQuery("UPDATE Guild SET G_Mark=? WHERE G_Name='%s'", szGuildName);
+
+			gQueryManager.SetAsBinary(1, lpMark, 32);
+
+			gQueryManager.ExecPreparedUpdateQuery();
+
+			gQueryManager.Close();
+
+			gQueryManager.ExecUpdateQuery("UPDATE GuildMember SET G_Status=%d WHERE Name='%s'", 0x80, szMasterName);
+
+			gQueryManager.Close();
+
+			GUILD_INFO* GuildInfo = new GUILD_INFO();
+
+			gQueryManager.ExecResultQuery("SELECT Number FROM Guild WHERE G_Name='%s'", szGuildName);
+
+			gQueryManager.Fetch();
+
+			GuildInfo->dwNumber = gQueryManager.GetAsInteger("Number");
+
+			gQueryManager.Close();
+
+			memcpy(GuildInfo->szName, szGuildName, sizeof(GuildInfo->szName));
+
+			memcpy(GuildInfo->szMaster, szMasterName, sizeof(GuildInfo->szMaster));
+
+			memcpy(GuildInfo->arMark, lpMark, sizeof(GuildInfo->arMark));
+
+			memcpy(GuildInfo->arGuildMember[0].szGuildMember, szMasterName, sizeof(GuildInfo->arGuildMember[0].szGuildMember));
+
+			GuildInfo->arGuildMember[0].btStatus = 0x80;
+
+			GuildInfo->arGuildMember[0].btServer = 0xFFFF;
+
+			this->vGuildList.push_back(GuildInfo);
+
+			return 1;
+		}
+		else
+		{
+			gQueryManager.Close();
+
+			return result;
+		}
+	}
+#endif
 }
 
 BYTE CGuildManager::DelGuild(int index, char* szGuildName)
@@ -320,11 +401,29 @@ BYTE CGuildManager::DelGuild(int index, char* szGuildName)
 		return 3;
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_SetGuildDelete logic directly (no stored procedures)
+	// Delete from GuildMember
+	if (gQueryManager.ExecQuery("DELETE FROM GuildMember WHERE G_Name='%s'", szGuildName) == false)
+	{
+		gQueryManager.Close();
+		return 3;
+	}
+	gQueryManager.Close();
+
+	// Delete from Guild
+	if (gQueryManager.ExecQuery("DELETE FROM Guild WHERE G_Name='%s'", szGuildName) == false)
+	{
+		gQueryManager.Close();
+		return 3;
+	}
+	gQueryManager.Close();
+
+	lpGuildInfo->Clear();
+	return 1;
+
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("WZ_SetGuildDelete '%s'", szGuildName) == false || gQueryManager.Fetch() == SQL_NO_DATA)
-	#else
-	if (gQueryManager.ExecResultQuery("CALL WZ_SetGuildDelete('%s')", szGuildName) == false || gQueryManager.Fetch() == false)
-	#endif
 	{
 		gQueryManager.Close();
 
@@ -332,15 +431,7 @@ BYTE CGuildManager::DelGuild(int index, char* szGuildName)
 	}
 	else
 	{
-	#ifndef MYSQL
-
 		int result = gQueryManager.GetResult(0);
-
-	#else
-
-		int result = gQueryManager.GetAsInteger("Result");
-
-	#endif
 
 		gQueryManager.Close();
 
@@ -351,6 +442,27 @@ BYTE CGuildManager::DelGuild(int index, char* szGuildName)
 
 		return result;
 	}
+#else
+	if (gQueryManager.ExecResultQuery("CALL WZ_SetGuildDelete('%s')", szGuildName) == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+
+		return 3;
+	}
+	else
+	{
+		int result = gQueryManager.GetAsInteger("Result");
+
+		gQueryManager.Close();
+
+		if (result == 1)
+		{
+			lpGuildInfo->Clear();
+		}
+
+		return result;
+	}
+#endif
 }
 
 BYTE CGuildManager::AddGuildMember(int index, char* szGuildName, char* szGuildMember, BYTE btStatus, WORD btServer)
