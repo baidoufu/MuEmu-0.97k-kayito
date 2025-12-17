@@ -56,8 +56,42 @@ int main()
 	#if defined(SQLITE)
 
 		char DataBasePath[256] = { 0 };
+		char DataBasePathTemp[256] = { 0 };
 
-		GetPrivateProfileString("DataBaseInfo", "DataBasePath", ".\\MuOnline.db", DataBasePath, sizeof(DataBasePath), ".\\JoinServer.ini");
+		GetPrivateProfileString("DataBaseInfo", "DataBasePath", ".\\MuOnline.db", DataBasePathTemp, sizeof(DataBasePathTemp), ".\\JoinServer.ini");
+
+		// Resolve relative path to absolute path based on executable directory
+		if (DataBasePathTemp[0] == '.' && (DataBasePathTemp[1] == '\\' || DataBasePathTemp[1] == '/'))
+		{
+			char ExePath[MAX_PATH] = { 0 };
+			GetModuleFileName(NULL, ExePath, MAX_PATH);
+			char* LastSlash = strrchr(ExePath, '\\');
+			if (LastSlash != NULL)
+			{
+				*(LastSlash + 1) = '\0';
+			}
+			sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 2);
+		}
+		else if (DataBasePathTemp[0] == '.' && DataBasePathTemp[1] == '.' && (DataBasePathTemp[2] == '\\' || DataBasePathTemp[2] == '/'))
+		{
+			char ExePath[MAX_PATH] = { 0 };
+			GetModuleFileName(NULL, ExePath, MAX_PATH);
+			char* LastSlash = strrchr(ExePath, '\\');
+			if (LastSlash != NULL)
+			{
+				*LastSlash = '\0';
+				LastSlash = strrchr(ExePath, '\\');
+				if (LastSlash != NULL)
+				{
+					*(LastSlash + 1) = '\0';
+				}
+			}
+			sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 3);
+		}
+		else
+		{
+			strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
+		}
 
 	#elif !defined(MYSQL)
 
