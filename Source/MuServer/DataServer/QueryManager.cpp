@@ -40,6 +40,18 @@ bool CQueryManager::Connect(char* dbPath)
 		return false;
 	}
 
+	// Set busy timeout to 5000ms (5 seconds) to handle concurrent access
+	sqlite3_busy_timeout(this->m_db, 5000);
+
+	// Enable WAL mode for better concurrent read/write access
+	char* errMsg = NULL;
+	result = sqlite3_exec(this->m_db, "PRAGMA journal_mode=WAL;", NULL, NULL, &errMsg);
+	if (result != SQLITE_OK)
+	{
+		LogAdd(LOG_RED, "[QueryManager] SQLite 设置WAL模式失败: %s", errMsg ? errMsg : "未知错误");
+		if (errMsg) sqlite3_free(errMsg);
+	}
+
 	LogAdd(LOG_BLUE, "[QueryManager] SQLite 数据库连接成功: %s", this->m_dbPath);
 
 	return true;
