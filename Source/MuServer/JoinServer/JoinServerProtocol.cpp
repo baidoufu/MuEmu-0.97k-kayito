@@ -295,7 +295,10 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 #if defined(SQLITE)
 	// SQLite: Implement WZ_CONNECT_MEMB logic directly
-	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET ServerName='%s', IP='%s', ConnectStat=1 WHERE memb___id='%s'", gServerManager[index].m_ServerName, lpMsg->IpAddress, lpMsg->account);
+	// First try to update existing MEMB_STAT record
+	gQueryManager.ExecQuery("UPDATE MEMB_STAT SET ServerName='%s', IP='%s', ConnectStat=1, ConnectTM=datetime('now') WHERE memb___id='%s'", gServerManager[index].m_ServerName, lpMsg->IpAddress, lpMsg->account);
+	// If no row was updated, insert a new record
+	gQueryManager.ExecQuery("INSERT OR IGNORE INTO MEMB_STAT (memb___id, ServerName, IP, ConnectStat, ConnectTM) VALUES ('%s', '%s', '%s', 1, datetime('now'))", lpMsg->account, gServerManager[index].m_ServerName, lpMsg->IpAddress);
 #elif !defined(MYSQL)
 	gQueryManager.ExecQuery("EXEC WZ_CONNECT_MEMB '%s','%s','%s'", lpMsg->account, gServerManager[index].m_ServerName, lpMsg->IpAddress);
 #else
@@ -362,7 +365,7 @@ void GJDisconnectAccountRecv(SDHP_DISCONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 #if defined(SQLITE)
 	// SQLite: Implement WZ_DISCONNECT_MEMB logic directly
-	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET ConnectStat=0 WHERE memb___id='%s'", lpMsg->account);
+	gQueryManager.ExecQuery("UPDATE MEMB_STAT SET ConnectStat=0, DisConnectTM=datetime('now') WHERE memb___id='%s'", lpMsg->account);
 #elif !defined(MYSQL)
 	gQueryManager.ExecQuery("EXEC WZ_DISCONNECT_MEMB '%s'", lpMsg->account);
 #else

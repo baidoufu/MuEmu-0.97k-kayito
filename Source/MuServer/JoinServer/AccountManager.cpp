@@ -35,7 +35,7 @@ void CAccountManager::ClearServerAccountInfo(WORD ServerCode)
 
 	#if defined(SQLITE)
 		// SQLite: Implement WZ_DISCONNECT_MEMB logic directly
-		gQueryManager.ExecQuery("UPDATE MEMB_INFO SET ConnectStat=0 WHERE memb___id='%s'", it->second.Account);
+		gQueryManager.ExecQuery("UPDATE MEMB_STAT SET ConnectStat=0, DisConnectTM=datetime('now') WHERE memb___id='%s'", it->second.Account);
 	#elif !defined(MYSQL)
 		gQueryManager.ExecQuery("EXEC WZ_DISCONNECT_MEMB '%s'", it->second.Account);
 	#else
