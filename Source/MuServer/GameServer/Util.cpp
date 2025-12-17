@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Util.h"
 #include "GameMain.h"
 #include "GameServer.h"
@@ -487,7 +487,7 @@ void CreateSubMenuItem(int hBaseMenu, int hSubmenuIndex, const char* hMenuLabel)
 		return;
 	}
 
-	HMENU hMenu = GetMenu(hWnd); // Obtener el handle al menú principal
+	HMENU hMenu = GetMenu(hWnd); // Obtener el handle al men?principal
 
 	if (!hMenu)
 	{
@@ -510,6 +510,6 @@ void CreateSubMenuItem(int hBaseMenu, int hSubmenuIndex, const char* hMenuLabel)
 
 	AppendMenu(hMenuEvent, MF_STRING, hSubmenuIndex + hBaseMenu, hMenuLabel);
 
-	// Forzar el redibujado del menú
+	// Forzar el redibujado del men?
 	DrawMenuBar(hWnd);
 }

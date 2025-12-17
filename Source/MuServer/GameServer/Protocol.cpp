@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Protocol.h"
 #include "Attack.h"
 #include "Blacklist.h"
@@ -33,7 +33,7 @@
 #include "Viewport.h"
 #include "Warehouse.h"
 
-void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int serial)//½ÓÊÕ°ü/´¦Àí¿Í»§¶Ë·¢À´µÄ°ü¡±µÄÈë¿Úº¯Êı
+void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int serial)//æ¥æ”¶åŒ…/å¤„ç†å®¢æˆ·ç«¯å‘æ¥çš„åŒ…â€çš„å…¥å£å‡½æ•°
 {
 	ConsoleProtocolLog(CON_PROTO_TCP_RECV, aIndex, lpMsg, size);
 

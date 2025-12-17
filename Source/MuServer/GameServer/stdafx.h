@@ -6,7 +6,7 @@
 
 #define GAMESERVER_EXTRA 1
 
-#define MAX_LANGUAGE 3
+#define MAX_LANGUAGE 4
 
 #define ENCRYPT_STATE 1
 

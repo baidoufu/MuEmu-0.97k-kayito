@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "FlyingDragons.h"
 #include "MapManager.h"
 #include "Protocol.h"
@@ -28,7 +28,7 @@ void CFlyingDragons::Init()
 	}
 }
 
-void CFlyingDragons::FlyingDragonsDelete() //Dragones verificar si alguno no se finalizó
+void CFlyingDragons::FlyingDragonsDelete() //Dragones verificar si alguno no se finaliz?
 {
 	if (gServerInfo.m_FlyingDragonsSwitch == 0)
 	{
@@ -77,7 +77,7 @@ void CFlyingDragons::FlyingDragonsAdd(int map, int invasionTime, int index) //Dr
 
 		this->m_FlyingDragonsInfo[map].EndTime = (time(0) + invasionTime);
 
-		GCEventStateSendToAll(map, 1, index); //Dragones meter al iniciar una invasión
+		GCEventStateSendToAll(map, 1, index); //Dragones meter al iniciar una invasié«‡
 	}
 }
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#define READ_SCRIPT_ALLOC_ERROR "[ReadScript] Could not alloc memory. File: '%s'.\n"
-#define READ_SCRIPT_FILE_ERROR "[ReadScript] Could not open file '%s'.\n"
-#define READ_SCRIPT_LINE_ERROR "[ReadScript] There is an error in file '%s' in line %d.\n"
-#define READ_SCRIPT_UNKNOWN_ERROR "[ReadScript] Unknow error in file '%s'.\n"
+#define READ_SCRIPT_ALLOC_ERROR "[ReadScript] 内存分配失败。文件: '%s'。\n"
+#define READ_SCRIPT_FILE_ERROR "[ReadScript] 无法打开文件 '%s'。\n"
+#define READ_SCRIPT_LINE_ERROR "[ReadScript] 文件 '%s' 第 %d 行存在错误。\n"
+#define READ_SCRIPT_UNKNOWN_ERROR "[ReadScript] 文件 '%s' 中存在未知错误。\n"
 
 enum eTokenResult
 {
