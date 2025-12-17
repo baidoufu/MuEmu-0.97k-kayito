@@ -1075,11 +1075,11 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 	#if defined(SQLITE)
 		// SQLite: Implement WZ_GetGrandResetInfo logic directly
-		// Get GrandReset from Character
-		if (gQueryManager.ExecQuery("SELECT GrandReset FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) != false)
+		// Get GrandResetCount from Character
+		if (gQueryManager.ExecQuery("SELECT GrandResetCount FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) != false)
 		{
 			gQueryManager.Fetch();
-			pMsg.GrandReset = gQueryManager.GetAsInteger("GrandReset");
+			pMsg.GrandReset = gQueryManager.GetAsInteger("GrandResetCount");
 			gQueryManager.Close();
 		}
 		else
