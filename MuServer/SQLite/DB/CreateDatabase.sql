@@ -1,0 +1,252 @@
+-- ----------------------------------------------------------------------------
+-- SQLite Database Schema for MuOnline97
+-- ----------------------------------------------------------------------------
+-- Note: SQLite does not support stored procedures. 
+-- The application logic handles these operations directly.
+-- ----------------------------------------------------------------------------
+
+-- ----------------------------------------------------------------------------
+-- Table AccountCharacter
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS AccountCharacter (
+	Id VARCHAR(10) NOT NULL PRIMARY KEY,
+	GameID1 VARCHAR(10) NULL,
+	GameID2 VARCHAR(10) NULL,
+	GameID3 VARCHAR(10) NULL,
+	GameID4 VARCHAR(10) NULL,
+	GameID5 VARCHAR(10) NULL,
+	GameIDC VARCHAR(10) NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table Character
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Character (
+	AccountID VARCHAR(10) NOT NULL,
+	Name VARCHAR(10) NOT NULL PRIMARY KEY,
+	ResetCount INTEGER NOT NULL DEFAULT 0,
+	GrandResetCount INTEGER NOT NULL DEFAULT 0,
+	cLevel INTEGER NOT NULL DEFAULT 1,
+	LevelUpPoint INTEGER NULL DEFAULT 0,
+	Class INTEGER NULL,
+	Experience INTEGER NULL DEFAULT 0,
+	Strength INTEGER NULL,
+	Dexterity INTEGER NULL,
+	Vitality INTEGER NULL,
+	Energy INTEGER NULL,
+	Inventory BLOB NULL,
+	MagicList BLOB NULL,
+	Money INTEGER NULL DEFAULT 0,
+	Life INTEGER NULL,
+	MaxLife INTEGER NULL,
+	Mana INTEGER NULL,
+	MaxMana INTEGER NULL,
+	BP INTEGER NULL,
+	MaxBP INTEGER NULL,
+	MapNumber INTEGER NULL,
+	MapPosX INTEGER NULL,
+	MapPosY INTEGER NULL,
+	MapDir INTEGER NULL DEFAULT 0,
+	PkCount INTEGER NULL DEFAULT 0,
+	PkLevel INTEGER NULL DEFAULT 3,
+	PkTime INTEGER NULL DEFAULT 0,
+	CtlCode INTEGER NULL DEFAULT 0,
+	Bloc_Expire DATETIME NULL,
+	Quest BLOB NULL DEFAULT NULL,
+	FruitPoint INTEGER NULL DEFAULT 0,
+	EffectList BLOB NULL,
+	FruitAddPoint INTEGER NOT NULL DEFAULT 0,
+	FruitSubPoint INTEGER NOT NULL DEFAULT 0
+);
+
+-- ----------------------------------------------------------------------------
+-- Table DefaultClassType
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS DefaultClassType (
+	Class INTEGER NOT NULL PRIMARY KEY,
+	Level INTEGER NULL DEFAULT 0,
+	LevelUpPoint INTEGER NULL DEFAULT 0,
+	Strength INTEGER NULL,
+	Dexterity INTEGER NULL,
+	Vitality INTEGER NULL,
+	Energy INTEGER NULL,
+	Inventory BLOB NULL,
+	MagicList BLOB NULL,
+	Life INTEGER NULL,
+	MaxLife INTEGER NULL,
+	Mana INTEGER NULL,
+	MaxMana INTEGER NULL,
+	MapNumber INTEGER NULL,
+	MapPosX INTEGER NULL,
+	MapPosY INTEGER NULL,
+	Quest BLOB NULL,
+	EffectList BLOB NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table ExtWarehouse
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ExtWarehouse (
+	AccountID VARCHAR(10) NOT NULL,
+	Number INTEGER NULL,
+	Items BLOB NULL,
+	Money INTEGER NULL
+);
+
+CREATE INDEX IF NOT EXISTS IX_ExtWarehouse_AccountID ON ExtWarehouse (AccountID);
+
+-- ----------------------------------------------------------------------------
+-- Table GameServerInfo
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS GameServerInfo (
+	Number INTEGER NOT NULL DEFAULT 0 PRIMARY KEY,
+	ItemCount INTEGER NOT NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table GoldenArcherCoin
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS GoldenArcherCoin (
+	AccountID VARCHAR(10) NOT NULL PRIMARY KEY,
+	Renas INTEGER NOT NULL DEFAULT 0,
+	Stones INTEGER NOT NULL DEFAULT 0,
+	LuckyNumber CHAR(12) NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table GoldenArcherLuckyNumbers
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS GoldenArcherLuckyNumbers (
+	AccountID VARCHAR(10) NOT NULL,
+	LuckyNumber CHAR(12) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS IX_GoldenArcherLuckyNumbers_AccountID ON GoldenArcherLuckyNumbers (AccountID);
+
+-- ----------------------------------------------------------------------------
+-- Table Guild
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS Guild (
+	Number INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	G_Name VARCHAR(8) NOT NULL,
+	G_Mark BLOB NULL,
+	G_Score INTEGER NULL DEFAULT 0,
+	G_Master VARCHAR(10) NULL,
+	G_Notice VARCHAR(60) NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table GuildMember
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS GuildMember (
+	Name VARCHAR(10) NOT NULL PRIMARY KEY,
+	G_Name VARCHAR(8) NOT NULL,
+	G_Status INTEGER NOT NULL DEFAULT 0
+);
+
+-- ----------------------------------------------------------------------------
+-- Table MEMB_INFO
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS MEMB_INFO (
+	memb___id VARCHAR(10) NOT NULL PRIMARY KEY,
+	memb__pwd VARCHAR(10) NOT NULL,
+	memb_name VARCHAR(10) NOT NULL,
+	mail_addr VARCHAR(50) NULL,
+	sno__numb CHAR(18) NOT NULL,
+	AccountLevel INTEGER NOT NULL DEFAULT 0,
+	AccountExpireDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	bloc_code CHAR(1) NOT NULL,
+	Bloc_Expire DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ----------------------------------------------------------------------------
+-- Table MEMB_STAT
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS MEMB_STAT (
+	memb___id VARCHAR(10) NOT NULL PRIMARY KEY,
+	ConnectStat INTEGER NULL,
+	ServerName VARCHAR(50) NULL,
+	IP VARCHAR(15) NULL,
+	ConnectTM DATETIME NULL,
+	DisConnectTM DATETIME NULL,
+	OnlineHours INTEGER NULL DEFAULT 0
+);
+
+-- ----------------------------------------------------------------------------
+-- Table OptionData
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS OptionData (
+	Name VARCHAR(10) NOT NULL PRIMARY KEY,
+	SkillKey BLOB NULL,
+	GameOption INTEGER NULL,
+	Qkey INTEGER NULL,
+	Wkey INTEGER NULL,
+	Ekey INTEGER NULL,
+	ChatWindow INTEGER NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table RankingBloodCastle
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS RankingBloodCastle (
+	Name VARCHAR(10) NOT NULL PRIMARY KEY,
+	Score INTEGER NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table RankingDevilSquare
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS RankingDevilSquare (
+	Name VARCHAR(10) NOT NULL PRIMARY KEY,
+	Score INTEGER NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table ResetInfo
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS ResetInfo (
+	Name VARCHAR(10) NOT NULL PRIMARY KEY,
+	ResetDay INTEGER NOT NULL DEFAULT 0,
+	ResetDayDate DATETIME NULL,
+	ResetWek INTEGER NOT NULL DEFAULT 0,
+	ResetWekDate DATETIME NULL,
+	ResetMon INTEGER NOT NULL DEFAULT 0,
+	ResetMonDate DATETIME NULL,
+	GrandResetDay INTEGER NOT NULL DEFAULT 0,
+	GrandResetDayDate DATETIME NULL,
+	GrandResetWek INTEGER NOT NULL DEFAULT 0,
+	GrandResetWekDate DATETIME NULL,
+	GrandResetMon INTEGER NOT NULL DEFAULT 0,
+	GrandResetMonDate DATETIME NULL
+);
+
+-- ----------------------------------------------------------------------------
+-- Table warehouse
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS warehouse (
+	AccountID VARCHAR(10) NOT NULL PRIMARY KEY,
+	Items BLOB NULL,
+	Money INTEGER NULL DEFAULT 0,
+	pw INTEGER NULL DEFAULT 0
+);
+
+-- ----------------------------------------------------------------------------
+-- Initialize GameServerInfo
+-- ----------------------------------------------------------------------------
+INSERT OR IGNORE INTO GameServerInfo (Number, ItemCount) VALUES (0, 0);
+
+-- ----------------------------------------------------------------------------
+-- Default Class Type Data
+-- Note: Binary data has been simplified for SQLite
+-- ----------------------------------------------------------------------------
+INSERT OR IGNORE INTO DefaultClassType (Class, Level, LevelUpPoint, Strength, Dexterity, Vitality, Energy, Life, MaxLife, Mana, MaxMana, MapNumber, MapPosX, MapPosY) 
+VALUES (0, 1, 0, 18, 18, 15, 30, 60, 60, 60, 60, 0, 125, 125);
+
+INSERT OR IGNORE INTO DefaultClassType (Class, Level, LevelUpPoint, Strength, Dexterity, Vitality, Energy, Life, MaxLife, Mana, MaxMana, MapNumber, MapPosX, MapPosY) 
+VALUES (16, 1, 0, 28, 20, 25, 10, 110, 110, 20, 20, 0, 125, 125);
+
+INSERT OR IGNORE INTO DefaultClassType (Class, Level, LevelUpPoint, Strength, Dexterity, Vitality, Energy, Life, MaxLife, Mana, MaxMana, MapNumber, MapPosX, MapPosY) 
+VALUES (32, 1, 0, 22, 25, 20, 15, 80, 80, 30, 30, 3, 172, 97);
+
+INSERT OR IGNORE INTO DefaultClassType (Class, Level, LevelUpPoint, Strength, Dexterity, Vitality, Energy, Life, MaxLife, Mana, MaxMana, MapNumber, MapPosX, MapPosY) 
+VALUES (48, 1, 0, 26, 26, 26, 26, 110, 110, 60, 60, 0, 125, 125);

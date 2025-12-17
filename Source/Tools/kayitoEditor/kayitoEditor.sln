@@ -8,16 +8,22 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_MySQL|x86 = Debug_MySQL|x86
+		Debug_SQLite|x86 = Debug_SQLite|x86
 		Debug|x86 = Debug|x86
 		Release_MySQL|x86 = Release_MySQL|x86
+		Release_SQLite|x86 = Release_SQLite|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Debug_MySQL|x86.ActiveCfg = Debug_MySQL|Any CPU
 		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Debug_MySQL|x86.Build.0 = Debug_MySQL|Any CPU
+		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Debug_SQLite|x86.ActiveCfg = Debug_SQLite|Any CPU
+		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Debug_SQLite|x86.Build.0 = Debug_SQLite|Any CPU
 		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Release_MySQL|x86.ActiveCfg = Release_MySQL|Any CPU
 		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Release_MySQL|x86.Build.0 = Release_MySQL|Any CPU
+		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Release_SQLite|x86.ActiveCfg = Release_SQLite|Any CPU
+		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Release_SQLite|x86.Build.0 = Release_SQLite|Any CPU
 		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Release|x86.ActiveCfg = Release|Any CPU
 		{A44B18CF-4E48-4F31-B681-2D0FBAE0AB48}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection

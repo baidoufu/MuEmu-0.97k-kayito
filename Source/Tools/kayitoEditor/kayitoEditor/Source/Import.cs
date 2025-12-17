@@ -1,4 +1,6 @@
-﻿#if MYSQL
+﻿#if SQLITE
+using System.Data.SQLite;
+#elif MYSQL
 using MySql.Data.MySqlClient;
 #else
 using System.Data.OleDb;
@@ -9,27 +11,34 @@ namespace kayito_Editor.Source
 {
 	class Import
 	{
-	#if !MYSQL
+	#if SQLITE
+		public static string MU_DB_PATH;
+		public static string ME_DB_PATH;
+	#elif !MYSQL
 		public static int MU_TRUSTED;
+		public static int ME_TRUSTED;
 	#endif
+
+	#if !SQLITE
 		public static string MU_SERVER;
 		public static string MU_PORT;
 		public static string MU_DB;
 		public static string MU_DB_USER;
 		public static string MU_DB_PASS;
 
-		public static int USE_ME;
-
-	#if !MYSQL
-		public static int ME_TRUSTED;
-	#endif
 		public static string ME_SERVER;
 		public static string ME_PORT;
 		public static string ME_DB;
 		public static string ME_DB_USER;
 		public static string ME_DB_PASS;
+	#endif
 
-	#if MYSQL
+		public static int USE_ME;
+
+	#if SQLITE
+		public static SQLiteConnection Mu_Connection;
+		public static SQLiteConnection Me_Connection;
+	#elif MYSQL
 		public static MySqlConnection Mu_Connection;
 		public static MySqlConnection Me_Connection;
 	#else
@@ -88,6 +97,37 @@ namespace kayito_Editor.Source
 			{48, "Magic Gladiator"},
 		};
 
+	#if SQLITE
+		public static List<string> deleteAllDB = new List<string>()
+		{
+			"DELETE FROM AccountCharacter",
+			"DELETE FROM \"Character\"",
+			"DELETE FROM ExtWarehouse",
+			"DELETE FROM GameServerInfo",
+			"DELETE FROM GoldenCoin",
+			"DELETE FROM Guild",
+			"DELETE FROM GuildMember",
+			"DELETE FROM MEMB_INFO",
+			"DELETE FROM MEMB_STAT",
+			"DELETE FROM OptionData",
+			"DELETE FROM RankingBloodCastle",
+			"DELETE FROM RankingDevilSquare",
+			"DELETE FROM ResetInfo",
+			"DELETE FROM warehouse",
+		};
+
+		public static List<string> deleteAllChars = new List<string>()
+		{
+			"DELETE FROM AccountCharacter",
+			"DELETE FROM \"Character\"",
+			"DELETE FROM Guild",
+			"DELETE FROM GuildMember",
+			"DELETE FROM OptionData",
+			"DELETE FROM RankingBloodCastle",
+			"DELETE FROM RankingDevilSquare",
+			"DELETE FROM ResetInfo",
+		};
+	#else
 		public static List<string> deleteAllDB = new List<string>()
 		{
 			"TRUNCATE TABLE AccountCharacter",
@@ -117,5 +157,6 @@ namespace kayito_Editor.Source
 			"TRUNCATE TABLE RankingDevilSquare",
 			"TRUNCATE TABLE ResetInfo",
 		};
+	#endif
 	}
 }
