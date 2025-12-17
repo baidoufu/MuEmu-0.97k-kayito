@@ -1,5 +1,7 @@
 ﻿using kayito_Editor.Source;
-#if MYSQL
+#if SQLITE
+using System.Data.SQLite;
+#elif MYSQL
 using MySql.Data.MySqlClient;
 #else
 using System.Data.OleDb;
@@ -52,7 +54,9 @@ namespace kayito_Editor.Forms
 				{
 					query = $"SELECT memb___id FROM MEMB_INFO WHERE memb___id = '{this.Account_Box.Text.Trim()}'";
 
-				#if MYSQL
+				#if SQLITE
+					SQLiteDataReader reader = new SQLiteCommand(query, Import.Me_Connection).ExecuteReader();
+				#elif MYSQL
 					MySqlDataReader reader = new MySqlCommand(query, Import.Me_Connection).ExecuteReader();
 				#else
 					OleDbDataReader reader = new OleDbCommand(query, Import.Me_Connection).ExecuteReader();
