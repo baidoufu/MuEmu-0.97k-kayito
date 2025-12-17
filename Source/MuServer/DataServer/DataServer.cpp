@@ -65,8 +65,8 @@ int main()
 				{
 					*(LastSlash + 1) = '\0';
 				}
-				size_t totalLen = strlen(ExePath) + strlen(DataBasePathTemp + 2);
-				if (totalLen < sizeof(DataBasePath))
+				size_t totalLen = strlen(ExePath) + strlen(DataBasePathTemp + 2) + 1;
+				if (totalLen <= sizeof(DataBasePath))
 				{
 					sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 2);
 				}
@@ -94,8 +94,8 @@ int main()
 					if (LastSlash != NULL)
 					{
 						*(LastSlash + 1) = '\0';
-						size_t totalLen = strlen(ExePath) + strlen(DataBasePathTemp + 3);
-						if (totalLen < sizeof(DataBasePath))
+						size_t totalLen = strlen(ExePath) + strlen(DataBasePathTemp + 3) + 1;
+						if (totalLen <= sizeof(DataBasePath))
 						{
 							sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 3);
 						}
