@@ -51,10 +51,13 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 
 		#if defined(SQLITE)
 
-			// For SQLite, use a different approach to initialize Items with 0xFF
-			gQueryManager.ExecQuery("UPDATE warehouse SET Items=X'%s' WHERE AccountID='%s'", "", lpMsg->account);
-			// Actually, we should bind binary data. Let's just leave Items NULL for now
-			// The application will handle NULL as empty warehouse
+			// For SQLite, use bound binary parameter to initialize Items with 0xFF
+			{
+				BYTE emptyItems[sizeof(pMsg.WarehouseItem)];
+				memset(emptyItems, 0xFF, sizeof(emptyItems));
+				gQueryManager.BindParameterAsBinary(1, emptyItems, sizeof(emptyItems));
+				gQueryManager.ExecQuery("UPDATE warehouse SET Items=? WHERE AccountID='%s'", lpMsg->account);
+			}
 
 		#elif !defined(MYSQL)
 
@@ -130,7 +133,13 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 
 		#if defined(SQLITE)
 
-			// For SQLite, Items will be initialized as NULL
+			// For SQLite, use bound binary parameter to initialize Items with 0xFF
+			{
+				BYTE emptyItems[sizeof(pMsg.WarehouseItem)];
+				memset(emptyItems, 0xFF, sizeof(emptyItems));
+				gQueryManager.BindParameterAsBinary(1, emptyItems, sizeof(emptyItems));
+				gQueryManager.ExecQuery("UPDATE ExtWarehouse SET Items=? WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber);
+			}
 
 		#elif !defined(MYSQL)
 
