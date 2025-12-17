@@ -1,5 +1,7 @@
 ﻿using kayito_Editor.Source;
-#if MYSQL
+#if SQLITE
+using System.Data.SQLite;
+#elif MYSQL
 using MySql.Data.MySqlClient;
 #else
 using System.Data.OleDb;
@@ -120,7 +122,9 @@ namespace kayito_Editor.Forms
 			{
 				query = $"SELECT Inventory, Money FROM \"Character\" WHERE AccountID = '{this.AccountName}' AND Name = '{this.CharacterName}'";
 
-			#if MYSQL
+			#if SQLITE
+				SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
+			#elif MYSQL
 				MySqlDataReader reader = new MySqlCommand(query, Import.Mu_Connection).ExecuteReader();
 			#else
 				OleDbDataReader reader = new OleDbCommand(query, Import.Mu_Connection).ExecuteReader();

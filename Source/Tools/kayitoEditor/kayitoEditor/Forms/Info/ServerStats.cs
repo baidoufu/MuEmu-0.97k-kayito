@@ -1,5 +1,7 @@
 ﻿using kayito_Editor.Source;
-#if MYSQL
+#if SQLITE
+using System.Data.SQLite;
+#elif MYSQL
 using MySql.Data.MySqlClient;
 #else
 using System.Data.OleDb;
@@ -35,7 +37,9 @@ namespace kayito_Editor.Forms
 
 				query = $"SELECT COUNT(1) FROM MEMB_INFO";
 
-			#if MYSQL
+			#if SQLITE
+				SQLiteDataReader reader = new SQLiteCommand(query, Import.Me_Connection).ExecuteReader();
+			#elif MYSQL
 				MySqlDataReader reader = new MySqlCommand(query, Import.Me_Connection).ExecuteReader();
 			#else
 				OleDbDataReader reader = new OleDbCommand(query, Import.Me_Connection).ExecuteReader();
@@ -50,7 +54,9 @@ namespace kayito_Editor.Forms
 
 				query = $"SELECT COUNT(1) FROM MEMB_STAT WHERE ConnectStat = 1";
 
-			#if MYSQL
+			#if SQLITE
+				reader = new SQLiteCommand(query, Import.Me_Connection).ExecuteReader();
+			#elif MYSQL
 				reader = new MySqlCommand(query, Import.Me_Connection).ExecuteReader();
 			#else
 				reader = new OleDbCommand(query, Import.Me_Connection).ExecuteReader();
@@ -67,7 +73,9 @@ namespace kayito_Editor.Forms
 
 				int TotalChar = 0;
 
-			#if MYSQL
+			#if SQLITE
+				reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
+			#elif MYSQL
 				reader = new MySqlCommand(query, Import.Mu_Connection).ExecuteReader();
 			#else
 				reader = new OleDbCommand(query, Import.Mu_Connection).ExecuteReader();
@@ -84,7 +92,9 @@ namespace kayito_Editor.Forms
 
 				query = $"SELECT Class, COUNT(Class) as Cant from \"Character\" group by Class order by Class asc";
 
-			#if MYSQL
+			#if SQLITE
+				reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
+			#elif MYSQL
 				reader = new MySqlCommand(query, Import.Mu_Connection).ExecuteReader();
 			#else
 				reader = new OleDbCommand(query, Import.Mu_Connection).ExecuteReader();

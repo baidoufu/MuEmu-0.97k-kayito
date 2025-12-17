@@ -1,4 +1,6 @@
-﻿#if MYSQL
+﻿#if SQLITE
+using System.Data.SQLite;
+#elif MYSQL
 using MySql.Data.MySqlClient;
 #else
 using System.Data.OleDb;
@@ -169,7 +171,9 @@ namespace kayito_Editor.Source
 				{
 					query = $"WZ_GetItemSerial";
 
-				#if MYSQL
+				#if SQLITE
+					SQLiteCommand cmd = new SQLiteCommand(query, Import.Mu_Connection);
+				#elif MYSQL
 					MySqlCommand cmd = new MySqlCommand(query, Import.Mu_Connection);
 				#else
 					OleDbCommand cmd = new OleDbCommand(query, Import.Mu_Connection);
@@ -179,7 +183,9 @@ namespace kayito_Editor.Source
 
 					int result = -1;
 
-				#if MYSQL
+				#if SQLITE
+					using (SQLiteDataReader reader = cmd.ExecuteReader())
+				#elif MYSQL
 					using (MySqlDataReader reader = cmd.ExecuteReader())
 				#else
 					using (OleDbDataReader reader = cmd.ExecuteReader())

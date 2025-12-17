@@ -1,5 +1,7 @@
 ﻿using kayito_Editor.Source;
-#if MYSQL
+#if SQLITE
+using System.Data.SQLite;
+#elif MYSQL
 using MySql.Data.MySqlClient;
 #else
 using System.Data.OleDb;
@@ -91,7 +93,9 @@ namespace kayito_Editor.Forms
 			{
 				query = $"SELECT Items, Money, pw FROM warehouse WHERE AccountID = '{this.AccountName}'";
 
-			#if MYSQL
+			#if SQLITE
+				SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
+			#elif MYSQL
 				MySqlDataReader reader = new MySqlCommand(query, Import.Mu_Connection).ExecuteReader();
 			#else
 				OleDbDataReader reader = new OleDbCommand(query, Import.Mu_Connection).ExecuteReader();
@@ -168,7 +172,9 @@ namespace kayito_Editor.Forms
 			{
 				query = $"SELECT Items, Money FROM ExtWarehouse WHERE AccountID = '{this.AccountName}' AND Number = {this.Warehouse_Number.Value}";
 
-#if MYSQL
+#if SQLITE
+				SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
+#elif MYSQL
 				MySqlDataReader reader = new MySqlCommand(query, Import.Mu_Connection).ExecuteReader();
 #else
 				OleDbDataReader reader = new OleDbCommand(query, Import.Mu_Connection).ExecuteReader();
