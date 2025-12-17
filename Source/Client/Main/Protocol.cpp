@@ -80,7 +80,7 @@ NEXT_PACKET:
 	}
 }
 
-bool CProtocol::ProtocolCompiler(BYTE* lpMsg)
+bool CProtocol::ProtocolCompiler(BYTE* lpMsg)//服务器发给客户端”的接收包  解析和处理服务器发来的包（接收方向）
 {
 	int size = 0;
 
@@ -106,7 +106,7 @@ bool CProtocol::ProtocolCompiler(BYTE* lpMsg)
 	{
 		char lpszMessage[128];
 
-		wsprintf(lpszMessage, "[Connection] Protocol header error (Header: %02X)\r\n", lpMsg[0]);
+		wsprintf(lpszMessage, "[Connection] 协议头错误 (Header: %02X)\r\n", lpMsg[0]);
 
 		MessageBox(NULL, lpszMessage, "Error", MB_OK);
 
