@@ -48,81 +48,9 @@ int main()
 	{
 	#if defined(SQLITE)
 
-		char DataBasePath[256] = { 0 };
-		char DataBasePathTemp[256] = { 0 };
+		char DataBaseODBC[256] = { 0 };
 
-		GetPrivateProfileString("DataBaseInfo", "DataBasePath", ".\\MuOnline.db", DataBasePathTemp, sizeof(DataBasePathTemp), ".\\DataServer.ini");
-
-		// Resolve relative path to absolute path based on executable directory
-		if (DataBasePathTemp[0] == '.' && (DataBasePathTemp[1] == '\\' || DataBasePathTemp[1] == '/'))
-		{
-			char ExePath[MAX_PATH] = { 0 };
-			DWORD result = GetModuleFileName(NULL, ExePath, MAX_PATH);
-			if (result > 0 && result < MAX_PATH)
-			{
-				char* LastSlash = strrchr(ExePath, '\\');
-				if (LastSlash != NULL)
-				{
-					*(LastSlash + 1) = '\0';
-				}
-				size_t totalLen = strlen(ExePath) + strlen(DataBasePathTemp + 2) + 1;
-				if (totalLen <= sizeof(DataBasePath))
-				{
-					sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 2);
-				}
-				else
-				{
-					strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
-				}
-			}
-			else
-			{
-				strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
-			}
-		}
-		else if (DataBasePathTemp[0] == '.' && DataBasePathTemp[1] == '.' && (DataBasePathTemp[2] == '\\' || DataBasePathTemp[2] == '/'))
-		{
-			char ExePath[MAX_PATH] = { 0 };
-			DWORD result = GetModuleFileName(NULL, ExePath, MAX_PATH);
-			if (result > 0 && result < MAX_PATH)
-			{
-				char* LastSlash = strrchr(ExePath, '\\');
-				if (LastSlash != NULL)
-				{
-					*LastSlash = '\0';
-					LastSlash = strrchr(ExePath, '\\');
-					if (LastSlash != NULL)
-					{
-						*(LastSlash + 1) = '\0';
-						size_t totalLen = strlen(ExePath) + strlen(DataBasePathTemp + 3) + 1;
-						if (totalLen <= sizeof(DataBasePath))
-						{
-							sprintf_s(DataBasePath, sizeof(DataBasePath), "%s%s", ExePath, DataBasePathTemp + 3);
-						}
-						else
-						{
-							strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
-						}
-					}
-					else
-					{
-						strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
-					}
-				}
-				else
-				{
-					strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
-				}
-			}
-			else
-			{
-				strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
-			}
-		}
-		else
-		{
-			strcpy_s(DataBasePath, sizeof(DataBasePath), DataBasePathTemp);
-		}
+		GetPrivateProfileString("DataBaseInfo", "DataBaseODBC", "", DataBaseODBC, sizeof(DataBaseODBC), ".\\DataServer.ini");
 
 	#elif !defined(MYSQL)
 
@@ -153,7 +81,7 @@ int main()
 		WORD DS_TCP_Port = GetPrivateProfileInt("DataServerInfo", "DS_TCP_Port", 55960, ".\\DataServer.ini");
 
 	#if defined(SQLITE)
-		if (gQueryManager.Connect(DataBasePath) == false)
+		if (gQueryManager.Connect(DataBaseODBC) == false)
 	#elif !defined(MYSQL)
 		if (gQueryManager.Connect(DataBaseODBC, DataBaseUser, DataBasePass) == false)
 		#else
