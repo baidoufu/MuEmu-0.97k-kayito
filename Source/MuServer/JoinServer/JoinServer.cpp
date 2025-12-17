@@ -53,7 +53,13 @@ int main()
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) == 0)
 	{
-	#ifndef MYSQL
+	#if defined(SQLITE)
+
+		char DataBasePath[256] = { 0 };
+
+		GetPrivateProfileString("DataBaseInfo", "DataBasePath", ".\\MuOnline.db", DataBasePath, sizeof(DataBasePath), ".\\JoinServer.ini");
+
+	#elif !defined(MYSQL)
 
 		char DataBaseODBC[64] = { 0 };
 		char DataBaseUser[32] = { 0 };
@@ -91,7 +97,9 @@ int main()
 
 		GetPrivateProfileString("AccountInfo", "GlobalPassword", "XwefDastoD", GlobalPassword, sizeof(GlobalPassword), ".\\JoinServer.ini");
 
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		if (gQueryManager.Connect(DataBasePath) == false)
+	#elif !defined(MYSQL)
 		if (gQueryManager.Connect(DataBaseODBC, DataBaseUser, DataBasePass) == false)
 		#else
 		if (gQueryManager.Init(DataBaseHost, DataBasePort, DataBaseUser, DataBasePass, DataBaseName) == false)

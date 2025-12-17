@@ -1,6 +1,75 @@
 #pragma once
 
-#ifndef MYSQL
+#if defined(SQLITE)
+
+#include "sqlite3.h"
+
+#define MAX_COLUMNS 100
+
+class CQueryManager
+{
+public:
+
+	CQueryManager();
+
+	~CQueryManager();
+
+	bool Connect(char* dbPath);
+
+	void Disconnect();
+
+	void Diagnostic(const char* query);
+
+	bool ExecQuery(char* query, ...);
+
+	void Close();
+
+	bool Fetch();
+
+	int FindIndex(char* ColName);
+
+	int GetResult(int index);
+
+	int GetAsInteger(char* ColName);
+
+	float GetAsFloat(char* ColName);
+
+	__int64 GetAsInteger64(char* ColName);
+
+	void GetAsString(char* ColName, char* OutBuffer, int OutBufferSize);
+
+	void GetAsBinary(char* ColName, BYTE* OutBuffer, int OutBufferSize);
+
+	void BindParameterAsString(int ParamNumber, void* InBuffer, int ColumnSize);
+
+	void BindParameterAsBinary(int ParamNumber, void* InBuffer, int ColumnSize);
+
+	void ConvertStringToBinary(char* InBuff, int InSize, BYTE* OutBuff, int OutSize);
+
+	void ConvertBinaryToString(BYTE* InBuff, int InSize, char* OutBuff, int OutSize);
+
+private:
+
+	sqlite3* m_db;
+
+	sqlite3_stmt* m_stmt;
+
+	char m_dbPath[256];
+
+	int m_RowCount;
+
+	int m_ColCount;
+
+	char m_SQLColName[MAX_COLUMNS][30];
+
+	char m_SQLData[MAX_COLUMNS][8192];
+
+	int m_SQLDataLen[MAX_COLUMNS];
+};
+
+extern CQueryManager gQueryManager;
+
+#elif !defined(MYSQL)
 
 #define MAX_COLUMNS 100
 

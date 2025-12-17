@@ -2,7 +2,334 @@
 #include "QueryManager.h"
 #include "Util.h"
 
-#ifndef MYSQL
+#if defined(SQLITE)
+
+#pragma comment(lib,"sqlite3.lib")
+
+CQueryManager gQueryManager;
+
+CQueryManager::CQueryManager()
+{
+	this->m_db = NULL;
+
+	this->m_stmt = NULL;
+
+	memset(this->m_dbPath, 0, sizeof(this->m_dbPath));
+
+	this->m_RowCount = -1;
+
+	this->m_ColCount = -1;
+
+	memset(this->m_SQLColName, 0, sizeof(this->m_SQLColName));
+
+	memset(this->m_SQLData, 0, sizeof(this->m_SQLData));
+}
+
+CQueryManager::~CQueryManager()
+{
+	this->Disconnect();
+}
+
+bool CQueryManager::Connect(char* dbPath)
+{
+	strcpy_s(this->m_dbPath, dbPath);
+
+	int result = sqlite3_open(this->m_dbPath, &this->m_db);
+
+	if (result != SQLITE_OK)
+	{
+		LogAdd(LOG_RED, "[QueryManager] SQLite 打开数据库失败: %s", sqlite3_errmsg(this->m_db));
+		return false;
+	}
+
+	LogAdd(LOG_BLUE, "[QueryManager] SQLite 数据库连接成功: %s", this->m_dbPath);
+
+	return true;
+}
+
+void CQueryManager::Disconnect()
+{
+	this->Close();
+
+	if (this->m_db != NULL)
+	{
+		sqlite3_close(this->m_db);
+
+		this->m_db = NULL;
+	}
+}
+
+void CQueryManager::Diagnostic(const char* query)
+{
+	LogAdd(LOG_BLACK, "%s", query);
+
+	if (this->m_db != NULL)
+	{
+		LogAdd(LOG_RED, "[QueryManager] 状态 (%d), 诊断信息: %s", sqlite3_errcode(this->m_db), sqlite3_errmsg(this->m_db));
+	}
+}
+
+bool CQueryManager::ExecQuery(char* query, ...)
+{
+	char buff[4096];
+
+	va_list arg;
+
+	va_start(arg, query);
+
+	vsprintf_s(buff, query, arg);
+
+	va_end(arg);
+
+	this->Close();
+
+	int result = sqlite3_prepare_v2(this->m_db, buff, -1, &this->m_stmt, NULL);
+
+	if (result != SQLITE_OK)
+	{
+		this->Diagnostic(buff);
+
+		return false;
+	}
+
+	this->m_ColCount = sqlite3_column_count(this->m_stmt);
+
+	if (this->m_ColCount == 0)
+	{
+		// This is an UPDATE/INSERT/DELETE statement, execute it
+		result = sqlite3_step(this->m_stmt);
+
+		if (result != SQLITE_DONE && result != SQLITE_ROW)
+		{
+			this->Diagnostic(buff);
+
+			return false;
+		}
+
+		this->m_RowCount = sqlite3_changes(this->m_db);
+
+		return true;
+	}
+
+	if (this->m_ColCount > MAX_COLUMNS)
+	{
+		return false;
+	}
+
+	memset(this->m_SQLColName, 0, sizeof(this->m_SQLColName));
+
+	memset(this->m_SQLData, 0, sizeof(this->m_SQLData));
+
+	for (int n = 0; n < this->m_ColCount; n++)
+	{
+		const char* colName = sqlite3_column_name(this->m_stmt, n);
+
+		if (colName != NULL)
+		{
+			strncpy_s(this->m_SQLColName[n], colName, sizeof(this->m_SQLColName[n]) - 1);
+		}
+	}
+
+	return true;
+}
+
+void CQueryManager::Close()
+{
+	if (this->m_stmt != NULL)
+	{
+		sqlite3_finalize(this->m_stmt);
+
+		this->m_stmt = NULL;
+	}
+}
+
+bool CQueryManager::Fetch()
+{
+	if (this->m_stmt == NULL)
+	{
+		return false;
+	}
+
+	int result = sqlite3_step(this->m_stmt);
+
+	if (result == SQLITE_ROW)
+	{
+		memset(this->m_SQLData, 0, sizeof(this->m_SQLData));
+
+		for (int n = 0; n < this->m_ColCount; n++)
+		{
+			const unsigned char* text = sqlite3_column_text(this->m_stmt, n);
+
+			if (text != NULL)
+			{
+				strncpy_s(this->m_SQLData[n], (const char*)text, sizeof(this->m_SQLData[n]) - 1);
+			}
+
+			this->m_SQLDataLen[n] = sqlite3_column_bytes(this->m_stmt, n);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+int CQueryManager::FindIndex(char* ColName)
+{
+	for (int n = 0; n < this->m_ColCount; n++)
+	{
+		if (_stricmp(ColName, this->m_SQLColName[n]) == 0)
+		{
+			return n;
+		}
+	}
+
+	return -1;
+}
+
+int CQueryManager::GetResult(int index)
+{
+	return atoi(this->m_SQLData[index]);
+}
+
+int CQueryManager::GetAsInteger(char* ColName)
+{
+	int index = this->FindIndex(ColName);
+
+	if (index == -1)
+	{
+		return index;
+	}
+	else
+	{
+		return atoi(this->m_SQLData[index]);
+	}
+}
+
+float CQueryManager::GetAsFloat(char* ColName)
+{
+	int index = this->FindIndex(ColName);
+
+	if (index == -1)
+	{
+		return (float)index;
+	}
+	else
+	{
+		return (float)atof(this->m_SQLData[index]);
+	}
+}
+
+__int64 CQueryManager::GetAsInteger64(char* ColName)
+{
+	int index = this->FindIndex(ColName);
+
+	if (index == -1)
+	{
+		return index;
+	}
+	else
+	{
+		return _atoi64(this->m_SQLData[index]);
+	}
+}
+
+void CQueryManager::GetAsString(char* ColName, char* OutBuffer, int OutBufferSize)
+{
+	int index = this->FindIndex(ColName);
+
+	if (index == -1)
+	{
+		memset(OutBuffer, 0, OutBufferSize);
+	}
+	else
+	{
+		strncpy_s(OutBuffer, OutBufferSize, this->m_SQLData[index], (OutBufferSize - 1));
+	}
+}
+
+void CQueryManager::GetAsBinary(char* ColName, BYTE* OutBuffer, int OutBufferSize)
+{
+	int index = this->FindIndex(ColName);
+
+	if (index == -1)
+	{
+		memset(OutBuffer, 0, OutBufferSize);
+	}
+	else
+	{
+		this->ConvertStringToBinary(this->m_SQLData[index], sizeof(this->m_SQLData[index]), OutBuffer, OutBufferSize);
+	}
+}
+
+void CQueryManager::BindParameterAsString(int ParamNumber, void* InBuffer, int ColumnSize)
+{
+	if (this->m_stmt != NULL)
+	{
+		sqlite3_bind_text(this->m_stmt, ParamNumber, (const char*)InBuffer, ColumnSize, SQLITE_TRANSIENT);
+	}
+}
+
+void CQueryManager::BindParameterAsBinary(int ParamNumber, void* InBuffer, int ColumnSize)
+{
+	if (this->m_stmt != NULL)
+	{
+		sqlite3_bind_blob(this->m_stmt, ParamNumber, InBuffer, ColumnSize, SQLITE_TRANSIENT);
+	}
+}
+
+void CQueryManager::ConvertStringToBinary(char* InBuff, int InSize, BYTE* OutBuff, int OutSize)
+{
+	int size = 0;
+
+	memset(OutBuff, 0, OutSize);
+
+	for (int n = 0; n < InSize, size < OutSize; n++)
+	{
+		if (InBuff[n] == 0)
+		{
+			break;
+		}
+
+		if ((n % 2) == 0)
+		{
+			OutBuff[size] = ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0')) * 16;
+
+			size = size + 0;
+		}
+		else
+		{
+			OutBuff[size] = OutBuff[size] | ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0'));
+
+			size = size + 1;
+		}
+	}
+}
+
+void CQueryManager::ConvertBinaryToString(BYTE* InBuff, int InSize, char* OutBuff, int OutSize)
+{
+	int size = 0;
+
+	memset(OutBuff, 0, OutSize);
+
+	for (int n = 0; n < OutSize, size < InSize; n++)
+	{
+		if ((n % 2) == 0)
+		{
+			OutBuff[n] = (((InBuff[size] / 16) >= 10) ? ('A' + ((InBuff[size] / 16) - 10)) : ('0' + (InBuff[size] / 16)));
+
+			size = size + 0;
+		}
+		else
+		{
+			OutBuff[n] = (((InBuff[size] % 16) >= 10) ? ('A' + ((InBuff[size] % 16) - 10)) : ('0' + (InBuff[size] % 16)));
+
+			size = size + 1;
+		}
+	}
+}
+
+#elif !defined(MYSQL)
 
 CQueryManager gQueryManager;
 
