@@ -4,8 +4,6 @@
 
 #if defined(SQLITE)
 
-#pragma comment(lib,"sqlite3.lib")
-
 CQueryManager gQueryManager;
 
 CQueryManager::CQueryManager()

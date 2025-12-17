@@ -10,12 +10,18 @@ SQLite is a lightweight, serverless database that stores all data in a single fi
 
 ## Setup Instructions
 
-### 1. Download SQLite Library
-Before building, download the complete SQLite amalgamation from https://www.sqlite.org/download.html:
-- Download the "sqlite-amalgamation" package
-- Replace the `sqlite3.h` in `Source/MuServer/Dependencies/sqlite3/` with the complete header
-- Add `sqlite3.c` to the same directory
-- Or alternatively, link against a pre-built SQLite library
+### 1. Download SQLite Amalgamation (Required before compiling)
+Before building with SQLite configuration, you must download the SQLite amalgamation source:
+
+1. Visit https://www.sqlite.org/download.html
+2. Download the "sqlite-amalgamation-XXXXXXX.zip" package (where XXXXXXX is the version number)
+3. Extract the zip file
+4. Copy the `sqlite3.c` and `sqlite3.h` files to `Source/MuServer/Dependencies/sqlite3/`
+   - Replace the existing placeholder `sqlite3.c` file
+   - Optionally replace `sqlite3.h` for the complete API (the minimal header included works for this project)
+
+Alternative sources:
+- GitHub mirror: https://github.com/nicowilliams/sqlite-amalgamation
 
 ### 2. Create the Database
 Use a SQLite client (like sqlite3 command line tool or DB Browser for SQLite) to run the CreateDatabase.sql script:
