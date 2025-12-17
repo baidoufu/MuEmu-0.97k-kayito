@@ -1,8 +1,12 @@
 /*
 ** SQLite3 Header File
 ** 
-** This is a minimal header file for SQLite3 integration.
-** For production use, download the complete sqlite3.h from https://www.sqlite.org/download.html
+** IMPORTANT: This is a MINIMAL header file containing only the API declarations
+** needed for the MuOnline server. For production builds:
+** 
+** 1. Download the complete SQLite amalgamation from https://www.sqlite.org/download.html
+** 2. Replace this file with the official sqlite3.h
+** 3. Add sqlite3.c to your project or link against a pre-built SQLite library
 ** 
 ** SQLite is in the public domain.
 */
