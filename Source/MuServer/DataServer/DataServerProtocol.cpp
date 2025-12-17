@@ -346,7 +346,9 @@ void DataServerProtocolCore(int index, BYTE head, BYTE* lpMsg, int size)
 
 void GDServerInfoRecv(SDHP_SERVER_INFO_RECV* lpMsg, int index)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT ItemCount FROM GameServerInfo WHERE Number = 0") == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT ItemCount FROM GameServerInfo WHERE Number = 0") == false || gQueryManager.Fetch() == SQL_NO_DATA)
 #else
 	if (gQueryManager.ExecResultQuery("SELECT ItemCount FROM GameServerInfo WHERE Number=0") == false || gQueryManager.Fetch() == false)
@@ -354,7 +356,7 @@ void GDServerInfoRecv(SDHP_SERVER_INFO_RECV* lpMsg, int index)
 	{
 		gQueryManager.Close();
 
-	#ifndef MYSQL
+	#if defined(SQLITE) || !defined(MYSQL)
 
 		gQueryManager.ExecQuery("INSERT INTO GameServerInfo (Number, ItemCount) VALUES (0, 0)");
 	
@@ -388,7 +390,9 @@ void GDCharacterListRecv(SDHP_CHARACTER_LIST_RECV* lpMsg, int index)
 
 	memcpy(pMsg.account, lpMsg->account, sizeof(pMsg.account));
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT Id FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT Id FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 #else
 	if (gQueryManager.ExecResultQuery("SELECT Id FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -396,7 +400,7 @@ void GDCharacterListRecv(SDHP_CHARACTER_LIST_RECV* lpMsg, int index)
 	{
 		gQueryManager.Close();
 
-	#ifndef MYSQL
+	#if defined(SQLITE) || !defined(MYSQL)
 
 		gQueryManager.ExecQuery("INSERT INTO AccountCharacter (Id) VALUES ('%s')", lpMsg->account);
 
@@ -452,7 +456,9 @@ void GDCharacterListRecv(SDHP_CHARACTER_LIST_RECV* lpMsg, int index)
 			continue;
 		}
 
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT cLevel,Class,Inventory,CtlCode FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, CharacterName[n]) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
 		if (gQueryManager.ExecQuery("SELECT cLevel,Class,Inventory,CtlCode FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, CharacterName[n]) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	#else
 		if (gQueryManager.ExecResultQuery("SELECT cLevel, Class, Inventory, CtlCode FROM `Character` WHERE AccountID='%s' AND Name='%s'", lpMsg->account, CharacterName[n]) == false || gQueryManager.Fetch() == false)
@@ -552,7 +558,9 @@ void GDCharacterCreateRecv(SDHP_CHARACTER_CREATE_RECV* lpMsg, int index)
 
 	char CharacterName[5][11] = { 0 };
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (pMsg.result == 0 || gQueryManager.ExecQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (pMsg.result == 0 || gQueryManager.ExecQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 #else
 	if (pMsg.result == 0 || gQueryManager.ExecResultQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -582,11 +590,39 @@ void GDCharacterCreateRecv(SDHP_CHARACTER_CREATE_RECV* lpMsg, int index)
 		}
 		else
 		{
-		#ifndef MYSQL
+		#if defined(SQLITE)
+			// SQLite: Implement WZ_CreateCharacter logic directly
+			// Check if character name already exists
+			if (gQueryManager.ExecQuery("SELECT 1 FROM Character WHERE Name='%s'", lpMsg->name) != false)
+			{
+				if (gQueryManager.Fetch() != false)
+				{
+					gQueryManager.Close();
+					pMsg.result = 0; // Name already exists
+				}
+				else
+				{
+					gQueryManager.Close();
+					// Insert character from DefaultClassType
+					if (gQueryManager.ExecQuery("INSERT INTO Character (AccountID, Name, cLevel, LevelUpPoint, Class, Strength, Dexterity, Vitality, Energy, Inventory, MagicList, Life, MaxLife, Mana, MaxMana, BP, MaxBP, MapNumber, MapPosX, MapPosY, Quest, EffectList) SELECT '%s', '%s', Level, LevelUpPoint, %d, Strength, Dexterity, Vitality, Energy, Inventory, MagicList, Life, MaxLife, Mana, MaxMana, 0, 0, MapNumber, MapPosX, MapPosY, Quest, EffectList FROM DefaultClassType WHERE Class=%d", lpMsg->account, lpMsg->name, lpMsg->Class, lpMsg->Class) == false)
+					{
+						gQueryManager.Close();
+						pMsg.result = 0;
+					}
+					else
+					{
+						gQueryManager.Close();
+						pMsg.result = 1;
+					}
+				}
+			}
+			else
+			{
+				gQueryManager.Close();
+				pMsg.result = 0;
+			}
+		#elif !defined(MYSQL)
 			if (gQueryManager.ExecQuery("EXEC WZ_CreateCharacter '%s','%s','%d'", lpMsg->account, lpMsg->name, lpMsg->Class) == false || gQueryManager.Fetch() == SQL_NO_DATA)
-		#else
-			if (gQueryManager.ExecResultQuery("CALL WZ_CreateCharacter('%s', '%s', '%d')", lpMsg->account, lpMsg->name, lpMsg->Class) == false || gQueryManager.Fetch() == false)
-		#endif
 			{
 				gQueryManager.Close();
 
@@ -594,22 +630,28 @@ void GDCharacterCreateRecv(SDHP_CHARACTER_CREATE_RECV* lpMsg, int index)
 			}
 			else
 			{
-			#ifndef MYSQL
-
 				pMsg.result = gQueryManager.GetResult(0);
-
-			#else
-
-				pMsg.result = gQueryManager.GetAsInteger("Result");
-
-			#endif
 
 				gQueryManager.Close();
 			}
+		#else
+			if (gQueryManager.ExecResultQuery("CALL WZ_CreateCharacter('%s', '%s', '%d')", lpMsg->account, lpMsg->name, lpMsg->Class) == false || gQueryManager.Fetch() == false)
+			{
+				gQueryManager.Close();
+
+				pMsg.result = 0;
+			}
+			else
+			{
+				pMsg.result = gQueryManager.GetAsInteger("Result");
+
+				gQueryManager.Close();
+			}
+		#endif
 
 			if (pMsg.result == 1)
 			{
-			#ifndef MYSQL
+			#if defined(SQLITE) || !defined(MYSQL)
 
 				gQueryManager.ExecQuery("UPDATE AccountCharacter SET GameID%d='%s' WHERE Id='%s'", (pMsg.slot + 1), lpMsg->name, lpMsg->account);
 
@@ -646,39 +688,49 @@ void GDCharacterDeleteRecv(SDHP_CHARACTER_DELETE_RECV* lpMsg, int index)
 		pMsg.result = 1;
 	}
 
-#ifndef MYSQL
-	if (pMsg.result == 0 || gQueryManager.ExecQuery("EXEC WZ_DeleteCharacter '%s','%s'", lpMsg->account, lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
-#else
-	if (pMsg.result == 0 || gQueryManager.ExecResultQuery("CALL WZ_DeleteCharacter('%s', '%s')", lpMsg->account, lpMsg->name) == false || gQueryManager.Fetch() == false)
-#endif
+#if defined(SQLITE)
+	if (pMsg.result == 0)
 	{
-		gQueryManager.Close();
-
 		pMsg.result = 0;
 	}
 	else
 	{
-	#ifndef MYSQL
-
-		pMsg.result = gQueryManager.GetResult(0);
-
-	#else
-
-		pMsg.result = gQueryManager.GetAsInteger("Result");
-
-	#endif
-
-		gQueryManager.Close();
-
+		// SQLite: Implement WZ_DeleteCharacter logic directly
+		// Check if character exists and belongs to this account
+		if (gQueryManager.ExecQuery("SELECT 1 FROM Character WHERE Name='%s' AND AccountID='%s'", lpMsg->name, lpMsg->account) == false || gQueryManager.Fetch() == false)
+		{
+			gQueryManager.Close();
+			pMsg.result = 0;
+		}
+		else
+		{
+			gQueryManager.Close();
+			
+			// Delete related data
+			gQueryManager.ExecQuery("DELETE FROM ResetInfo WHERE Name='%s'", lpMsg->name);
+			gQueryManager.Close();
+			
+			gQueryManager.ExecQuery("DELETE FROM OptionData WHERE Name='%s'", lpMsg->name);
+			gQueryManager.Close();
+			
+			gQueryManager.ExecQuery("DELETE FROM RankingBloodCastle WHERE Name='%s'", lpMsg->name);
+			gQueryManager.Close();
+			
+			gQueryManager.ExecQuery("DELETE FROM RankingDevilSquare WHERE Name='%s'", lpMsg->name);
+			gQueryManager.Close();
+			
+			// Delete character
+			gQueryManager.ExecQuery("DELETE FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name);
+			gQueryManager.Close();
+			
+			pMsg.result = 1;
+		}
+		
 		if (pMsg.result == 1)
 		{
 			char CharacterName[5][11] = { 0 };
 
-		#ifndef MYSQL
-			if (gQueryManager.ExecQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
-		#else
-			if (gQueryManager.ExecResultQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
-		#endif
+			if (gQueryManager.ExecQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
 			{
 				gQueryManager.Close();
 
@@ -702,15 +754,7 @@ void GDCharacterDeleteRecv(SDHP_CHARACTER_DELETE_RECV* lpMsg, int index)
 
 				if (GetCharacterSlot(CharacterName, lpMsg->name, &slot) != false)
 				{
-				#ifndef MYSQL
-
 					gQueryManager.ExecQuery("UPDATE AccountCharacter SET GameID%d=NULL WHERE Id='%s'", (slot + 1), lpMsg->account);
-
-				#else
-
-					gQueryManager.ExecUpdateQuery("UPDATE AccountCharacter SET GameID%d=NULL WHERE Id='%s'", (slot + 1), lpMsg->account);
-
-				#endif
 
 					gQueryManager.Close();
 				}
@@ -742,6 +786,153 @@ void GDCharacterDeleteRecv(SDHP_CHARACTER_DELETE_RECV* lpMsg, int index)
 			}
 		}
 	}
+#elif !defined(MYSQL)
+	if (pMsg.result == 0 || gQueryManager.ExecQuery("EXEC WZ_DeleteCharacter '%s','%s'", lpMsg->account, lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 0;
+	}
+	else
+	{
+		pMsg.result = gQueryManager.GetResult(0);
+
+		gQueryManager.Close();
+
+		if (pMsg.result == 1)
+		{
+			char CharacterName[5][11] = { 0 };
+
+			if (gQueryManager.ExecQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+			{
+				gQueryManager.Close();
+
+				pMsg.result = 1;
+			}
+			else
+			{
+				gQueryManager.GetAsString("GameID1", CharacterName[0], sizeof(CharacterName[0]));
+
+				gQueryManager.GetAsString("GameID2", CharacterName[1], sizeof(CharacterName[1]));
+
+				gQueryManager.GetAsString("GameID3", CharacterName[2], sizeof(CharacterName[2]));
+
+				gQueryManager.GetAsString("GameID4", CharacterName[3], sizeof(CharacterName[3]));
+
+				gQueryManager.GetAsString("GameID5", CharacterName[4], sizeof(CharacterName[4]));
+
+				gQueryManager.Close();
+
+				BYTE slot;
+
+				if (GetCharacterSlot(CharacterName, lpMsg->name, &slot) != false)
+				{
+					gQueryManager.ExecQuery("UPDATE AccountCharacter SET GameID%d=NULL WHERE Id='%s'", (slot + 1), lpMsg->account);
+
+					gQueryManager.Close();
+				}
+			}
+
+			if (lpMsg->guild == 1)
+			{
+				SDHP_GUILD_DELETE_RECV pMsg;
+
+				pMsg.index = lpMsg->index;
+
+				memcpy(pMsg.Name, lpMsg->name, sizeof(pMsg.Name));
+
+				memcpy(pMsg.GuildName, lpMsg->GuildName, sizeof(pMsg.GuildName));
+
+				gGuild.GDGuildDeleteRecv(&pMsg, index);
+			}
+			else if (lpMsg->guild == 2)
+			{
+				SDHP_GUILD_MEMBER_DELETE_RECV pMsg;
+
+				pMsg.index = lpMsg->index;
+
+				memcpy(pMsg.Name, lpMsg->name, sizeof(pMsg.Name));
+
+				memcpy(pMsg.GuildName, lpMsg->GuildName, sizeof(pMsg.GuildName));
+
+				gGuild.GDGuildMemberDeleteRecv(&pMsg, index);
+			}
+		}
+	}
+#else
+	if (pMsg.result == 0 || gQueryManager.ExecResultQuery("CALL WZ_DeleteCharacter('%s', '%s')", lpMsg->account, lpMsg->name) == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 0;
+	}
+	else
+	{
+		pMsg.result = gQueryManager.GetAsInteger("Result");
+
+		gQueryManager.Close();
+
+		if (pMsg.result == 1)
+		{
+			char CharacterName[5][11] = { 0 };
+
+			if (gQueryManager.ExecResultQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+			{
+				gQueryManager.Close();
+
+				pMsg.result = 1;
+			}
+			else
+			{
+				gQueryManager.GetAsString("GameID1", CharacterName[0], sizeof(CharacterName[0]));
+
+				gQueryManager.GetAsString("GameID2", CharacterName[1], sizeof(CharacterName[1]));
+
+				gQueryManager.GetAsString("GameID3", CharacterName[2], sizeof(CharacterName[2]));
+
+				gQueryManager.GetAsString("GameID4", CharacterName[3], sizeof(CharacterName[3]));
+
+				gQueryManager.GetAsString("GameID5", CharacterName[4], sizeof(CharacterName[4]));
+
+				gQueryManager.Close();
+
+				BYTE slot;
+
+				if (GetCharacterSlot(CharacterName, lpMsg->name, &slot) != false)
+				{
+					gQueryManager.ExecUpdateQuery("UPDATE AccountCharacter SET GameID%d=NULL WHERE Id='%s'", (slot + 1), lpMsg->account);
+
+					gQueryManager.Close();
+				}
+			}
+
+			if (lpMsg->guild == 1)
+			{
+				SDHP_GUILD_DELETE_RECV pMsg;
+
+				pMsg.index = lpMsg->index;
+
+				memcpy(pMsg.Name, lpMsg->name, sizeof(pMsg.Name));
+
+				memcpy(pMsg.GuildName, lpMsg->GuildName, sizeof(pMsg.GuildName));
+
+				gGuild.GDGuildDeleteRecv(&pMsg, index);
+			}
+			else if (lpMsg->guild == 2)
+			{
+				SDHP_GUILD_MEMBER_DELETE_RECV pMsg;
+
+				pMsg.index = lpMsg->index;
+
+				memcpy(pMsg.Name, lpMsg->name, sizeof(pMsg.Name));
+
+				memcpy(pMsg.GuildName, lpMsg->GuildName, sizeof(pMsg.GuildName));
+
+				gGuild.GDGuildMemberDeleteRecv(&pMsg, index);
+			}
+		}
+	}
+#endif
 
 	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 }
@@ -760,7 +951,9 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 	pMsg.result = ((CheckTextSyntax(lpMsg->name, sizeof(lpMsg->name)) == false) ? 0 : 1);
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (pMsg.result == 0 || gQueryManager.ExecQuery("SELECT * FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (pMsg.result == 0 || gQueryManager.ExecQuery("SELECT * FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 #else
 	if (pMsg.result == 0 || gQueryManager.ExecResultQuery("SELECT * FROM `Character` WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) == false || gQueryManager.Fetch() == false)
@@ -832,15 +1025,35 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 		gQueryManager.Close();
 
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		// SQLite: Implement WZ_GetResetInfo logic directly
+		// Ensure ResetInfo record exists
+		if (gQueryManager.ExecQuery("SELECT 1 FROM ResetInfo WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+		{
+			gQueryManager.Close();
+			gQueryManager.ExecQuery("INSERT INTO ResetInfo (Name) VALUES ('%s')", lpMsg->name);
+			gQueryManager.Close();
+		}
+		else
+		{
+			gQueryManager.Close();
+		}
+		// Get ResetCount from Character
+		if (gQueryManager.ExecQuery("SELECT ResetCount FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) != false)
+		{
+			gQueryManager.Fetch();
+			pMsg.Reset = gQueryManager.GetAsInteger("ResetCount");
+			gQueryManager.Close();
+		}
+		else
+		{
+			gQueryManager.Close();
+			pMsg.Reset = 0;
+		}
+
+	#elif !defined(MYSQL)
 
 		gQueryManager.ExecQuery("EXEC WZ_GetResetInfo '%s','%s'", lpMsg->account, lpMsg->name);
-
-	#else
-
-		gQueryManager.ExecResultQuery("CALL WZ_GetResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
-
-	#endif
 
 		gQueryManager.Fetch();
 
@@ -848,15 +1061,36 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 		gQueryManager.Close();
 
-	#ifndef MYSQL
-
-		gQueryManager.ExecQuery("EXEC WZ_GetGrandResetInfo '%s','%s'", lpMsg->account, lpMsg->name);
-
 	#else
 
-		gQueryManager.ExecResultQuery("CALL WZ_GetGrandResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
+		gQueryManager.ExecResultQuery("CALL WZ_GetResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
+
+		gQueryManager.Fetch();
+
+		pMsg.Reset = gQueryManager.GetAsInteger("Reset");
+
+		gQueryManager.Close();
 
 	#endif
+
+	#if defined(SQLITE)
+		// SQLite: Implement WZ_GetGrandResetInfo logic directly
+		// Get GrandReset from Character
+		if (gQueryManager.ExecQuery("SELECT GrandReset FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) != false)
+		{
+			gQueryManager.Fetch();
+			pMsg.GrandReset = gQueryManager.GetAsInteger("GrandReset");
+			gQueryManager.Close();
+		}
+		else
+		{
+			gQueryManager.Close();
+			pMsg.GrandReset = 0;
+		}
+
+	#elif !defined(MYSQL)
+
+		gQueryManager.ExecQuery("EXEC WZ_GetGrandResetInfo '%s','%s'", lpMsg->account, lpMsg->name);
 
 		gQueryManager.Fetch();
 
@@ -864,7 +1098,19 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 		gQueryManager.Close();
 
-	#ifndef MYSQL
+	#else
+
+		gQueryManager.ExecResultQuery("CALL WZ_GetGrandResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
+
+		gQueryManager.Fetch();
+
+		pMsg.GrandReset = gQueryManager.GetAsInteger("GrandReset");
+
+		gQueryManager.Close();
+
+	#endif
+
+	#if defined(SQLITE) || !defined(MYSQL)
 
 		gQueryManager.ExecQuery("UPDATE AccountCharacter SET GameIDC='%s' WHERE Id='%s'", lpMsg->name, lpMsg->account);
 
@@ -975,11 +1221,34 @@ void GDCreateItemRecv(SDHP_CREATE_ITEM_RECV* lpMsg, int index)
 
 	pMsg.Map = lpMsg->Map;
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_GetItemSerial logic directly
+	if (gQueryManager.ExecQuery("SELECT ItemCount FROM GameServerInfo WHERE Number = 0") == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+		pMsg.Serial = 0;
+	}
+	else
+	{
+		int itemSerial = gQueryManager.GetAsInteger("ItemCount");
+		gQueryManager.Close();
+		
+		if (itemSerial >= 2147483647)
+		{
+			itemSerial = 1;
+		}
+		else
+		{
+			itemSerial = itemSerial + 1;
+		}
+		
+		gQueryManager.ExecQuery("UPDATE GameServerInfo SET ItemCount = %d WHERE Number = 0", itemSerial);
+		gQueryManager.Close();
+		
+		pMsg.Serial = itemSerial;
+	}
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("EXEC WZ_GetItemSerial") == false || gQueryManager.Fetch() == SQL_NO_DATA)
-#else
-	if (gQueryManager.ExecResultQuery("CALL WZ_GetItemSerial()") == false || gQueryManager.Fetch() == false)
-#endif
 	{
 		gQueryManager.Close();
 
@@ -987,18 +1256,24 @@ void GDCreateItemRecv(SDHP_CREATE_ITEM_RECV* lpMsg, int index)
 	}
 	else
 	{
-	#ifndef MYSQL
-
 		pMsg.Serial = gQueryManager.GetResult(0);
-
-	#else
-
-		pMsg.Serial = gQueryManager.GetAsInteger("Result");
-
-	#endif
 
 		gQueryManager.Close();
 	}
+#else
+	if (gQueryManager.ExecResultQuery("CALL WZ_GetItemSerial()") == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+
+		pMsg.Serial = 0;
+	}
+	else
+	{
+		pMsg.Serial = gQueryManager.GetAsInteger("Result");
+
+		gQueryManager.Close();
+	}
+#endif
 
 	pMsg.ItemIndex = lpMsg->ItemIndex;
 
@@ -1052,7 +1327,9 @@ void GDOptionDataRecv(SDHP_OPTION_DATA_RECV* lpMsg, int index)
 
 	memcpy(pMsg.name, lpMsg->name, sizeof(pMsg.name));
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT * FROM OptionData WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT * FROM OptionData WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 #else
 	if (gQueryManager.ExecResultQuery("SELECT * FROM OptionData WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
@@ -1094,7 +1371,30 @@ void GDOptionDataRecv(SDHP_OPTION_DATA_RECV* lpMsg, int index)
 
 void GDOptionDataSaveRecv(SDHP_OPTION_DATA_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+
+	if (gQueryManager.ExecQuery("SELECT Name FROM OptionData WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+
+		gQueryManager.BindParameterAsBinary(1, lpMsg->SkillKey, sizeof(lpMsg->SkillKey));
+
+		gQueryManager.ExecQuery("INSERT INTO OptionData (Name,SkillKey,GameOption,Qkey,Wkey,Ekey,ChatWindow) VALUES ('%s',?,%d,%d,%d,%d,%d)", lpMsg->name, lpMsg->GameOption, lpMsg->QKey, lpMsg->WKey, lpMsg->EKey, lpMsg->ChatWindow);
+
+		gQueryManager.Close();
+	}
+	else
+	{
+		gQueryManager.Close();
+
+		gQueryManager.BindParameterAsBinary(1, lpMsg->SkillKey, sizeof(lpMsg->SkillKey));
+
+		gQueryManager.ExecQuery("UPDATE OptionData SET SkillKey=?,GameOption=%d,Qkey=%d,Wkey=%d,Ekey=%d,ChatWindow=%d WHERE Name='%s'", lpMsg->GameOption, lpMsg->QKey, lpMsg->WKey, lpMsg->EKey, lpMsg->ChatWindow, lpMsg->name);
+
+		gQueryManager.Close();
+	}
+
+#elif !defined(MYSQL)
 
 	if (gQueryManager.ExecQuery("SELECT Name FROM OptionData WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	{
@@ -1149,36 +1449,56 @@ void GDOptionDataSaveRecv(SDHP_OPTION_DATA_SAVE_RECV* lpMsg)
 
 void GDResetInfoSaveRecv(SDHP_RESET_INFO_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_SetResetInfo logic directly
+	gQueryManager.ExecQuery("UPDATE Character SET ResetCount=%d WHERE AccountID='%s' AND Name='%s'", lpMsg->Reset, lpMsg->account, lpMsg->name);
+	gQueryManager.Close();
+	
+	gQueryManager.ExecQuery("UPDATE ResetInfo SET ResetDay=%d, ResetDayDate=datetime('now'), ResetWek=%d, ResetWekDate=datetime('now'), ResetMon=%d, ResetMonDate=datetime('now') WHERE Name='%s'", lpMsg->ResetDay, lpMsg->ResetWek, lpMsg->ResetMon, lpMsg->name);
+	gQueryManager.Close();
+
+#elif !defined(MYSQL)
 
 	gQueryManager.ExecQuery("EXEC WZ_SetResetInfo '%s','%s','%d','%d','%d','%d'", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->ResetDay, lpMsg->ResetWek, lpMsg->ResetMon);
 
 	gQueryManager.Fetch();
 
+	gQueryManager.Close();
+
 #else
 
 	gQueryManager.ExecUpdateQuery("CALL WZ_SetResetInfo('%s', '%s', '%d', '%d', '%d', '%d')", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->ResetDay, lpMsg->ResetWek, lpMsg->ResetMon);
 
-#endif
-
 	gQueryManager.Close();
+
+#endif
 }
 
 void GDGrandResetInfoSaveRecv(SDHP_GRAND_RESET_INFO_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_SetGrandResetInfo logic directly
+	gQueryManager.ExecQuery("UPDATE Character SET ResetCount=%d, GrandResetCount=%d WHERE AccountID='%s' AND Name='%s'", lpMsg->Reset, lpMsg->GrandReset, lpMsg->account, lpMsg->name);
+	gQueryManager.Close();
+	
+	gQueryManager.ExecQuery("UPDATE ResetInfo SET GrandResetDay=%d, GrandResetDayDate=datetime('now'), GrandResetWek=%d, GrandResetWekDate=datetime('now'), GrandResetMon=%d, GrandResetMonDate=datetime('now') WHERE Name='%s'", lpMsg->GrandResetDay, lpMsg->GrandResetWek, lpMsg->GrandResetMon, lpMsg->name);
+	gQueryManager.Close();
+
+#elif !defined(MYSQL)
 
 	gQueryManager.ExecQuery("EXEC WZ_SetGrandResetInfo '%s','%s','%d','%d','%d','%d','%d'", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->GrandReset, lpMsg->GrandResetDay, lpMsg->GrandResetWek, lpMsg->GrandResetMon);
 
 	gQueryManager.Fetch();
 
+	gQueryManager.Close();
+
 #else
 
 	gQueryManager.ExecUpdateQuery("CALL WZ_SetGrandResetInfo('%s', '%s', '%d', '%d', '%d', '%d', '%d')", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->GrandReset, lpMsg->GrandResetDay, lpMsg->GrandResetWek, lpMsg->GrandResetMon);
 
-#endif
-
 	gQueryManager.Close();
+
+#endif
 }
 
 void GDGlobalNoticeRecv(SDHP_GLOBAL_NOTICE_RECV* lpMsg, int index)
@@ -1258,7 +1578,26 @@ void DGGlobalWhisperEchoSend(WORD ServerCode, WORD index, char* account, char* n
 
 void GDRankingBloodCastleSaveRecv(SDHP_RANKING_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+
+	if (gQueryManager.ExecQuery("SELECT Name FROM RankingBloodCastle WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+
+		gQueryManager.ExecQuery("INSERT INTO RankingBloodCastle (Name,Score) VALUES ('%s',%d)", lpMsg->name, lpMsg->score);
+
+		gQueryManager.Close();
+	}
+	else
+	{
+		gQueryManager.Close();
+
+		gQueryManager.ExecQuery("UPDATE RankingBloodCastle SET Score=Score+%d WHERE Name='%s'", lpMsg->score, lpMsg->name);
+
+		gQueryManager.Close();
+	}
+
+#elif !defined(MYSQL)
 
 	if (gQueryManager.ExecQuery("SELECT Name FROM RankingBloodCastle WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	{
@@ -1301,7 +1640,26 @@ void GDRankingBloodCastleSaveRecv(SDHP_RANKING_SAVE_RECV* lpMsg)
 
 void GDRankingDevilSquareSaveRecv(SDHP_RANKING_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+
+	if (gQueryManager.ExecQuery("SELECT Name FROM RankingDevilSquare WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+	{
+		gQueryManager.Close();
+
+		gQueryManager.ExecQuery("INSERT INTO RankingDevilSquare (Name,Score) VALUES ('%s',%d)", lpMsg->name, lpMsg->score);
+
+		gQueryManager.Close();
+	}
+	else
+	{
+		gQueryManager.Close();
+
+		gQueryManager.ExecQuery("UPDATE RankingDevilSquare SET Score=Score+%d WHERE Name='%s'", lpMsg->score, lpMsg->name);
+
+		gQueryManager.Close();
+	}
+
+#elif !defined(MYSQL)
 
 	if (gQueryManager.ExecQuery("SELECT Name FROM RankingDevilSquare WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	{

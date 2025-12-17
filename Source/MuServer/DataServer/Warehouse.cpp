@@ -27,7 +27,9 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 
 	if (lpMsg->WarehouseNumber == 0)
 	{
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT AccountID FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
 		if (gQueryManager.ExecQuery("SELECT AccountID FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	#else
 		if (gQueryManager.ExecResultQuery("SELECT AccountID FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -35,7 +37,7 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 		{
 			gQueryManager.Close();
 
-		#ifndef MYSQL
+		#if defined(SQLITE) || !defined(MYSQL)
 
 			gQueryManager.ExecQuery("INSERT INTO warehouse (AccountID,Money) VALUES ('%s',0)", lpMsg->account);
 
@@ -47,7 +49,17 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 
 			gQueryManager.Close();
 
-		#ifndef MYSQL
+		#if defined(SQLITE)
+
+			// For SQLite, use bound binary parameter to initialize Items with 0xFF
+			{
+				BYTE emptyItems[sizeof(pMsg.WarehouseItem)];
+				memset(emptyItems, 0xFF, sizeof(emptyItems));
+				gQueryManager.BindParameterAsBinary(1, emptyItems, sizeof(emptyItems));
+				gQueryManager.ExecQuery("UPDATE warehouse SET Items=? WHERE AccountID='%s'", lpMsg->account);
+			}
+
+		#elif !defined(MYSQL)
 
 			gQueryManager.ExecQuery("UPDATE warehouse SET Items=CONVERT(varbinary(%d),REPLICATE(char(0xFF),%d)) WHERE AccountID='%s'", sizeof(pMsg.WarehouseItem), sizeof(pMsg.WarehouseItem), lpMsg->account);
 
@@ -67,7 +79,9 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 		{
 			gQueryManager.Close();
 
-		#ifndef MYSQL
+		#if defined(SQLITE)
+			if (gQueryManager.ExecQuery("SELECT Items,Money,pw FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+		#elif !defined(MYSQL)
 			if (gQueryManager.ExecQuery("SELECT Items,Money,pw FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 		#else
 			if (gQueryManager.ExecResultQuery("SELECT Items, Money, pw FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -95,7 +109,9 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 	}
 	else
 	{
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT AccountID FROM ExtWarehouse WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
 		if (gQueryManager.ExecQuery("SELECT AccountID FROM ExtWarehouse WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	#else
 		if (gQueryManager.ExecResultQuery("SELECT AccountID FROM ExtWarehouse WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber) == false || gQueryManager.Fetch() == false)
@@ -103,7 +119,7 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 		{
 			gQueryManager.Close();
 
-		#ifndef MYSQL
+		#if defined(SQLITE) || !defined(MYSQL)
 
 			gQueryManager.ExecQuery("INSERT INTO ExtWarehouse (AccountID,Money,Number) VALUES ('%s',0,%d)", lpMsg->account, lpMsg->WarehouseNumber);
 
@@ -115,7 +131,17 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 
 			gQueryManager.Close();
 
-		#ifndef MYSQL
+		#if defined(SQLITE)
+
+			// For SQLite, use bound binary parameter to initialize Items with 0xFF
+			{
+				BYTE emptyItems[sizeof(pMsg.WarehouseItem)];
+				memset(emptyItems, 0xFF, sizeof(emptyItems));
+				gQueryManager.BindParameterAsBinary(1, emptyItems, sizeof(emptyItems));
+				gQueryManager.ExecQuery("UPDATE ExtWarehouse SET Items=? WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber);
+			}
+
+		#elif !defined(MYSQL)
 
 			gQueryManager.ExecQuery("UPDATE ExtWarehouse SET Items=CONVERT(varbinary(%d),REPLICATE(char(0xFF),%d)) WHERE AccountID='%s' AND Number=%d", sizeof(pMsg.WarehouseItem), sizeof(pMsg.WarehouseItem), lpMsg->account, lpMsg->WarehouseNumber);
 
@@ -135,7 +161,9 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 		{
 			gQueryManager.Close();
 
-		#ifndef MYSQL
+		#if defined(SQLITE)
+			if (gQueryManager.ExecQuery("SELECT Items,Money FROM ExtWarehouse WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber) == false || gQueryManager.Fetch() == false)
+		#elif !defined(MYSQL)
 			if (gQueryManager.ExecQuery("SELECT Items,Money FROM ExtWarehouse WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 		#else
 			if (gQueryManager.ExecResultQuery("SELECT Items, Money FROM ExtWarehouse WHERE AccountID='%s' AND Number=%d", lpMsg->account, lpMsg->WarehouseNumber) == false || gQueryManager.Fetch() == false)
@@ -155,7 +183,9 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 
 				gQueryManager.Close();
 
-			#ifndef MYSQL
+			#if defined(SQLITE)
+				if (gQueryManager.ExecQuery("SELECT pw FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+			#elif !defined(MYSQL)
 				if (gQueryManager.ExecQuery("SELECT pw FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 			#else
 				if (gQueryManager.ExecResultQuery("SELECT pw FROM warehouse WHERE AccountID='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)

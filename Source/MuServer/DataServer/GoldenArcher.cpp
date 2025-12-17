@@ -29,15 +29,17 @@ void CGoldenArcher::GDGoldenArcherGetValuesRecv(SDHP_GOLDEN_ARCHER_GET_VALUES_RE
 
 	memcpy(pMsg.account, lpMsg->account, sizeof(pMsg.account));
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT * FROM GoldenArcherCoin WHERE AccountID = '%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT * FROM GoldenArcherCoin WHERE AccountID = '%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
-	#else
+#else
 	if (gQueryManager.ExecResultQuery("SELECT * FROM GoldenArcherCoin WHERE AccountID = '%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
-	#endif
+#endif
 	{
 		gQueryManager.Close();
 
-	#ifndef MYSQL
+	#if defined(SQLITE) || !defined(MYSQL)
 
 		gQueryManager.ExecQuery("INSERT INTO GoldenArcherCoin (AccountID) VALUES ('%s')", lpMsg->account);
 
@@ -70,17 +72,19 @@ void CGoldenArcher::GDGoldenArcherGetValuesRecv(SDHP_GOLDEN_ARCHER_GET_VALUES_RE
 
 	LUCKY_NUMBERS_REGISTERED info;
 
-#ifndef MYSQL
+#if defined(SQLITE)
 	if (gQueryManager.ExecQuery("SELECT * FROM GoldenArcherLuckyNumbers WHERE AccountID = '%s'", lpMsg->account))
-	#else
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT * FROM GoldenArcherLuckyNumbers WHERE AccountID = '%s'", lpMsg->account))
+#else
 	if (gQueryManager.ExecResultQuery("SELECT * FROM GoldenArcherLuckyNumbers WHERE AccountID = '%s'", lpMsg->account))
-	#endif
+#endif
 	{
-	#ifndef MYSQL
-		while (gQueryManager.Fetch() != SQL_NO_DATA)
-		#else
+	#if defined(SQLITE) || defined(MYSQL)
 		while (gQueryManager.Fetch())
-		#endif
+	#else
+		while (gQueryManager.Fetch() != SQL_NO_DATA)
+	#endif
 		{
 			gQueryManager.GetAsString("LuckyNumber", info.LuckyNumber, sizeof(info.LuckyNumber));
 
@@ -195,17 +199,19 @@ void CGoldenArcher::GDBingoGetWinnersRecv(SDHP_BINGO_GET_WINNERS_RECV* lpMsg, in
 
 	BINGO_WINNER info;
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT * FROM GoldenArcherLuckyNumbers ORDER BY RANDOM() LIMIT %d", lpMsg->count))
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT TOP %d * FROM GoldenArcherLuckyNumbers ORDER BY NEWID()", lpMsg->count))
-	#else
+#else
 	if (gQueryManager.ExecResultQuery("SELECT * FROM GoldenArcherLuckyNumbers ORDER BY RAND() LIMIT %d", lpMsg->count))
-	#endif
+#endif
 	{
-	#ifndef MYSQL
-		while (gQueryManager.Fetch() != SQL_NO_DATA)
-		#else
+	#if defined(SQLITE) || defined(MYSQL)
 		while (gQueryManager.Fetch())
-		#endif
+	#else
+		while (gQueryManager.Fetch() != SQL_NO_DATA)
+	#endif
 		{
 			gQueryManager.GetAsString("AccountID", info.Account, sizeof(info.Account));
 

@@ -129,7 +129,9 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 	if (MD5Encryption == 0)
 	{
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
 		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s' COLLATE Latin1_General_BIN", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	#else
 		if (gQueryManager.ExecResultQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -168,7 +170,9 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 	}
 	else
 	{
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
 		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s' COLLATE Latin1_General_BIN", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 	#else
 		if (gQueryManager.ExecResultQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -211,7 +215,16 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 		}
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_DesblocAccount logic directly
+	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET bloc_code=0 WHERE memb___id='%s'", lpMsg->account);
+	gQueryManager.Close();
+
+	// SQLite: Implement WZ_DesblocCharacters logic directly
+	gQueryManager.ExecQuery("UPDATE Character SET CtlCode=0 WHERE AccountID='%s'", lpMsg->account);
+	gQueryManager.Close();
+
+#elif !defined(MYSQL)
 
 	gQueryManager.ExecQuery("EXEC WZ_DesblocAccount '%s'", lpMsg->account);
 
@@ -233,9 +246,11 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 #endif
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT sno__numb, bloc_code FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("SELECT sno__numb, bloc_code FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
-	#else
+#else
 	if (gQueryManager.ExecResultQuery("SELECT sno__numb, bloc_code FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
 #endif
 	{
@@ -254,7 +269,10 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 	gQueryManager.Close();
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_GetAccountLevel logic directly
+	if (gQueryManager.ExecQuery("SELECT AccountLevel, AccountExpireDate FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 #else
 	if (gQueryManager.ExecResultQuery("CALL WZ_GetAccountLevel('%s')", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -275,7 +293,10 @@ void GJConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg, int index)
 
 	gQueryManager.Close();
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_CONNECT_MEMB logic directly
+	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET ServerName='%s', IP='%s', ConnectStat=1 WHERE memb___id='%s'", gServerManager[index].m_ServerName, lpMsg->IpAddress, lpMsg->account);
+#elif !defined(MYSQL)
 	gQueryManager.ExecQuery("EXEC WZ_CONNECT_MEMB '%s','%s','%s'", lpMsg->account, gServerManager[index].m_ServerName, lpMsg->IpAddress);
 #else
 	gQueryManager.ExecUpdateQuery("CALL WZ_CONNECT_MEMB('%s', '%s', '%s')", lpMsg->account, gServerManager[index].m_ServerName, lpMsg->IpAddress);
@@ -339,7 +360,10 @@ void GJDisconnectAccountRecv(SDHP_DISCONNECT_ACCOUNT_RECV* lpMsg, int index)
 		return;
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_DISCONNECT_MEMB logic directly
+	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET ConnectStat=0 WHERE memb___id='%s'", lpMsg->account);
+#elif !defined(MYSQL)
 	gQueryManager.ExecQuery("EXEC WZ_DISCONNECT_MEMB '%s'", lpMsg->account);
 #else
 	gQueryManager.ExecUpdateQuery("CALL WZ_DISCONNECT_MEMB('%s')", lpMsg->account);
@@ -371,7 +395,10 @@ void GJAccountLevelRecv(SDHP_ACCOUNT_LEVEL_RECV* lpMsg, int index)
 
 	memcpy(pMsg.account, lpMsg->account, sizeof(pMsg.account));
 
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_GetAccountLevel logic directly
+	if (gQueryManager.ExecQuery("SELECT AccountLevel, AccountExpireDate FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
 	if (gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
 #else
 	if (gQueryManager.ExecResultQuery("CALL WZ_GetAccountLevel('%s')", lpMsg->account) == false || gQueryManager.Fetch() == false)
@@ -395,7 +422,11 @@ void GJAccountLevelRecv(SDHP_ACCOUNT_LEVEL_RECV* lpMsg, int index)
 
 void GJAccountLevelSaveRecv(SDHP_ACCOUNT_LEVEL_SAVE_RECV* lpMsg, int index)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_SetAccountLevel logic directly
+	gQueryManager.ExecQuery("UPDATE MEMB_INFO SET AccountLevel=%d, AccountExpireDate=datetime('now', '+%d days') WHERE memb___id='%s'", lpMsg->AccountLevel, lpMsg->AccountExpireTime, lpMsg->account);
+
+#elif !defined(MYSQL)
 
 	gQueryManager.ExecQuery("EXEC WZ_SetAccountLevel '%s','%d','%d'", lpMsg->account, lpMsg->AccountLevel, lpMsg->AccountExpireTime);
 
