@@ -1,5 +1,7 @@
 ﻿using kayito_Editor.Source;
-#if MYSQL
+#if SQLITE
+using System.Data.SQLite;
+#elif MYSQL
 using MySql.Data.MySqlClient;
 #else
 using System.Data.OleDb;
@@ -17,7 +19,11 @@ namespace kayito_Editor
 
 			try
 			{
-			#if MYSQL
+			#if SQLITE
+				connection_string = $"Data Source={Import.MU_DB_PATH};Version=3;";
+
+				Import.Mu_Connection = new SQLiteConnection(connection_string);
+			#elif MYSQL
 				connection_string = $"SERVER={Import.MU_SERVER};PORT={Import.MU_PORT};DATABASE={Import.MU_DB};UID={Import.MU_DB_USER};PASSWORD={Import.MU_DB_PASS};";
 
 				Import.Mu_Connection = new MySqlConnection(connection_string);
@@ -44,7 +50,11 @@ namespace kayito_Editor
 
 				if (Import.USE_ME == 1)
 				{
-				#if MYSQL
+				#if SQLITE
+					connection_string = $"Data Source={Import.ME_DB_PATH};Version=3;";
+
+					Import.Me_Connection = new SQLiteConnection(connection_string);
+				#elif MYSQL
 					connection_string = $"SERVER={Import.ME_SERVER};PORT={Import.ME_PORT};DATABASE={Import.ME_DB};UID={Import.ME_DB_USER};PASSWORD={Import.ME_DB_PASS};";
 
 					Import.Me_Connection = new MySqlConnection(connection_string);
@@ -87,7 +97,9 @@ namespace kayito_Editor
 
 			try
 			{
-			#if MYSQL
+			#if SQLITE
+				SQLiteCommand cmd = new SQLiteCommand(query, Import.Mu_Connection);
+			#elif MYSQL
 				MySqlCommand cmd = new MySqlCommand(query, Import.Mu_Connection);
 			#else
 				OleDbCommand cmd = new OleDbCommand(query, Import.Mu_Connection);
@@ -115,7 +127,9 @@ namespace kayito_Editor
 
 			try
 			{
-			#if MYSQL
+			#if SQLITE
+				SQLiteCommand cmd = new SQLiteCommand(query, Import.Me_Connection);
+			#elif MYSQL
 				MySqlCommand cmd = new MySqlCommand(query, Import.Me_Connection);
 			#else
 				OleDbCommand cmd = new OleDbCommand(query, Import.Me_Connection);
