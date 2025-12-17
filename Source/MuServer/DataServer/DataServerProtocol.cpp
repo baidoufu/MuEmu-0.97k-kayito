@@ -1025,15 +1025,35 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 		gQueryManager.Close();
 
-	#ifndef MYSQL
+	#if defined(SQLITE)
+		// SQLite: Implement WZ_GetResetInfo logic directly
+		// Ensure ResetInfo record exists
+		if (gQueryManager.ExecQuery("SELECT 1 FROM ResetInfo WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+		{
+			gQueryManager.Close();
+			gQueryManager.ExecQuery("INSERT INTO ResetInfo (Name) VALUES ('%s')", lpMsg->name);
+			gQueryManager.Close();
+		}
+		else
+		{
+			gQueryManager.Close();
+		}
+		// Get ResetCount from Character
+		if (gQueryManager.ExecQuery("SELECT ResetCount FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) != false)
+		{
+			gQueryManager.Fetch();
+			pMsg.Reset = gQueryManager.GetAsInteger("ResetCount");
+			gQueryManager.Close();
+		}
+		else
+		{
+			gQueryManager.Close();
+			pMsg.Reset = 0;
+		}
+
+	#elif !defined(MYSQL)
 
 		gQueryManager.ExecQuery("EXEC WZ_GetResetInfo '%s','%s'", lpMsg->account, lpMsg->name);
-
-	#else
-
-		gQueryManager.ExecResultQuery("CALL WZ_GetResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
-
-	#endif
 
 		gQueryManager.Fetch();
 
@@ -1041,15 +1061,36 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 		gQueryManager.Close();
 
-	#ifndef MYSQL
-
-		gQueryManager.ExecQuery("EXEC WZ_GetGrandResetInfo '%s','%s'", lpMsg->account, lpMsg->name);
-
 	#else
 
-		gQueryManager.ExecResultQuery("CALL WZ_GetGrandResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
+		gQueryManager.ExecResultQuery("CALL WZ_GetResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
+
+		gQueryManager.Fetch();
+
+		pMsg.Reset = gQueryManager.GetAsInteger("Reset");
+
+		gQueryManager.Close();
 
 	#endif
+
+	#if defined(SQLITE)
+		// SQLite: Implement WZ_GetGrandResetInfo logic directly
+		// Get GrandReset from Character
+		if (gQueryManager.ExecQuery("SELECT GrandReset FROM Character WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name) != false)
+		{
+			gQueryManager.Fetch();
+			pMsg.GrandReset = gQueryManager.GetAsInteger("GrandReset");
+			gQueryManager.Close();
+		}
+		else
+		{
+			gQueryManager.Close();
+			pMsg.GrandReset = 0;
+		}
+
+	#elif !defined(MYSQL)
+
+		gQueryManager.ExecQuery("EXEC WZ_GetGrandResetInfo '%s','%s'", lpMsg->account, lpMsg->name);
 
 		gQueryManager.Fetch();
 
@@ -1057,7 +1098,19 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 		gQueryManager.Close();
 
-	#ifndef MYSQL
+	#else
+
+		gQueryManager.ExecResultQuery("CALL WZ_GetGrandResetInfo('%s', '%s')", lpMsg->account, lpMsg->name);
+
+		gQueryManager.Fetch();
+
+		pMsg.GrandReset = gQueryManager.GetAsInteger("GrandReset");
+
+		gQueryManager.Close();
+
+	#endif
+
+	#if defined(SQLITE) || !defined(MYSQL)
 
 		gQueryManager.ExecQuery("UPDATE AccountCharacter SET GameIDC='%s' WHERE Id='%s'", lpMsg->name, lpMsg->account);
 
@@ -1396,36 +1449,56 @@ void GDOptionDataSaveRecv(SDHP_OPTION_DATA_SAVE_RECV* lpMsg)
 
 void GDResetInfoSaveRecv(SDHP_RESET_INFO_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_SetResetInfo logic directly
+	gQueryManager.ExecQuery("UPDATE Character SET ResetCount=%d WHERE AccountID='%s' AND Name='%s'", lpMsg->Reset, lpMsg->account, lpMsg->name);
+	gQueryManager.Close();
+	
+	gQueryManager.ExecQuery("UPDATE ResetInfo SET ResetDay=%d, ResetDayDate=datetime('now'), ResetWek=%d, ResetWekDate=datetime('now'), ResetMon=%d, ResetMonDate=datetime('now') WHERE Name='%s'", lpMsg->ResetDay, lpMsg->ResetWek, lpMsg->ResetMon, lpMsg->name);
+	gQueryManager.Close();
+
+#elif !defined(MYSQL)
 
 	gQueryManager.ExecQuery("EXEC WZ_SetResetInfo '%s','%s','%d','%d','%d','%d'", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->ResetDay, lpMsg->ResetWek, lpMsg->ResetMon);
 
 	gQueryManager.Fetch();
 
+	gQueryManager.Close();
+
 #else
 
 	gQueryManager.ExecUpdateQuery("CALL WZ_SetResetInfo('%s', '%s', '%d', '%d', '%d', '%d')", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->ResetDay, lpMsg->ResetWek, lpMsg->ResetMon);
 
-#endif
-
 	gQueryManager.Close();
+
+#endif
 }
 
 void GDGrandResetInfoSaveRecv(SDHP_GRAND_RESET_INFO_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+	// SQLite: Implement WZ_SetGrandResetInfo logic directly
+	gQueryManager.ExecQuery("UPDATE Character SET ResetCount=%d, GrandResetCount=%d WHERE AccountID='%s' AND Name='%s'", lpMsg->Reset, lpMsg->GrandReset, lpMsg->account, lpMsg->name);
+	gQueryManager.Close();
+	
+	gQueryManager.ExecQuery("UPDATE ResetInfo SET GrandResetDay=%d, GrandResetDayDate=datetime('now'), GrandResetWek=%d, GrandResetWekDate=datetime('now'), GrandResetMon=%d, GrandResetMonDate=datetime('now') WHERE Name='%s'", lpMsg->GrandResetDay, lpMsg->GrandResetWek, lpMsg->GrandResetMon, lpMsg->name);
+	gQueryManager.Close();
+
+#elif !defined(MYSQL)
 
 	gQueryManager.ExecQuery("EXEC WZ_SetGrandResetInfo '%s','%s','%d','%d','%d','%d','%d'", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->GrandReset, lpMsg->GrandResetDay, lpMsg->GrandResetWek, lpMsg->GrandResetMon);
 
 	gQueryManager.Fetch();
 
+	gQueryManager.Close();
+
 #else
 
 	gQueryManager.ExecUpdateQuery("CALL WZ_SetGrandResetInfo('%s', '%s', '%d', '%d', '%d', '%d', '%d')", lpMsg->account, lpMsg->name, lpMsg->Reset, lpMsg->GrandReset, lpMsg->GrandResetDay, lpMsg->GrandResetWek, lpMsg->GrandResetMon);
 
-#endif
-
 	gQueryManager.Close();
+
+#endif
 }
 
 void GDGlobalNoticeRecv(SDHP_GLOBAL_NOTICE_RECV* lpMsg, int index)
