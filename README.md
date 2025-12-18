@@ -14,6 +14,13 @@
   - Game Server
 - Tool to edit BMD/TXT files
 - Tool to edit Accounts, Characters and Items
+- MuLauncher - Standalone launcher with login and character management
+  - Login with account/password
+  - Add points (加点)
+  - Clear PK status (洗红)
+  - Reset (转生)
+  - Grand Reset (转世)
+  - Launch main.exe without login
 - Source Code of Everything above mentioned
 
 ## Updates
