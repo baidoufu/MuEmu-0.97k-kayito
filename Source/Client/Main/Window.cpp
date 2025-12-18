@@ -448,7 +448,7 @@ void CWindow::ChangeWindowText()
 		if (!gProtect.m_MainInfo.DisableResets)
 		{
 			char Resets[64];
-			sprintf_s(Resets, sizeof(Resets), " || Resets: %d", gPrintPlayer.ViewReset);
+			sprintf_s(Resets, sizeof(Resets), " || 转生: %d", gPrintPlayer.ViewReset);
 
 			strcat_s(this->m_WindowName, Resets);
 		}
@@ -456,13 +456,13 @@ void CWindow::ChangeWindowText()
 		if (!gProtect.m_MainInfo.DisableGrandResets)
 		{
 			char GrandResets[64];
-			sprintf_s(GrandResets, sizeof(GrandResets), " || GrandResets: %d", gPrintPlayer.ViewGrandReset);
+			sprintf_s(GrandResets, sizeof(GrandResets), " || 转世: %d", gPrintPlayer.ViewGrandReset);
 
 			strcat_s(this->m_WindowName, GrandResets);
 		}
 
 		char Text[128];
-		sprintf_s(Text, sizeof(Text), " || Level: %d || PING: %u ms || FPS: %.0f", *(WORD*)(CharacterAttribute + 0x0E), gPing.m_Ping, FPS);
+		sprintf_s(Text, sizeof(Text), " || 等级: %d || PING: %u ms || FPS: %.0f", *(WORD*)(CharacterAttribute + 0x0E), gPing.m_Ping, FPS);
 
 		strcat_s(this->m_WindowName, Text);
 
