@@ -155,6 +155,7 @@
     <ClInclude Include="Protocol.h" />
     <ClInclude Include="ProtocolDefines.h" />
     <ClInclude Include="Reconnect.h" />
+    <ClInclude Include="RegisterAccount.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RightClickMove.h" />
     <ClInclude Include="ServerList.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="Protect.cpp" />
     <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="Reconnect.cpp" />
+    <ClCompile Include="RegisterAccount.cpp" />
     <ClCompile Include="RightClickMove.cpp" />
     <ClCompile Include="ServerList.cpp" />
     <ClCompile Include="Sound.cpp" />

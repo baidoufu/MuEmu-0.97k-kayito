@@ -343,6 +343,13 @@ bool CProtocol::TranslateProtocol(BYTE head, BYTE* lpMsg, int Size)
 
 					break;
 				}
+
+				case 0x06:
+				{
+					this->GCRegisterAccountRecv((PMSG_REGISTER_ACCOUNT_RECV*)lpMsg);
+
+					break;
+				}
 			}
 
 			break;
@@ -763,6 +770,38 @@ void CProtocol::GCConnectAccountRecv(PMSG_CONNECT_ACCOUNT_RECV* lpMsg)
 void CProtocol::GCCloseClientRecv(PMSG_CLOSE_CLIENT_RECV* lpMsg)
 {
 	gReconnect.ReconnectOnCloseClient(lpMsg->result);
+}
+
+void CProtocol::GCRegisterAccountRecv(PMSG_REGISTER_ACCOUNT_RECV* lpMsg)
+{
+	switch (lpMsg->result)
+	{
+		case 0:
+		{
+			CreateOkMessageBox("Registration failed: Account already exists!");
+			break;
+		}
+		case 1:
+		{
+			CreateOkMessageBox("Account registered successfully! You can now login.");
+			break;
+		}
+		case 2:
+		{
+			CreateOkMessageBox("Registration failed: Invalid account name!");
+			break;
+		}
+		case 3:
+		{
+			CreateOkMessageBox("Registration failed: Server error!");
+			break;
+		}
+		default:
+		{
+			CreateOkMessageBox("Registration failed: Unknown error!");
+			break;
+		}
+	}
 }
 
 void CProtocol::GCCharacterListRecv(PMSG_CHARACTER_LIST_RECV* lpMsg)

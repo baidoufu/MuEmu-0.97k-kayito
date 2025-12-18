@@ -25,6 +25,7 @@
 #include "Protect.h"
 #include "Protocol.h"
 #include "Reconnect.h"
+#include "RegisterAccount.h"
 #include "RightClickMove.h"
 #include "Sound.h"
 #include "WeaponView.h"
@@ -79,6 +80,8 @@ extern "C" _declspec(dllexport) void _cdecl EntryProc()
 	gPrintPlayer.Init();
 
 	gReconnect.Init();
+
+	gRegisterAccount.Init();
 
 	gPing.Init();
 

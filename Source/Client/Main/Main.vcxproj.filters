@@ -160,6 +160,9 @@
     <ClInclude Include="Reconnect.h">
       <Filter>Connection</Filter>
     </ClInclude>
+    <ClInclude Include="RegisterAccount.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
     <ClInclude Include="Enums.h">
       <Filter>Core\Defines</Filter>
     </ClInclude>
@@ -323,6 +326,9 @@
     </ClCompile>
     <ClCompile Include="Reconnect.cpp">
       <Filter>Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="RegisterAccount.cpp">
+      <Filter>Interface</Filter>
     </ClCompile>
     <ClCompile Include="Buff.cpp">
       <Filter>Fixes</Filter>

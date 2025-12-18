@@ -4,6 +4,7 @@
 #include "EventTimer.h"
 #include "MiniMap.h"
 #include "MoveList.h"
+#include "RegisterAccount.h"
 #include "resource.h"
 #include "Window.h"
 
@@ -113,6 +114,16 @@ LRESULT Controller::Keyboard(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	if (nCode == HC_ACTION)
 	{
+		// Handle register dialog input on key down
+		if (((DWORD)lParam & (1 << 31)) == 0) // Key down
+		{
+			if (GetForegroundWindow() == g_hWnd && gRegisterAccount.IsDialogOpen())
+			{
+				gRegisterAccount.HandleKeyInput(wParam);
+				return 1; // Consume the key
+			}
+		}
+
 		if (((DWORD)lParam & (1 << 30)) != 0 && ((DWORD)lParam & (1 << 31)) != 0)
 		{
 			switch (wParam)
