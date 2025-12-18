@@ -314,7 +314,21 @@ void CQueryManager::ApplyBindings()
 		}
 		else if (this->m_BindParams[n].type == BIND_BINARY)
 		{
-			sqlite3_bind_blob(this->m_stmt, n + 1, this->m_BindParams[n].buffer, this->m_BindParams[n].size, SQLITE_TRANSIENT);
+			// Convert binary data to hex string format for consistent storage and retrieval
+			// This matches the MSSQL behavior where binary data is stored as hex text
+			// Max binary size is limited by m_SQLData buffer (8192 bytes), so hex needs 16384+1 chars
+			char hexBuffer[16385];
+			int hexLen = this->m_BindParams[n].size * 2;
+			if (hexLen + 1 <= (int)sizeof(hexBuffer))
+			{
+				this->ConvertBinaryToString((BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, hexBuffer, hexLen + 1);
+				sqlite3_bind_text(this->m_stmt, n + 1, hexBuffer, hexLen, SQLITE_TRANSIENT);
+			}
+			else
+			{
+				LogAdd(LOG_RED, "[QueryManager] 二进制数据过大,无法绑定参数 %d (大小: %d, 最大: 8192)", n + 1, this->m_BindParams[n].size);
+				sqlite3_bind_null(this->m_stmt, n + 1);
+			}
 		}
 	}
 
