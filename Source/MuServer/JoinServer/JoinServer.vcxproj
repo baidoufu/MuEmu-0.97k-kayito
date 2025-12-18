@@ -277,6 +277,7 @@
     <ClInclude Include="CriticalSection.h" />
     <ClInclude Include="JoinServer.h" />
     <ClInclude Include="JoinServerProtocol.h" />
+    <ClInclude Include="LauncherProxy.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="MD5.h" />
     <ClInclude Include="MD5_KEYVAL.H" />
@@ -300,6 +301,7 @@
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="JoinServer.cpp" />
     <ClCompile Include="JoinServerProtocol.cpp" />
+    <ClCompile Include="LauncherProxy.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="MD5.cpp" />
     <ClCompile Include="ReadScript.cpp" />

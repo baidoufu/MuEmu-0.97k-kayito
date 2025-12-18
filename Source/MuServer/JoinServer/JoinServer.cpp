@@ -10,6 +10,7 @@
 #include "SocketManager.h"
 #include "SocketManagerUdp.h"
 #include "Util.h"
+#include "LauncherProxy.h"
 
 HINSTANCE hInst;
 
@@ -42,7 +43,7 @@ int main()
 
 	if (InitInstance(hInst) == false)
 	{
-		MessageBox(NULL, "Failed to initiaize window instance.", "Window Instance", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, "Failed to initiaze window instance.", "Window Instance", MB_OK | MB_ICONERROR);
 
 		return -1;
 	}
@@ -51,7 +52,9 @@ int main()
 
 	WSADATA wsa;
 
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) == 0)
+	int wsaResult = WSAStartup(MAKEWORD(2, 2), &wsa);
+
+	if (wsaResult == 0)
 	{
 	#if defined(SQLITE)
 
@@ -111,12 +114,14 @@ int main()
 		{
 			if (gSocketManager.Start(JS_TCP_Port) == false)
 			{
+				LogAdd(LOG_RED, "gSocketManager.Start() 失败, 错误码: %d", WSAGetLastError());
 				gQueryManager.Disconnect();
 			}
 			else
 			{
 				if (gSocketManagerUdp.Connect(ConnectServerAddress, ConnectServerUDPPort) == false)
 				{
+					LogAdd(LOG_RED, "gSocketManagerUdp.Connect() 失败, 错误码: %d", WSAGetLastError());
 					gSocketManager.Clean();
 
 					gQueryManager.Disconnect();
@@ -126,13 +131,21 @@ int main()
 					gAllowableIpList.Load("AllowableIpList.txt");
 
 					SetTimer(hWnd, TIMER_1000, 1000, 0);
+
+					// Start launcher proxy if configured
+					int proxyPort = GetPrivateProfileInt("JoinServerInfo", "LauncherProxyPort", 0, ".\\JoinServer.ini");
+					if (proxyPort > 0)
+					{
+						int proxyStrict = GetPrivateProfileInt("JoinServerInfo", "LauncherProxyStrict", 0, ".\\JoinServer.ini");
+						StartLauncherProxy((unsigned short)proxyPort, JS_TCP_Port, (proxyStrict != 0));
+					}
 				}
 			}
 		}
 	}
 	else
 	{
-		LogAdd(LOG_RED, "WSAStartup() 失败, 错误码: %d", WSAGetLastError());
+		LogAdd(LOG_RED, "WSAStartup() 失败, 返回码: %d", wsaResult);
 	}
 
 	MSG msg;
@@ -145,6 +158,8 @@ int main()
 	}
 
 	CMiniDump::Clean();
+
+	StopLauncherProxy();
 
 	return msg.wParam;
 }
