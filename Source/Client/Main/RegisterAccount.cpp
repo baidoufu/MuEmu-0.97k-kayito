@@ -39,7 +39,7 @@ void CRegisterAccount::RenderRegisterButton()
 	float ButtonWidth = 80.0f;
 	float ButtonHeight = 24.0f;
 	float PosX = ImgCenterScreenPosX(ButtonWidth) - 100.0f;
-	float PosY = (float)WindowHeight - 60.0f;
+	float PosY = 420.0f; // Use virtual 480-based coordinate (480 - 60 = 420)
 
 	// Render the register button
 	DisableAlphaBlend();
@@ -72,7 +72,7 @@ bool CRegisterAccount::CheckRegisterButton()
 	float ButtonWidth = 80.0f;
 	float ButtonHeight = 24.0f;
 	float PosX = ImgCenterScreenPosX(ButtonWidth) - 100.0f;
-	float PosY = (float)WindowHeight - 60.0f;
+	float PosY = 420.0f; // Use virtual 480-based coordinate (480 - 60 = 420)
 
 	if (IsWorkZone((int)PosX, (int)PosY, (int)ButtonWidth, (int)ButtonHeight))
 	{
