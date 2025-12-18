@@ -75,9 +75,9 @@ namespace MuLauncher.Source
                         if (reader.Read())
                         {
                             string storedPwd = reader.GetString(0);
-                            // Check both plain text and MD5 hash
+                            // Compare with MD5 hash only for security
                             string md5Pwd = MD5Hash(password);
-                            return storedPwd == password || storedPwd == md5Pwd;
+                            return storedPwd == md5Pwd;
                         }
                     }
                 }
@@ -111,8 +111,9 @@ namespace MuLauncher.Source
                 }
                 return false;
             }
-            catch
+            catch (Exception)
             {
+                // Log or handle the exception if needed - returning false indicates account status is unknown
                 return false;
             }
         }
@@ -195,9 +196,9 @@ namespace MuLauncher.Source
                     }
                 }
             }
-            catch
+            catch (Exception)
             {
-                // Skip character if there's an error
+                // Skip character if there's an error loading its info
             }
         }
 
@@ -206,18 +207,20 @@ namespace MuLauncher.Source
             if (_connection == null || _connection.State != ConnectionState.Open)
                 return false;
 
-            // Validate stat name
-            string[] validStats = { "Strength", "Dexterity", "Vitality", "Energy" };
-            bool isValid = false;
-            foreach (string s in validStats)
+            // Validate stat name using a dictionary to prevent SQL injection
+            // The stat parameter MUST match exactly one of the predefined column names
+            var validStatColumns = new System.Collections.Generic.Dictionary<string, string>
             {
-                if (s == stat)
-                {
-                    isValid = true;
-                    break;
-                }
+                { "Strength", "Strength" },
+                { "Dexterity", "Dexterity" },
+                { "Vitality", "Vitality" },
+                { "Energy", "Energy" }
+            };
+
+            if (!validStatColumns.TryGetValue(stat, out string columnName))
+            {
+                return false;
             }
-            if (!isValid) return false;
 
             try
             {
@@ -240,8 +243,8 @@ namespace MuLauncher.Source
                     return false;
                 }
 
-                // Update character
-                string updateQuery = $"UPDATE \"Character\" SET {stat} = {stat} + ?, LevelUpPoint = LevelUpPoint - ? WHERE Name = ?";
+                // Update character - columnName is from a hardcoded whitelist, not user input
+                string updateQuery = $"UPDATE \"Character\" SET [{columnName}] = [{columnName}] + ?, LevelUpPoint = LevelUpPoint - ? WHERE Name = ?";
                 using (OleDbCommand cmd = new OleDbCommand(updateQuery, _connection))
                 {
                     cmd.Parameters.AddWithValue("@points", points);
