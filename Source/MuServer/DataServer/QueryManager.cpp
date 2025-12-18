@@ -324,6 +324,10 @@ void CQueryManager::ApplyBindings()
 				this->ConvertBinaryToString((BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, hexBuffer, hexLen + 1);
 				sqlite3_bind_text(this->m_stmt, n + 1, hexBuffer, hexLen, SQLITE_TRANSIENT);
 			}
+			else
+			{
+				LogAdd(LOG_RED, "[QueryManager] 二进制数据过大,无法绑定参数 %d (大小: %d)", n + 1, this->m_BindParams[n].size);
+			}
 		}
 	}
 
