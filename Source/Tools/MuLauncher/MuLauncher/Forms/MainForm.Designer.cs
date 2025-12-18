@@ -18,6 +18,7 @@ namespace MuLauncher.Forms
         private void InitializeComponent()
         {
             this.pnlLogin = new System.Windows.Forms.Panel();
+            this.btnRegister = new System.Windows.Forms.Button();
             this.btnLogin = new System.Windows.Forms.Button();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.txtAccount = new System.Windows.Forms.TextBox();
@@ -46,63 +47,68 @@ namespace MuLauncher.Forms
             this.pnlLogin.Controls.Add(this.txtAccount);
             this.pnlLogin.Controls.Add(this.lblPassword);
             this.pnlLogin.Controls.Add(this.lblAccount);
-            this.pnlLogin.Location = new System.Drawing.Point(12, 50);
+            this.pnlLogin.Location = new System.Drawing.Point(10, 40);
+            this.pnlLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pnlLogin.Name = "pnlLogin";
-            this.pnlLogin.Size = new System.Drawing.Size(260, 150);
+            this.pnlLogin.Size = new System.Drawing.Size(223, 120);
             this.pnlLogin.TabIndex = 0;
             // 
             // btnRegister
             // 
-            this.btnRegister.Location = new System.Drawing.Point(70, 118);
+            this.btnRegister.Location = new System.Drawing.Point(60, 94);
+            this.btnRegister.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnRegister.Name = "btnRegister";
-            this.btnRegister.Size = new System.Drawing.Size(180, 28);
+            this.btnRegister.Size = new System.Drawing.Size(154, 22);
             this.btnRegister.TabIndex = 5;
-            this.btnRegister.Text = "Register (注册)";
+            this.btnRegister.Text = "注册";
             this.btnRegister.UseVisualStyleBackColor = true;
             this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
             // 
             // btnLogin
             // 
-            this.btnLogin.Location = new System.Drawing.Point(70, 85);
+            this.btnLogin.Location = new System.Drawing.Point(60, 68);
+            this.btnLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(180, 28);
+            this.btnLogin.Size = new System.Drawing.Size(154, 22);
             this.btnLogin.TabIndex = 4;
-            this.btnLogin.Text = "Login";
+            this.btnLogin.Text = "登录";
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(70, 50);
+            this.txtPassword.Location = new System.Drawing.Point(60, 40);
+            this.txtPassword.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(180, 23);
+            this.txtPassword.Size = new System.Drawing.Size(155, 21);
             this.txtPassword.TabIndex = 3;
             // 
             // txtAccount
             // 
-            this.txtAccount.Location = new System.Drawing.Point(70, 15);
+            this.txtAccount.Location = new System.Drawing.Point(60, 12);
+            this.txtAccount.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtAccount.Name = "txtAccount";
-            this.txtAccount.Size = new System.Drawing.Size(180, 23);
+            this.txtAccount.Size = new System.Drawing.Size(155, 21);
             this.txtAccount.TabIndex = 2;
             // 
             // lblPassword
             // 
             this.lblPassword.AutoSize = true;
-            this.lblPassword.Location = new System.Drawing.Point(5, 53);
+            this.lblPassword.Location = new System.Drawing.Point(4, 42);
             this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(60, 15);
+            this.lblPassword.Size = new System.Drawing.Size(59, 12);
             this.lblPassword.TabIndex = 1;
-            this.lblPassword.Text = "Password:";
+            this.lblPassword.Text = "密码:";
             // 
             // lblAccount
             // 
             this.lblAccount.AutoSize = true;
-            this.lblAccount.Location = new System.Drawing.Point(5, 18);
+            this.lblAccount.Location = new System.Drawing.Point(4, 14);
             this.lblAccount.Name = "lblAccount";
-            this.lblAccount.Size = new System.Drawing.Size(52, 15);
+            this.lblAccount.Size = new System.Drawing.Size(53, 12);
             this.lblAccount.TabIndex = 0;
-            this.lblAccount.Text = "Account:";
+            this.lblAccount.Text = "账号:";
             // 
             // pnlCharacterManagement
             // 
@@ -112,9 +118,10 @@ namespace MuLauncher.Forms
             this.pnlCharacterManagement.Controls.Add(this.btnReset);
             this.pnlCharacterManagement.Controls.Add(this.btnGrandReset);
             this.pnlCharacterManagement.Enabled = false;
-            this.pnlCharacterManagement.Location = new System.Drawing.Point(12, 180);
+            this.pnlCharacterManagement.Location = new System.Drawing.Point(10, 172);
+            this.pnlCharacterManagement.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pnlCharacterManagement.Name = "pnlCharacterManagement";
-            this.pnlCharacterManagement.Size = new System.Drawing.Size(660, 220);
+            this.pnlCharacterManagement.Size = new System.Drawing.Size(566, 176);
             this.pnlCharacterManagement.TabIndex = 1;
             // 
             // dgvCharacters
@@ -123,80 +130,87 @@ namespace MuLauncher.Forms
             this.dgvCharacters.AllowUserToDeleteRows = false;
             this.dgvCharacters.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCharacters.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCharacters.Location = new System.Drawing.Point(5, 5);
+            this.dgvCharacters.Location = new System.Drawing.Point(4, 4);
+            this.dgvCharacters.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvCharacters.MultiSelect = false;
             this.dgvCharacters.Name = "dgvCharacters";
             this.dgvCharacters.ReadOnly = true;
             this.dgvCharacters.RowHeadersWidth = 20;
             this.dgvCharacters.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCharacters.Size = new System.Drawing.Size(650, 170);
+            this.dgvCharacters.Size = new System.Drawing.Size(557, 136);
             this.dgvCharacters.TabIndex = 0;
             this.dgvCharacters.SelectionChanged += new System.EventHandler(this.dgvCharacters_SelectionChanged);
             // 
             // btnAddPoints
             // 
             this.btnAddPoints.Enabled = false;
-            this.btnAddPoints.Location = new System.Drawing.Point(5, 180);
+            this.btnAddPoints.Location = new System.Drawing.Point(4, 144);
+            this.btnAddPoints.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnAddPoints.Name = "btnAddPoints";
-            this.btnAddPoints.Size = new System.Drawing.Size(150, 30);
+            this.btnAddPoints.Size = new System.Drawing.Size(129, 24);
             this.btnAddPoints.TabIndex = 1;
-            this.btnAddPoints.Text = "Add Points (加点)";
+            this.btnAddPoints.Text = "加点";
             this.btnAddPoints.UseVisualStyleBackColor = true;
             this.btnAddPoints.Click += new System.EventHandler(this.btnAddPoints_Click);
             // 
             // btnClearPK
             // 
             this.btnClearPK.Enabled = false;
-            this.btnClearPK.Location = new System.Drawing.Point(165, 180);
+            this.btnClearPK.Location = new System.Drawing.Point(141, 144);
+            this.btnClearPK.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnClearPK.Name = "btnClearPK";
-            this.btnClearPK.Size = new System.Drawing.Size(150, 30);
+            this.btnClearPK.Size = new System.Drawing.Size(129, 24);
             this.btnClearPK.TabIndex = 2;
-            this.btnClearPK.Text = "Clear PK (洗红)";
+            this.btnClearPK.Text = "洗红";
             this.btnClearPK.UseVisualStyleBackColor = true;
             this.btnClearPK.Click += new System.EventHandler(this.btnClearPK_Click);
             // 
             // btnReset
             // 
             this.btnReset.Enabled = false;
-            this.btnReset.Location = new System.Drawing.Point(325, 180);
+            this.btnReset.Location = new System.Drawing.Point(279, 144);
+            this.btnReset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(150, 30);
+            this.btnReset.Size = new System.Drawing.Size(129, 24);
             this.btnReset.TabIndex = 3;
-            this.btnReset.Text = "Reset (转生)";
+            this.btnReset.Text = "转生";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // btnGrandReset
             // 
             this.btnGrandReset.Enabled = false;
-            this.btnGrandReset.Location = new System.Drawing.Point(485, 180);
+            this.btnGrandReset.Location = new System.Drawing.Point(416, 144);
+            this.btnGrandReset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnGrandReset.Name = "btnGrandReset";
-            this.btnGrandReset.Size = new System.Drawing.Size(160, 30);
+            this.btnGrandReset.Size = new System.Drawing.Size(137, 24);
             this.btnGrandReset.TabIndex = 4;
-            this.btnGrandReset.Text = "Grand Reset (转世)";
+            this.btnGrandReset.Text = "转世";
             this.btnGrandReset.UseVisualStyleBackColor = true;
             this.btnGrandReset.Click += new System.EventHandler(this.btnGrandReset_Click);
             // 
             // btnLaunch
             // 
             this.btnLaunch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.btnLaunch.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnLaunch.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.btnLaunch.ForeColor = System.Drawing.Color.White;
-            this.btnLaunch.Location = new System.Drawing.Point(280, 70);
+            this.btnLaunch.Location = new System.Drawing.Point(240, 56);
+            this.btnLaunch.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLaunch.Name = "btnLaunch";
-            this.btnLaunch.Size = new System.Drawing.Size(200, 60);
+            this.btnLaunch.Size = new System.Drawing.Size(171, 48);
             this.btnLaunch.TabIndex = 2;
-            this.btnLaunch.Text = "START GAME";
+            this.btnLaunch.Text = "开始游戏";
             this.btnLaunch.UseVisualStyleBackColor = false;
             this.btnLaunch.Click += new System.EventHandler(this.btnLaunch_Click);
             // 
             // btnLogout
             // 
-            this.btnLogout.Location = new System.Drawing.Point(502, 70);
+            this.btnLogout.Location = new System.Drawing.Point(430, 56);
+            this.btnLogout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(80, 30);
+            this.btnLogout.Size = new System.Drawing.Size(69, 24);
             this.btnLogout.TabIndex = 3;
-            this.btnLogout.Text = "Logout";
+            this.btnLogout.Text = "注销";
             this.btnLogout.UseVisualStyleBackColor = true;
             this.btnLogout.Visible = false;
             this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
@@ -204,27 +218,27 @@ namespace MuLauncher.Forms
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(280, 145);
+            this.lblStatus.Location = new System.Drawing.Point(240, 116);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(82, 15);
+            this.lblStatus.Size = new System.Drawing.Size(83, 12);
             this.lblStatus.TabIndex = 4;
-            this.lblStatus.Text = "Not logged in";
+            this.lblStatus.Text = "未登录";
             // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblTitle.Location = new System.Drawing.Point(250, 15);
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.Location = new System.Drawing.Point(214, 12);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(170, 30);
+            this.lblTitle.Size = new System.Drawing.Size(150, 30);
             this.lblTitle.TabIndex = 5;
-            this.lblTitle.Text = "MU Launcher";
+            this.lblTitle.Text = "MU 启动器";
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(684, 411);
+            this.ClientSize = new System.Drawing.Size(586, 360);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnLogout);
@@ -232,10 +246,11 @@ namespace MuLauncher.Forms
             this.Controls.Add(this.pnlCharacterManagement);
             this.Controls.Add(this.pnlLogin);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MU Launcher";
+            this.Text = "MU 启动器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.pnlLogin.ResumeLayout(false);

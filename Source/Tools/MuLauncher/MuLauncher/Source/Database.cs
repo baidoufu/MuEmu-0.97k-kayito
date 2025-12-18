@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data;
 using System.Data.OleDb;
 using System.Security.Cryptography;
@@ -121,17 +121,20 @@ namespace MuLauncher.Source
         public DataTable GetCharacters(string account)
         {
             DataTable dt = new DataTable();
-            dt.Columns.Add("Name", typeof(string));
-            dt.Columns.Add("Level", typeof(int));
-            dt.Columns.Add("Resets", typeof(int));
-            dt.Columns.Add("GrandResets", typeof(int));
-            dt.Columns.Add("Points", typeof(int));
-            dt.Columns.Add("Strength", typeof(int));
-            dt.Columns.Add("Dexterity", typeof(int));
-            dt.Columns.Add("Vitality", typeof(int));
-            dt.Columns.Add("Energy", typeof(int));
-            dt.Columns.Add("PKLevel", typeof(int));
-            dt.Columns.Add("Money", typeof(int));
+            // Use English column names internally (code relies on these), but set Chinese captions for UI
+            DataColumn col;
+
+            col = dt.Columns.Add("Name", typeof(string)); col.Caption = "名称";
+            col = dt.Columns.Add("Level", typeof(int)); col.Caption = "等级";
+            col = dt.Columns.Add("Resets", typeof(int)); col.Caption = "转生";
+            col = dt.Columns.Add("GrandResets", typeof(int)); col.Caption = "转世";
+            col = dt.Columns.Add("Points", typeof(int)); col.Caption = "点数";
+            col = dt.Columns.Add("Strength", typeof(int)); col.Caption = "力量";
+            col = dt.Columns.Add("Dexterity", typeof(int)); col.Caption = "敏捷";
+            col = dt.Columns.Add("Vitality", typeof(int)); col.Caption = "体力";
+            col = dt.Columns.Add("Energy", typeof(int)); col.Caption = "智力"; // "智力" displayed for Energy/Int
+            col = dt.Columns.Add("PKLevel", typeof(int)); col.Caption = "PK等级";
+            col = dt.Columns.Add("Money", typeof(int)); col.Caption = "金币";
 
             if (_connection == null || _connection.State != ConnectionState.Open)
                 return dt;
