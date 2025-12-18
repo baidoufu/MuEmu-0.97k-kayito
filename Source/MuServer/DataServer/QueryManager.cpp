@@ -326,7 +326,8 @@ void CQueryManager::ApplyBindings()
 			}
 			else
 			{
-				LogAdd(LOG_RED, "[QueryManager] 二进制数据过大,无法绑定参数 %d (大小: %d)", n + 1, this->m_BindParams[n].size);
+				LogAdd(LOG_RED, "[QueryManager] 二进制数据过大,无法绑定参数 %d (大小: %d, 最大: 8192)", n + 1, this->m_BindParams[n].size);
+				sqlite3_bind_null(this->m_stmt, n + 1);
 			}
 		}
 	}
