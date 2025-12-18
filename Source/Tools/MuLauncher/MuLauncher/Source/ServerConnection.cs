@@ -98,8 +98,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x10; // Head
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] passwordBytes = Encoding.ASCII.GetBytes(password.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] passwordBytes = Encoding.Default.GetBytes(password.PadRight(11, '\0').Substring(0, 11));
                 byte[] ipBytes = Encoding.ASCII.GetBytes("127.0.0.1".PadRight(16, '\0'));
 
                 Array.Copy(accountBytes, 0, packet, 3, 11);
@@ -137,7 +137,7 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x16;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
                 Array.Copy(accountBytes, 0, packet, 3, 11);
 
                 if (!SendPacket(packet))
@@ -182,7 +182,7 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x11;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
                 Array.Copy(accountBytes, 0, packet, 3, 11);
 
                 if (!SendPacket(packet))
@@ -206,8 +206,8 @@ namespace MuLauncher.Source
                 {
                     DataRow row = dt.NewRow();
 
-                    // Name (11 bytes)
-                    row["Name"] = Encoding.ASCII.GetString(response, offset, 11).TrimEnd('\0');
+                    // Name (11 bytes) - Use Default encoding for Chinese/Korean character support
+                    row["Name"] = Encoding.Default.GetString(response, offset, 11).TrimEnd('\0');
                     offset += 11;
 
                     // Ints (4 bytes each)
@@ -258,8 +258,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x12;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
 
                 Array.Copy(accountBytes, 0, packet, 3, 11);
                 Array.Copy(nameBytes, 0, packet, 14, 11);
@@ -300,8 +300,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x13;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
                 byte[] zenBytes = BitConverter.GetBytes(zenCost);
 
                 Array.Copy(accountBytes, 0, packet, 3, 11);
@@ -340,8 +340,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x14;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
                 byte[] levelBytes = BitConverter.GetBytes((ushort)requiredLevel);
                 byte[] pointsBytes = BitConverter.GetBytes(rewardPoints);
 
@@ -382,8 +382,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x15;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
                 byte[] levelBytes = BitConverter.GetBytes((ushort)requiredLevel);
                 byte[] resetsBytes = BitConverter.GetBytes((ushort)requiredResets);
                 byte[] pointsBytes = BitConverter.GetBytes(rewardPoints);
