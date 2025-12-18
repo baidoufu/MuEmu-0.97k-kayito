@@ -21,6 +21,8 @@ CQueryManager::CQueryManager()
 	memset(this->m_SQLColName, 0, sizeof(this->m_SQLColName));
 
 	memset(this->m_SQLData, 0, sizeof(this->m_SQLData));
+
+	memset(this->m_BindParams, 0, sizeof(this->m_BindParams));
 }
 
 CQueryManager::~CQueryManager()
@@ -99,8 +101,13 @@ bool CQueryManager::ExecQuery(char* query, ...)
 	{
 		this->Diagnostic(buff);
 
+		this->ClearBindings();
+
 		return false;
 	}
+
+	// Apply any pending bindings after statement is prepared
+	this->ApplyBindings();
 
 	this->m_ColCount = sqlite3_column_count(this->m_stmt);
 
@@ -274,18 +281,49 @@ void CQueryManager::GetAsBinary(char* ColName, BYTE* OutBuffer, int OutBufferSiz
 
 void CQueryManager::BindParameterAsString(int ParamNumber, void* InBuffer, int ColumnSize)
 {
-	if (this->m_stmt != NULL)
+	if (ParamNumber > 0 && ParamNumber <= MAX_BIND_PARAMS)
 	{
-		sqlite3_bind_text(this->m_stmt, ParamNumber, (const char*)InBuffer, ColumnSize, SQLITE_TRANSIENT);
+		this->m_BindParams[ParamNumber - 1].type = 1;
+		this->m_BindParams[ParamNumber - 1].buffer = InBuffer;
+		this->m_BindParams[ParamNumber - 1].size = ColumnSize;
 	}
 }
 
 void CQueryManager::BindParameterAsBinary(int ParamNumber, void* InBuffer, int ColumnSize)
 {
-	if (this->m_stmt != NULL)
+	if (ParamNumber > 0 && ParamNumber <= MAX_BIND_PARAMS)
 	{
-		sqlite3_bind_blob(this->m_stmt, ParamNumber, InBuffer, ColumnSize, SQLITE_TRANSIENT);
+		this->m_BindParams[ParamNumber - 1].type = 2;
+		this->m_BindParams[ParamNumber - 1].buffer = InBuffer;
+		this->m_BindParams[ParamNumber - 1].size = ColumnSize;
 	}
+}
+
+void CQueryManager::ApplyBindings()
+{
+	if (this->m_stmt == NULL)
+	{
+		return;
+	}
+
+	for (int n = 0; n < MAX_BIND_PARAMS; n++)
+	{
+		if (this->m_BindParams[n].type == 1)
+		{
+			sqlite3_bind_text(this->m_stmt, n + 1, (const char*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, SQLITE_TRANSIENT);
+		}
+		else if (this->m_BindParams[n].type == 2)
+		{
+			sqlite3_bind_blob(this->m_stmt, n + 1, this->m_BindParams[n].buffer, this->m_BindParams[n].size, SQLITE_TRANSIENT);
+		}
+	}
+
+	this->ClearBindings();
+}
+
+void CQueryManager::ClearBindings()
+{
+	memset(this->m_BindParams, 0, sizeof(this->m_BindParams));
 }
 
 void CQueryManager::ConvertStringToBinary(char* InBuff, int InSize, BYTE* OutBuff, int OutSize)
