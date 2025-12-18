@@ -25,8 +25,6 @@ int MD5Encryption;
 
 char GlobalPassword[11];
 
-int AllowLauncherConnections;
-
 int main()
 {
 	setlocale(LC_ALL, "en_US.1252");
@@ -98,8 +96,6 @@ int main()
 		MD5Encryption = GetPrivateProfileInt("AccountInfo", "MD5Encryption", 0, ".\\JoinServer.ini");
 
 		GetPrivateProfileString("AccountInfo", "GlobalPassword", "XwefDastoD", GlobalPassword, sizeof(GlobalPassword), ".\\JoinServer.ini");
-
-		AllowLauncherConnections = GetPrivateProfileInt("LauncherInfo", "AllowLauncherConnections", 0, ".\\JoinServer.ini");
 
 	#if defined(SQLITE)
 		if (gQueryManager.Connect(DataBaseODBC) == false)

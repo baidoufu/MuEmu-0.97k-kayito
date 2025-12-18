@@ -493,10 +493,9 @@ namespace MuLauncher.Forms
 
             // Set max points based on available points
             int availablePoints = 0;
-            if (int.TryParse(GetCellValue(characterRow, "Points"), out availablePoints))
+            if (int.TryParse(GetCellValue(characterRow, "Points"), out availablePoints) && availablePoints > 0)
             {
-                nudPoints.Maximum = Math.Max(1, availablePoints);
-                nudPoints.Value = Math.Min(1, availablePoints);
+                nudPoints.Maximum = availablePoints;
             }
 
             grpAddPoints.Controls.AddRange(new Control[] { lblStat, cmbStat, lblPoints, nudPoints });
@@ -505,6 +504,9 @@ namespace MuLauncher.Forms
             // Buttons
             btnOK = new Button { Text = "Add Points", Location = new Point(180, 300), Size = new Size(90, 30), DialogResult = DialogResult.OK };
             btnCancel = new Button { Text = "Cancel", Location = new Point(280, 300), Size = new Size(90, 30), DialogResult = DialogResult.Cancel };
+
+            // Disable OK button if no points available
+            btnOK.Enabled = availablePoints > 0;
 
             this.Controls.AddRange(new Control[] { btnOK, btnCancel });
             this.AcceptButton = btnOK;
@@ -518,7 +520,10 @@ namespace MuLauncher.Forms
                 if (row?.Cells[columnName]?.Value != null)
                     return row.Cells[columnName].Value.ToString();
             }
-            catch { }
+            catch (ArgumentException)
+            {
+                // Column not found, return default
+            }
             return "N/A";
         }
     }
