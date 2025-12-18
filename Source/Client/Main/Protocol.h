@@ -384,6 +384,24 @@ struct PMSG_SET_HWID_SEND
 	char HardwareId[36];
 };
 
+struct PMSG_REGISTER_ACCOUNT_SEND
+{
+#pragma pack(1)
+	PSBMSG_HEAD header; // C3:F1:06
+	char account[10];
+	char password[10];
+	DWORD TickCount;
+	BYTE ClientVersion[5];
+	BYTE ClientSerial[16];
+#pragma pack()
+};
+
+struct PMSG_REGISTER_ACCOUNT_RECV
+{
+	PSBMSG_HEAD header; // C1:F1:06
+	BYTE result;
+};
+
 struct PMSG_CHARACTER_LIST_SEND
 {
 	PSBMSG_HEAD header; // C1:F3:00
@@ -454,6 +472,8 @@ private:
 	void GCConnectAccountRecv(PMSG_CONNECT_ACCOUNT_RECV* lpMsg);
 
 	void GCCloseClientRecv(PMSG_CLOSE_CLIENT_RECV* lpMsg);
+
+	void GCRegisterAccountRecv(PMSG_REGISTER_ACCOUNT_RECV* lpMsg);
 
 	void GCCharacterListRecv(PMSG_CHARACTER_LIST_RECV* lpMsg);
 

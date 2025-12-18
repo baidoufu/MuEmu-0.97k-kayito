@@ -5,6 +5,7 @@
 #include "MiniMap.h"
 #include "MoveList.h"
 #include "Protect.h"
+#include "RegisterAccount.h"
 #include "Window.h"
 
 Interface gInterface;
@@ -43,6 +44,10 @@ void Interface::RenderLogInScene(HDC Hdc)
 	gWindow.ChangeWindowText();
 
 	((void(__cdecl*)(HDC Hdc)) 0x00521630)(Hdc);
+
+	// Render register button and dialog
+	gRegisterAccount.RenderRegisterButton();
+	gRegisterAccount.RenderRegisterDialog();
 }
 
 void Interface::RenderCharacterScene(HDC Hdc)
@@ -69,6 +74,22 @@ void Interface::LoadImages()
 void Interface::MyUpdateWindowsMouse()
 {
 	UpdateWindowsMouse();
+
+	// Check register button/dialog in login scene
+	if (SceneFlag == LOG_IN_SCENE)
+	{
+		if (gRegisterAccount.CheckRegisterDialog())
+		{
+			MouseLButton = false;
+			MouseLButtonPush = false;
+			return;
+		}
+
+		if (gRegisterAccount.CheckRegisterButton())
+		{
+			return;
+		}
+	}
 
 	gMiniMap.UpdateMouse();
 

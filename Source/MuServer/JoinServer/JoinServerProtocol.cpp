@@ -65,6 +65,13 @@ void JoinServerProtocolCore(int index, BYTE head, BYTE* lpMsg, int size)
 
 			break;
 		}
+
+		case 0x08:
+		{
+			GJRegisterAccountRecv((SDHP_REGISTER_ACCOUNT_RECV*)lpMsg, index);
+
+			break;
+		}
 	}
 }
 
@@ -480,6 +487,81 @@ void GJAccountCountRecv(SDHP_COUNT_ONLINE_USER_RECV* lpMsg, int index)
 	pMsg.index = lpMsg->index;
 
 	pMsg.count = (int)gAccountManager.GetAccountCount();
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GJRegisterAccountRecv(SDHP_REGISTER_ACCOUNT_RECV* lpMsg, int index)
+{
+	SDHP_REGISTER_ACCOUNT_SEND pMsg;
+
+	pMsg.header.set(0x08, sizeof(pMsg));
+
+	pMsg.index = lpMsg->index;
+
+	pMsg.result = 1; // Success by default
+
+	// Validate account name
+	if (CheckTextSyntax(lpMsg->account, sizeof(lpMsg->account)) == false)
+	{
+		pMsg.result = 2; // Invalid account name
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Validate password
+	if (CheckTextSyntax(lpMsg->password, sizeof(lpMsg->password)) == false)
+	{
+		pMsg.result = 2; // Invalid password
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Check if account already exists
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT memb___id FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT memb___id FROM MEMB_INFO WHERE memb___id='%s' COLLATE Latin1_General_BIN", lpMsg->account) != false && gQueryManager.Fetch() != SQL_NO_DATA)
+#else
+	if (gQueryManager.ExecResultQuery("SELECT memb___id FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 0; // Account already exists
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	gQueryManager.Close();
+
+	// Insert new account
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, datetime('now', '+30 days'))", lpMsg->account, lpMsg->password, lpMsg->account) == false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATEADD(day, 30, GETDATE()))", lpMsg->account, lpMsg->password, lpMsg->account) == false)
+#else
+	if (gQueryManager.ExecUpdateQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATE_ADD(NOW(), INTERVAL 30 DAY))", lpMsg->account, lpMsg->password, lpMsg->account) == false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 3; // Server error
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	gQueryManager.Close();
+
+	LogAdd(LOG_BLUE, "[RegisterAccount] 新账号注册成功: '%s' (IP: %s)", lpMsg->account, lpMsg->IpAddress);
 
 	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 }

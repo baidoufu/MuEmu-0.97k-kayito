@@ -490,6 +490,13 @@ void ProtocolCore(BYTE head, BYTE* lpMsg, int size, int aIndex, int encrypt, int
 
 					break;
 				}
+
+				case 0x06:
+				{
+					CGRegisterAccountRecv((PMSG_REGISTER_ACCOUNT_RECV*)lpMsg, aIndex);
+
+					break;
+				}
 			}
 
 			break;
@@ -1258,6 +1265,37 @@ void CGSetHwidRecv(PMSG_SET_HWID_RECV* lpMsg, int aIndex)
 	strcpy_s(gObj[aIndex].HardwareID, lpMsg->HardwareId);
 }
 
+void CGRegisterAccountRecv(PMSG_REGISTER_ACCOUNT_RECV* lpMsg, int aIndex)
+{
+	LPOBJ lpObj = &gObj[aIndex];
+
+	if (lpObj->Connected != OBJECT_CONNECTED)
+	{
+		CloseClient(aIndex);
+		return;
+	}
+
+	if (memcmp(gServerInfo.m_ServerVersion, lpMsg->ClientVersion, sizeof(lpMsg->ClientVersion)) != 0)
+	{
+		GCRegisterAccountSend(aIndex, 3);
+		return;
+	}
+
+	if (memcmp(gServerInfo.m_ServerSerial, lpMsg->ClientSerial, sizeof(lpMsg->ClientSerial)) != 0)
+	{
+		GCRegisterAccountSend(aIndex, 3);
+		return;
+	}
+
+	char account[11] = { 0 };
+	PacketArgumentDecrypt(account, lpMsg->account, (sizeof(account) - 1));
+
+	char password[11] = { 0 };
+	PacketArgumentDecrypt(password, lpMsg->password, (sizeof(password) - 1));
+
+	GJRegisterAccountSend(aIndex, account, password, lpObj->IpAddr);
+}
+
 void CGCharacterListRecv(int aIndex)
 {
 	LPOBJ lpObj = &gObj[aIndex];
@@ -1957,6 +1995,17 @@ void GCCloseClientSend(int aIndex, BYTE result)
 	PMSG_CLOSE_CLIENT_SEND pMsg;
 
 	pMsg.header.setE(0xF1, 0x02, sizeof(pMsg));
+
+	pMsg.result = result;
+
+	DataSend(aIndex, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GCRegisterAccountSend(int aIndex, BYTE result)
+{
+	PMSG_REGISTER_ACCOUNT_SEND pMsg;
+
+	pMsg.header.set(0xF1, 0x06, sizeof(pMsg));
 
 	pMsg.result = result;
 
