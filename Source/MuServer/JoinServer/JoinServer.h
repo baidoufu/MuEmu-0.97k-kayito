@@ -4,6 +4,8 @@
 
 #define TIMER_1000 100
 
+extern int AllowLauncherConnections;
+
 ATOM MyRegisterClass(HINSTANCE hInstance);
 
 bool InitInstance(HINSTANCE hInstance);

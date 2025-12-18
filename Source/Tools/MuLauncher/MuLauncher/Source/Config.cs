@@ -68,8 +68,9 @@ namespace MuLauncher.Source
                 ConnectionMode = ReadInt("Connection", "Mode", 1);
 
                 // Server settings (for ConnectionMode = 1)
+                // NOTE: Port should be the JoinServer port (default: 55990), NOT the GameServer port!
                 ServerHost = ReadString("Server", "Host", "127.0.0.1");
-                ServerPort = ReadInt("Server", "Port", 55970);
+                ServerPort = ReadInt("Server", "Port", 55990);
 
                 // Database settings (for ConnectionMode = 0, legacy mode)
                 EnableTrusted = ReadInt("Database", "EnableTrusted", 0);

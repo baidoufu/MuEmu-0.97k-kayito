@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SocketManager.h"
 #include "AllowableIpList.h"
+#include "JoinServer.h"
 #include "JoinServerProtocol.h"
 #include "ServerManager.h"
 #include "Util.h"
@@ -642,6 +643,12 @@ int CALLBACK CSocketManager::ServerAcceptCondition(IN LPWSABUF lpCallerId, IN LP
 	if (inet_ntop(AF_INET, &SocketAddr->sin_addr, IPAddress, INET_ADDRSTRLEN) == NULL)
 	{
 		return CF_REJECT;
+	}
+
+	// Allow launcher connections from any IP if enabled
+	if (AllowLauncherConnections != 0)
+	{
+		return CF_ACCEPT;
 	}
 
 	if (gAllowableIpList.CheckAllowableIp(IPAddress) == false)
