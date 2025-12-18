@@ -14,7 +14,14 @@ namespace MuLauncher.Source
         [DllImport("kernel32", CharSet = CharSet.None, ExactSpelling = false)]
         private static extern int GetPrivateProfileInt(string section, string key, int def, string filePath);
 
-        // Database settings
+        // Connection mode: 0 = Database, 1 = Server
+        public static int ConnectionMode;
+
+        // Server settings (when ConnectionMode = 1)
+        public static string ServerHost;
+        public static int ServerPort;
+
+        // Database settings (when ConnectionMode = 0)
         public static int EnableTrusted;
         public static string DbServer;
         public static string DbPort;
@@ -57,7 +64,14 @@ namespace MuLauncher.Source
                     return false;
                 }
 
-                // Database settings
+                // Connection mode: 0 = Database (legacy), 1 = Server (recommended)
+                ConnectionMode = ReadInt("Connection", "Mode", 1);
+
+                // Server settings (for ConnectionMode = 1)
+                ServerHost = ReadString("Server", "Host", "127.0.0.1");
+                ServerPort = ReadInt("Server", "Port", 55970);
+
+                // Database settings (for ConnectionMode = 0, legacy mode)
                 EnableTrusted = ReadInt("Database", "EnableTrusted", 0);
                 DbServer = ReadString("Database", "DataBaseHost", "127.0.0.1");
                 DbPort = ReadString("Database", "DataBasePort", "1433");

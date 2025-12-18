@@ -11,14 +11,15 @@ namespace MuLauncher.Forms
     public partial class MainForm : Form
     {
         private Database _database;
+        private ServerConnection _serverConnection;
         private string _currentAccount;
         private DataTable _characters;
         private bool _isLoggedIn;
+        private bool _useServerMode;
 
         public MainForm()
         {
             InitializeComponent();
-            _database = new Database();
             _isLoggedIn = false;
         }
 
@@ -30,9 +31,26 @@ namespace MuLauncher.Forms
                 return;
             }
 
-            if (!_database.Connect())
+            // Determine connection mode
+            _useServerMode = Config.ConnectionMode == 1;
+
+            if (_useServerMode)
             {
-                MessageBox.Show("Failed to connect to database. Launcher will work in offline mode.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                // Server mode - connect to JoinServer
+                _serverConnection = new ServerConnection();
+                if (!_serverConnection.Connect())
+                {
+                    MessageBox.Show("Failed to connect to server. Launcher will work in offline mode.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                // Database mode (legacy)
+                _database = new Database();
+                if (!_database.Connect())
+                {
+                    MessageBox.Show("Failed to connect to database. Launcher will work in offline mode.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
 
             UpdateUI();
@@ -40,7 +58,14 @@ namespace MuLauncher.Forms
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _database?.Disconnect();
+            if (_useServerMode)
+            {
+                _serverConnection?.Disconnect();
+            }
+            else
+            {
+                _database?.Disconnect();
+            }
         }
 
         private void UpdateUI()
@@ -69,23 +94,54 @@ namespace MuLauncher.Forms
                 return;
             }
 
-            if (_database.IsAccountOnline(account))
+            if (_useServerMode)
             {
-                MessageBox.Show("This account is currently online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (_database.ValidateLogin(account, password))
-            {
-                _currentAccount = account;
-                _isLoggedIn = true;
-                LoadCharacters();
-                UpdateUI();
-                MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Server mode login
+                int result = _serverConnection.ValidateLogin(account, password);
+                switch (result)
+                {
+                    case 1: // Success
+                        _currentAccount = account;
+                        _isLoggedIn = true;
+                        LoadCharacters();
+                        UpdateUI();
+                        MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        break;
+                    case 0: // Invalid password
+                        MessageBox.Show("Invalid password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                    case 2: // Account not found
+                        MessageBox.Show("Account not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                    case 3: // Account online
+                        MessageBox.Show("This account is currently online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        break;
+                    default:
+                        MessageBox.Show("Login failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                }
             }
             else
             {
-                MessageBox.Show("Invalid account or password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Database mode login (legacy)
+                if (_database.IsAccountOnline(account))
+                {
+                    MessageBox.Show("This account is currently online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (_database.ValidateLogin(account, password))
+                {
+                    _currentAccount = account;
+                    _isLoggedIn = true;
+                    LoadCharacters();
+                    UpdateUI();
+                    MessageBox.Show("Login successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Invalid account or password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -104,7 +160,15 @@ namespace MuLauncher.Forms
         {
             if (!_isLoggedIn) return;
 
-            _characters = _database.GetCharacters(_currentAccount);
+            if (_useServerMode)
+            {
+                _characters = _serverConnection.GetCharacters(_currentAccount);
+            }
+            else
+            {
+                _characters = _database.GetCharacters(_currentAccount);
+            }
+
             dgvCharacters.DataSource = _characters;
             dgvCharacters.AutoResizeColumns();
 
@@ -126,12 +190,24 @@ namespace MuLauncher.Forms
             return null;
         }
 
+        private bool CheckAccountOnline()
+        {
+            if (_useServerMode)
+            {
+                return _serverConnection.IsAccountOnline(_currentAccount);
+            }
+            else
+            {
+                return _database.IsAccountOnline(_currentAccount);
+            }
+        }
+
         private void btnAddPoints_Click(object sender, EventArgs e)
         {
             string name = GetSelectedCharacterName();
             if (string.IsNullOrEmpty(name)) return;
 
-            if (_database.IsAccountOnline(_currentAccount))
+            if (CheckAccountOnline())
             {
                 MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -141,7 +217,24 @@ namespace MuLauncher.Forms
             {
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    if (_database.AddPoints(name, dlg.SelectedStat, dlg.PointsToAdd))
+                    bool success;
+                    if (_useServerMode)
+                    {
+                        int result = _serverConnection.AddPoints(_currentAccount, name, dlg.SelectedStat, dlg.PointsToAdd);
+                        success = result == 1;
+                        if (result == 2)
+                            MessageBox.Show("Not enough points available.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        else if (result == 3)
+                            MessageBox.Show("Character not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        else if (result == 4)
+                            MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else
+                    {
+                        success = _database.AddPoints(name, dlg.SelectedStat, dlg.PointsToAdd);
+                    }
+
+                    if (success)
                     {
                         MessageBox.Show($"Added {dlg.PointsToAdd} points to {dlg.SelectedStat}.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadCharacters();
@@ -155,7 +248,7 @@ namespace MuLauncher.Forms
             string name = GetSelectedCharacterName();
             if (string.IsNullOrEmpty(name)) return;
 
-            if (_database.IsAccountOnline(_currentAccount))
+            if (CheckAccountOnline())
             {
                 MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -164,7 +257,24 @@ namespace MuLauncher.Forms
             DialogResult result = MessageBox.Show($"Clear PK status for {name}?\nCost: {Config.ClearPKZenCost:N0} zen", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                if (_database.ClearPK(name))
+                bool success;
+                if (_useServerMode)
+                {
+                    int clearResult = _serverConnection.ClearPK(_currentAccount, name, Config.ClearPKZenCost);
+                    success = clearResult == 1;
+                    if (clearResult == 2)
+                        MessageBox.Show($"Not enough zen. Required: {Config.ClearPKZenCost:N0}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else if (clearResult == 3)
+                        MessageBox.Show("Character not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else if (clearResult == 4)
+                        MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    success = _database.ClearPK(name);
+                }
+
+                if (success)
                 {
                     MessageBox.Show("PK status cleared successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadCharacters();
@@ -177,7 +287,7 @@ namespace MuLauncher.Forms
             string name = GetSelectedCharacterName();
             if (string.IsNullOrEmpty(name)) return;
 
-            if (_database.IsAccountOnline(_currentAccount))
+            if (CheckAccountOnline())
             {
                 MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -186,7 +296,24 @@ namespace MuLauncher.Forms
             DialogResult result = MessageBox.Show($"Reset character {name}?\nRequired Level: {Config.ResetLevel}\nPoints awarded: {Config.ResetPoints}", "Confirm Reset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                if (_database.Reset(name, _currentAccount))
+                bool success;
+                if (_useServerMode)
+                {
+                    int resetResult = _serverConnection.Reset(_currentAccount, name, Config.ResetLevel, Config.ResetPoints);
+                    success = resetResult == 1;
+                    if (resetResult == 2)
+                        MessageBox.Show($"Required level: {Config.ResetLevel}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else if (resetResult == 3)
+                        MessageBox.Show("Character not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else if (resetResult == 4)
+                        MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    success = _database.Reset(name, _currentAccount);
+                }
+
+                if (success)
                 {
                     MessageBox.Show("Reset successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadCharacters();
@@ -199,7 +326,7 @@ namespace MuLauncher.Forms
             string name = GetSelectedCharacterName();
             if (string.IsNullOrEmpty(name)) return;
 
-            if (_database.IsAccountOnline(_currentAccount))
+            if (CheckAccountOnline())
             {
                 MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -208,7 +335,26 @@ namespace MuLauncher.Forms
             DialogResult result = MessageBox.Show($"Grand Reset character {name}?\nRequired Resets: {Config.GrandResetResets}\nRequired Level: {Config.ResetLevel}\nPoints awarded: {Config.GrandResetPoints}", "Confirm Grand Reset", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                if (_database.GrandReset(name, _currentAccount))
+                bool success;
+                if (_useServerMode)
+                {
+                    int grandResetResult = _serverConnection.GrandReset(_currentAccount, name, Config.ResetLevel, Config.GrandResetResets, Config.GrandResetPoints);
+                    success = grandResetResult == 1;
+                    if (grandResetResult == 2)
+                        MessageBox.Show($"Required level: {Config.ResetLevel}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else if (grandResetResult == 3)
+                        MessageBox.Show($"Required resets: {Config.GrandResetResets}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    else if (grandResetResult == 4)
+                        MessageBox.Show("Character not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else if (grandResetResult == 5)
+                        MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    success = _database.GrandReset(name, _currentAccount);
+                }
+
+                if (success)
                 {
                     MessageBox.Show("Grand Reset successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadCharacters();

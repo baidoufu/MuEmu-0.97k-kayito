@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="Source\Config.cs" />
     <Compile Include="Source\Database.cs" />
+    <Compile Include="Source\ServerConnection.cs" />
     <Compile Include="Source\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\MainForm.resx">
