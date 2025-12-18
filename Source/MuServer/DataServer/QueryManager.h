@@ -5,6 +5,21 @@
 #include "sqlite3.h"
 
 #define MAX_COLUMNS 100
+#define MAX_BIND_PARAMS 10
+
+enum SQLiteBindType
+{
+	BIND_UNUSED = 0,
+	BIND_STRING = 1,
+	BIND_BINARY = 2
+};
+
+struct SQLiteBindParam
+{
+	SQLiteBindType type;
+	void* buffer;       // Pointer to caller's buffer - must remain valid until ExecQuery is called
+	int size;
+};
 
 class CQueryManager
 {
@@ -50,6 +65,10 @@ public:
 
 private:
 
+	void ApplyBindings();
+
+	void ClearBindings();
+
 	sqlite3* m_db;
 
 	sqlite3_stmt* m_stmt;
@@ -65,6 +84,8 @@ private:
 	char m_SQLData[MAX_COLUMNS][8192];
 
 	int m_SQLDataLen[MAX_COLUMNS];
+
+	SQLiteBindParam m_BindParams[MAX_BIND_PARAMS];
 };
 
 extern CQueryManager gQueryManager;
