@@ -316,11 +316,14 @@ void CQueryManager::ApplyBindings()
 		{
 			// Convert binary data to hex string format for consistent storage and retrieval
 			// This matches the MSSQL behavior where binary data is stored as hex text
-			int hexSize = this->m_BindParams[n].size * 2 + 1;
-			char* hexBuffer = new char[hexSize];
-			this->ConvertBinaryToString((BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, hexBuffer, hexSize);
-			sqlite3_bind_text(this->m_stmt, n + 1, hexBuffer, this->m_BindParams[n].size * 2, SQLITE_TRANSIENT);
-			delete[] hexBuffer;
+			// Max binary size is limited by m_SQLData buffer (8192 bytes), so hex needs 16384+1 chars
+			char hexBuffer[16385];
+			int hexLen = this->m_BindParams[n].size * 2;
+			if (hexLen < (int)sizeof(hexBuffer))
+			{
+				this->ConvertBinaryToString((BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, hexBuffer, hexLen + 1);
+				sqlite3_bind_text(this->m_stmt, n + 1, hexBuffer, hexLen, SQLITE_TRANSIENT);
+			}
 		}
 	}
 
