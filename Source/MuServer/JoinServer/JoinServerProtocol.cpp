@@ -541,13 +541,33 @@ void GJRegisterAccountRecv(SDHP_REGISTER_ACCOUNT_RECV* lpMsg, int index)
 
 	gQueryManager.Close();
 
+	// Prepare password (encode with MD5 if enabled)
+	char storedPassword[20] = { 0 };
+
+	if (MD5Encryption == 0)
+	{
+		strncpy(storedPassword, lpMsg->password, sizeof(storedPassword) - 1);
+	}
+	else
+	{
+		MD5 MD5Hash;
+		if (MD5Encryption == 1)
+		{
+			MD5Hash.MD5_EncodeString(lpMsg->password, storedPassword, MakeAccountKey(lpMsg->account));
+		}
+		else
+		{
+			MD5Hash.MD5_EncodeString(lpMsg->password, storedPassword, 0);
+		}
+	}
+
 	// Insert new account
 #if defined(SQLITE)
-	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, datetime('now', '+30 days'))", lpMsg->account, lpMsg->password, lpMsg->account) == false)
+	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, datetime('now', '+30 days'))", lpMsg->account, storedPassword, lpMsg->account) == false)
 #elif !defined(MYSQL)
-	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATEADD(day, 30, GETDATE()))", lpMsg->account, lpMsg->password, lpMsg->account) == false)
+	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATEADD(day, 30, GETDATE()))", lpMsg->account, storedPassword, lpMsg->account) == false)
 #else
-	if (gQueryManager.ExecUpdateQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATE_ADD(NOW(), INTERVAL 30 DAY))", lpMsg->account, lpMsg->password, lpMsg->account) == false)
+	if (gQueryManager.ExecUpdateQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATE_ADD(NOW(), INTERVAL 30 DAY))", lpMsg->account, storedPassword, lpMsg->account) == false)
 #endif
 	{
 		gQueryManager.Close();
@@ -561,7 +581,7 @@ void GJRegisterAccountRecv(SDHP_REGISTER_ACCOUNT_RECV* lpMsg, int index)
 
 	gQueryManager.Close();
 
-	LogAdd(LOG_BLUE, "[RegisterAccount] 新账号注册成功: '%s' (IP: %s)", lpMsg->account, lpMsg->IpAddress);
+	LogAdd(LOG_BLUE, "[RegisterAccount] New account registered: '%s' (IP: %s)", lpMsg->account, lpMsg->IpAddress);
 
 	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 }
