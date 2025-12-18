@@ -156,6 +156,49 @@ namespace MuLauncher.Forms
             UpdateUI();
         }
 
+        private void btnRegister_Click(object sender, EventArgs e)
+        {
+            if (!_useServerMode)
+            {
+                MessageBox.Show("Registration is only available in server mode.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (!_serverConnection.IsConnected)
+            {
+                MessageBox.Show("Not connected to server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            using (RegisterDialog dlg = new RegisterDialog())
+            {
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    int result = _serverConnection.RegisterAccount(dlg.Account, dlg.Password, dlg.PersonalCode);
+                    switch (result)
+                    {
+                        case 1:
+                            MessageBox.Show("Account registered successfully! You can now login.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            txtAccount.Text = dlg.Account;
+                            txtPassword.Focus();
+                            break;
+                        case 0:
+                            MessageBox.Show("Account already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            break;
+                        case 2:
+                            MessageBox.Show("Invalid input. Please check your account name and password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            break;
+                        case 3:
+                            MessageBox.Show("Server error. Please try again later.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        default:
+                            MessageBox.Show("Registration failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                    }
+                }
+            }
+        }
+
         private void LoadCharacters()
         {
             if (!_isLoggedIn) return;
@@ -525,6 +568,137 @@ namespace MuLauncher.Forms
                 // Column not found, return default
             }
             return "N/A";
+        }
+    }
+
+    // Dialog for registering a new account
+    public class RegisterDialog : Form
+    {
+        private TextBox txtAccount;
+        private TextBox txtPassword;
+        private TextBox txtConfirmPassword;
+        private TextBox txtPersonalCode;
+        private Button btnOK;
+        private Button btnCancel;
+        private Label lblValidation;
+
+        public string Account => txtAccount.Text.Trim();
+        public string Password => txtPassword.Text;
+        public string PersonalCode => txtPersonalCode.Text.Trim();
+
+        public RegisterDialog()
+        {
+            this.Text = "Register Account (注册账号)";
+            this.Size = new Size(350, 280);
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.StartPosition = FormStartPosition.CenterParent;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+
+            int row = 15;
+            int labelWidth = 120;
+            int inputX = 130;
+            int inputWidth = 190;
+            int rowHeight = 35;
+
+            // Account
+            this.Controls.Add(new Label { Text = "Account (账号):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtAccount = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10 };
+            this.Controls.Add(txtAccount);
+
+            // Password
+            row += rowHeight;
+            this.Controls.Add(new Label { Text = "Password (密码):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtPassword = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10, PasswordChar = '*' };
+            this.Controls.Add(txtPassword);
+
+            // Confirm Password
+            row += rowHeight;
+            this.Controls.Add(new Label { Text = "Confirm (确认密码):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtConfirmPassword = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10, PasswordChar = '*' };
+            this.Controls.Add(txtConfirmPassword);
+
+            // Personal Code (Name)
+            row += rowHeight;
+            this.Controls.Add(new Label { Text = "Name (姓名):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtPersonalCode = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10 };
+            this.Controls.Add(txtPersonalCode);
+
+            // Validation message
+            row += rowHeight;
+            lblValidation = new Label { Text = "4-10 characters, letters/numbers/underscore only", Location = new Point(10, row), Size = new Size(320, 20), ForeColor = Color.Gray, Font = new Font(this.Font.FontFamily, 8) };
+            this.Controls.Add(lblValidation);
+
+            // Buttons
+            row += 25;
+            btnOK = new Button { Text = "Register (注册)", Location = new Point(130, row), Size = new Size(100, 30) };
+            btnOK.Click += BtnOK_Click;
+            btnCancel = new Button { Text = "Cancel (取消)", Location = new Point(235, row), Size = new Size(90, 30), DialogResult = DialogResult.Cancel };
+
+            this.Controls.AddRange(new Control[] { btnOK, btnCancel });
+            this.CancelButton = btnCancel;
+        }
+
+        private void BtnOK_Click(object sender, EventArgs e)
+        {
+            // Validate account
+            if (!ValidateInput(txtAccount.Text, 4, 10))
+            {
+                ShowError("Account must be 4-10 characters (letters, numbers, underscore only)");
+                txtAccount.Focus();
+                return;
+            }
+
+            // Validate password
+            if (txtPassword.Text.Length < 4 || txtPassword.Text.Length > 10)
+            {
+                ShowError("Password must be 4-10 characters");
+                txtPassword.Focus();
+                return;
+            }
+
+            // Validate password confirmation
+            if (txtPassword.Text != txtConfirmPassword.Text)
+            {
+                ShowError("Passwords do not match");
+                txtConfirmPassword.Focus();
+                return;
+            }
+
+            // Validate personal code
+            if (!ValidateInput(txtPersonalCode.Text, 4, 10))
+            {
+                ShowError("Name must be 4-10 characters (letters, numbers, underscore only)");
+                txtPersonalCode.Focus();
+                return;
+            }
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private bool ValidateInput(string input, int minLength, int maxLength)
+        {
+            if (string.IsNullOrEmpty(input))
+                return false;
+
+            if (input.Length < minLength || input.Length > maxLength)
+                return false;
+
+            // Only allow letters, numbers, and underscore
+            foreach (char c in input)
+            {
+                if (!char.IsLetterOrDigit(c) && c != '_')
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void ShowError(string message)
+        {
+            lblValidation.Text = message;
+            lblValidation.ForeColor = Color.Red;
         }
     }
 }

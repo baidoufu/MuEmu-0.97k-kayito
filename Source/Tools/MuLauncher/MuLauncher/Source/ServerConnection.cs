@@ -411,5 +411,47 @@ namespace MuLauncher.Source
                 return 0;
             }
         }
+
+        /// <summary>
+        /// Register a new account (protocol 0x17)
+        /// Returns: 0=Account exists, 1=Success, 2=Invalid input, 3=Server error
+        /// </summary>
+        public int RegisterAccount(string account, string password, string personalCode)
+        {
+            try
+            {
+                // C1 size head account[11] password[11] personalCode[14] ipAddress[16]
+                byte[] packet = new byte[3 + 11 + 11 + 14 + 16];
+                packet[0] = 0xC1;
+                packet[1] = (byte)packet.Length;
+                packet[2] = 0x17;
+
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] passwordBytes = Encoding.Default.GetBytes(password.PadRight(11, '\0').Substring(0, 11));
+                byte[] personalCodeBytes = Encoding.Default.GetBytes(personalCode.PadRight(14, '\0').Substring(0, 14));
+                byte[] ipBytes = Encoding.ASCII.GetBytes("127.0.0.1".PadRight(16, '\0'));
+
+                Array.Copy(accountBytes, 0, packet, 3, 11);
+                Array.Copy(passwordBytes, 0, packet, 14, 11);
+                Array.Copy(personalCodeBytes, 0, packet, 25, 14);
+                Array.Copy(ipBytes, 0, packet, 39, 16);
+
+                if (!SendPacket(packet))
+                    return 0;
+
+                byte[] response = ReceivePacket();
+                if (response != null && response.Length >= 4 && response[2] == 0x17)
+                {
+                    return response[3];
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error registering account: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
+            }
+        }
     }
 }
