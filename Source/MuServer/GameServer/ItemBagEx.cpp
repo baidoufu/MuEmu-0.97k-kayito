@@ -104,7 +104,7 @@ void CItemBagEx::Load(char* path)
 						it->second.DropInfo.push_back(info);
 					}
 				}
-				else if (section >= 4)
+				else if (section == 4)
 				{
 					ITEM_BAG_EX_ITEM_INFO info;
 
@@ -115,6 +115,39 @@ void CItemBagEx::Load(char* path)
 					info.Level = lpReadScript->GetAsNumber();
 
 					info.Grade = lpReadScript->GetAsNumber();
+
+					info.LevelOptionRate = lpReadScript->GetAsNumber();
+
+					info.SkillOptionRate = lpReadScript->GetAsNumber();
+
+					info.LuckOptionRate = lpReadScript->GetAsNumber();
+
+					info.AddOptionRate = lpReadScript->GetAsNumber();
+
+					info.ExceOptionRate = lpReadScript->GetAsNumber();
+
+					std::map<int, std::vector<ITEM_BAG_EX_ITEM_INFO>>::iterator it = this->m_ItemBagItemInfo.find(section);
+
+					if (it == this->m_ItemBagItemInfo.end())
+					{
+						this->m_ItemBagItemInfo.insert(std::pair<int, std::vector<ITEM_BAG_EX_ITEM_INFO>>(section, std::vector<ITEM_BAG_EX_ITEM_INFO>(1, info)));
+					}
+					else
+					{
+						it->second.push_back(info);
+					}
+				}
+				else if (section > 4)
+				{
+					ITEM_BAG_EX_ITEM_INFO info;
+
+					info.Index = lpReadScript->GetNumber();
+
+					info.Index = SafeGetItem(GET_ITEM(info.Index, lpReadScript->GetAsNumber()));
+
+					info.Level = lpReadScript->GetAsNumber();
+
+					//info.Grade = lpReadScript->GetAsNumber();   
 
 					info.LevelOptionRate = lpReadScript->GetAsNumber();
 
