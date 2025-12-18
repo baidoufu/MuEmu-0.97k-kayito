@@ -156,6 +156,49 @@ namespace MuLauncher.Forms
             UpdateUI();
         }
 
+        private void btnRegister_Click(object sender, EventArgs e)
+        {
+            if (!_useServerMode)
+            {
+                MessageBox.Show("Registration is only available in server mode.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (!_serverConnection.IsConnected)
+            {
+                MessageBox.Show("Not connected to server.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            using (RegisterDialog dlg = new RegisterDialog())
+            {
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    int result = _serverConnection.RegisterAccount(dlg.Account, dlg.Password, dlg.PersonalCode);
+                    switch (result)
+                    {
+                        case 1:
+                            MessageBox.Show("Account registered successfully! You can now login.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            txtAccount.Text = dlg.Account;
+                            txtPassword.Focus();
+                            break;
+                        case 0:
+                            MessageBox.Show("Account already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            break;
+                        case 2:
+                            MessageBox.Show("Invalid input. Please check your account name and password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            break;
+                        case 3:
+                            MessageBox.Show("Server error. Please try again later.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                        default:
+                            MessageBox.Show("Registration failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            break;
+                    }
+                }
+            }
+        }
+
         private void LoadCharacters()
         {
             if (!_isLoggedIn) return;
@@ -207,13 +250,15 @@ namespace MuLauncher.Forms
             string name = GetSelectedCharacterName();
             if (string.IsNullOrEmpty(name)) return;
 
+            if (dgvCharacters.SelectedRows.Count == 0) return;
+
             if (CheckAccountOnline())
             {
                 MessageBox.Show("Account is online. Please disconnect first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (AddPointsDialog dlg = new AddPointsDialog())
+            using (AddPointsDialog dlg = new AddPointsDialog(dgvCharacters.SelectedRows[0]))
             {
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
@@ -388,7 +433,7 @@ namespace MuLauncher.Forms
         }
     }
 
-    // Simple dialog for adding points
+    // Dialog for adding points with character stats display
     public class AddPointsDialog : Form
     {
         private ComboBox cmbStat;
@@ -396,32 +441,264 @@ namespace MuLauncher.Forms
         private Button btnOK;
         private Button btnCancel;
 
+        // Read-only stat display labels
+        private Label lblNameValue;
+        private Label lblLevelValue;
+        private Label lblResetsValue;
+        private Label lblGrandResetsValue;
+        private Label lblAvailablePointsValue;
+        private Label lblStrengthValue;
+        private Label lblDexterityValue;
+        private Label lblVitalityValue;
+        private Label lblEnergyValue;
+
         public string SelectedStat => cmbStat.SelectedItem?.ToString();
         public int PointsToAdd => (int)nudPoints.Value;
 
-        public AddPointsDialog()
+        public AddPointsDialog(DataGridViewRow characterRow)
         {
-            this.Text = "Add Points";
-            this.Size = new Size(300, 150);
+            this.Text = "Add Points - Character Stats";
+            this.Size = new Size(400, 380);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.StartPosition = FormStartPosition.CenterParent;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
 
-            Label lblStat = new Label { Text = "Stat:", Location = new Point(10, 15), Size = new Size(50, 20) };
-            cmbStat = new ComboBox { Location = new Point(70, 12), Size = new Size(200, 25), DropDownStyle = ComboBoxStyle.DropDownList };
+            // Character Info Section
+            GroupBox grpCharInfo = new GroupBox { Text = "Character Info (Read-Only)", Location = new Point(10, 10), Size = new Size(365, 180) };
+
+            int row = 20;
+            int labelWidth = 100;
+            int valueWidth = 100;
+            int col1 = 15;
+            int col2 = 125;
+            int col3 = 195;
+            int col4 = 280;
+            int rowHeight = 25;
+
+            // Row 1: Name
+            grpCharInfo.Controls.Add(new Label { Text = "Name:", Location = new Point(col1, row), Size = new Size(labelWidth, 20), Font = new Font(this.Font, FontStyle.Bold) });
+            lblNameValue = new Label { Text = GetCellValue(characterRow, "Name"), Location = new Point(col2, row), Size = new Size(240, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblNameValue);
+
+            // Row 2: Level, Resets
+            row += rowHeight;
+            grpCharInfo.Controls.Add(new Label { Text = "Level:", Location = new Point(col1, row), Size = new Size(labelWidth, 20) });
+            lblLevelValue = new Label { Text = GetCellValue(characterRow, "Level"), Location = new Point(col2, row), Size = new Size(60, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblLevelValue);
+
+            grpCharInfo.Controls.Add(new Label { Text = "Resets:", Location = new Point(col3, row), Size = new Size(80, 20) });
+            lblResetsValue = new Label { Text = GetCellValue(characterRow, "Resets"), Location = new Point(col4, row), Size = new Size(70, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblResetsValue);
+
+            // Row 3: GrandResets, Available Points
+            row += rowHeight;
+            grpCharInfo.Controls.Add(new Label { Text = "Grand Resets:", Location = new Point(col1, row), Size = new Size(labelWidth, 20) });
+            lblGrandResetsValue = new Label { Text = GetCellValue(characterRow, "GrandResets"), Location = new Point(col2, row), Size = new Size(60, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblGrandResetsValue);
+
+            grpCharInfo.Controls.Add(new Label { Text = "Points:", Location = new Point(col3, row), Size = new Size(80, 20), Font = new Font(this.Font, FontStyle.Bold) });
+            lblAvailablePointsValue = new Label { Text = GetCellValue(characterRow, "Points"), Location = new Point(col4, row), Size = new Size(70, 20), BorderStyle = BorderStyle.Fixed3D, BackColor = Color.LightYellow };
+            grpCharInfo.Controls.Add(lblAvailablePointsValue);
+
+            // Row 4: Strength, Dexterity
+            row += rowHeight + 10;
+            grpCharInfo.Controls.Add(new Label { Text = "Strength:", Location = new Point(col1, row), Size = new Size(labelWidth, 20) });
+            lblStrengthValue = new Label { Text = GetCellValue(characterRow, "Strength"), Location = new Point(col2, row), Size = new Size(60, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblStrengthValue);
+
+            grpCharInfo.Controls.Add(new Label { Text = "Dexterity:", Location = new Point(col3, row), Size = new Size(80, 20) });
+            lblDexterityValue = new Label { Text = GetCellValue(characterRow, "Dexterity"), Location = new Point(col4, row), Size = new Size(70, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblDexterityValue);
+
+            // Row 5: Vitality, Energy
+            row += rowHeight;
+            grpCharInfo.Controls.Add(new Label { Text = "Vitality:", Location = new Point(col1, row), Size = new Size(labelWidth, 20) });
+            lblVitalityValue = new Label { Text = GetCellValue(characterRow, "Vitality"), Location = new Point(col2, row), Size = new Size(60, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblVitalityValue);
+
+            grpCharInfo.Controls.Add(new Label { Text = "Energy:", Location = new Point(col3, row), Size = new Size(80, 20) });
+            lblEnergyValue = new Label { Text = GetCellValue(characterRow, "Energy"), Location = new Point(col4, row), Size = new Size(70, 20), BorderStyle = BorderStyle.Fixed3D };
+            grpCharInfo.Controls.Add(lblEnergyValue);
+
+            this.Controls.Add(grpCharInfo);
+
+            // Add Points Section
+            GroupBox grpAddPoints = new GroupBox { Text = "Add Points", Location = new Point(10, 200), Size = new Size(365, 90) };
+
+            Label lblStat = new Label { Text = "Stat:", Location = new Point(15, 25), Size = new Size(80, 20) };
+            cmbStat = new ComboBox { Location = new Point(100, 22), Size = new Size(120, 25), DropDownStyle = ComboBoxStyle.DropDownList };
             cmbStat.Items.AddRange(new object[] { "Strength", "Dexterity", "Vitality", "Energy" });
             cmbStat.SelectedIndex = 0;
 
-            Label lblPoints = new Label { Text = "Points:", Location = new Point(10, 45), Size = new Size(50, 20) };
-            nudPoints = new NumericUpDown { Location = new Point(70, 42), Size = new Size(200, 25), Minimum = 1, Maximum = 65535, Value = 1 };
+            Label lblPoints = new Label { Text = "Points:", Location = new Point(15, 55), Size = new Size(80, 20) };
+            nudPoints = new NumericUpDown { Location = new Point(100, 52), Size = new Size(120, 25), Minimum = 1, Maximum = 65535, Value = 1 };
 
-            btnOK = new Button { Text = "OK", Location = new Point(110, 80), Size = new Size(75, 25), DialogResult = DialogResult.OK };
-            btnCancel = new Button { Text = "Cancel", Location = new Point(195, 80), Size = new Size(75, 25), DialogResult = DialogResult.Cancel };
+            // Set max points based on available points
+            int availablePoints = 0;
+            if (int.TryParse(GetCellValue(characterRow, "Points"), out availablePoints) && availablePoints > 0)
+            {
+                nudPoints.Maximum = availablePoints;
+            }
 
-            this.Controls.AddRange(new Control[] { lblStat, cmbStat, lblPoints, nudPoints, btnOK, btnCancel });
+            grpAddPoints.Controls.AddRange(new Control[] { lblStat, cmbStat, lblPoints, nudPoints });
+            this.Controls.Add(grpAddPoints);
+
+            // Buttons
+            btnOK = new Button { Text = "Add Points", Location = new Point(180, 300), Size = new Size(90, 30), DialogResult = DialogResult.OK };
+            btnCancel = new Button { Text = "Cancel", Location = new Point(280, 300), Size = new Size(90, 30), DialogResult = DialogResult.Cancel };
+
+            // Disable OK button if no points available
+            btnOK.Enabled = availablePoints > 0;
+
+            this.Controls.AddRange(new Control[] { btnOK, btnCancel });
             this.AcceptButton = btnOK;
             this.CancelButton = btnCancel;
+        }
+
+        private string GetCellValue(DataGridViewRow row, string columnName)
+        {
+            try
+            {
+                if (row?.Cells[columnName]?.Value != null)
+                    return row.Cells[columnName].Value.ToString();
+            }
+            catch (ArgumentException)
+            {
+                // Column not found, return default
+            }
+            return "N/A";
+        }
+    }
+
+    // Dialog for registering a new account
+    public class RegisterDialog : Form
+    {
+        private TextBox txtAccount;
+        private TextBox txtPassword;
+        private TextBox txtConfirmPassword;
+        private TextBox txtPersonalCode;
+        private Button btnOK;
+        private Button btnCancel;
+        private Label lblValidation;
+
+        public string Account => txtAccount.Text.Trim();
+        public string Password => txtPassword.Text;
+        public string PersonalCode => txtPersonalCode.Text.Trim();
+
+        public RegisterDialog()
+        {
+            this.Text = "Register Account (注册账号)";
+            this.Size = new Size(350, 280);
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.StartPosition = FormStartPosition.CenterParent;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+
+            int row = 15;
+            int labelWidth = 120;
+            int inputX = 130;
+            int inputWidth = 190;
+            int rowHeight = 35;
+
+            // Account
+            this.Controls.Add(new Label { Text = "Account (账号):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtAccount = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10 };
+            this.Controls.Add(txtAccount);
+
+            // Password
+            row += rowHeight;
+            this.Controls.Add(new Label { Text = "Password (密码):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtPassword = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10, PasswordChar = '*' };
+            this.Controls.Add(txtPassword);
+
+            // Confirm Password
+            row += rowHeight;
+            this.Controls.Add(new Label { Text = "Confirm (确认密码):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtConfirmPassword = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10, PasswordChar = '*' };
+            this.Controls.Add(txtConfirmPassword);
+
+            // Personal Code (Name)
+            row += rowHeight;
+            this.Controls.Add(new Label { Text = "Name (姓名):", Location = new Point(10, row + 3), Size = new Size(labelWidth, 20) });
+            txtPersonalCode = new TextBox { Location = new Point(inputX, row), Size = new Size(inputWidth, 23), MaxLength = 10 };
+            this.Controls.Add(txtPersonalCode);
+
+            // Validation message
+            row += rowHeight;
+            lblValidation = new Label { Text = "4-10 characters, letters/numbers/underscore only", Location = new Point(10, row), Size = new Size(320, 20), ForeColor = Color.Gray, Font = new Font(this.Font.FontFamily, 8) };
+            this.Controls.Add(lblValidation);
+
+            // Buttons
+            row += 25;
+            btnOK = new Button { Text = "Register (注册)", Location = new Point(130, row), Size = new Size(100, 30) };
+            btnOK.Click += BtnOK_Click;
+            btnCancel = new Button { Text = "Cancel (取消)", Location = new Point(235, row), Size = new Size(90, 30), DialogResult = DialogResult.Cancel };
+
+            this.Controls.AddRange(new Control[] { btnOK, btnCancel });
+            this.CancelButton = btnCancel;
+        }
+
+        private void BtnOK_Click(object sender, EventArgs e)
+        {
+            // Validate account
+            if (!ValidateInput(txtAccount.Text, 4, 10))
+            {
+                ShowError("Account must be 4-10 characters (letters, numbers, underscore only)");
+                txtAccount.Focus();
+                return;
+            }
+
+            // Validate password
+            if (txtPassword.Text.Length < 4 || txtPassword.Text.Length > 10)
+            {
+                ShowError("Password must be 4-10 characters");
+                txtPassword.Focus();
+                return;
+            }
+
+            // Validate password confirmation
+            if (txtPassword.Text != txtConfirmPassword.Text)
+            {
+                ShowError("Passwords do not match");
+                txtConfirmPassword.Focus();
+                return;
+            }
+
+            // Validate personal code
+            if (!ValidateInput(txtPersonalCode.Text, 4, 10))
+            {
+                ShowError("Name must be 4-10 characters (letters, numbers, underscore only)");
+                txtPersonalCode.Focus();
+                return;
+            }
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private bool ValidateInput(string input, int minLength, int maxLength)
+        {
+            if (string.IsNullOrEmpty(input))
+                return false;
+
+            if (input.Length < minLength || input.Length > maxLength)
+                return false;
+
+            // Only allow letters, numbers, and underscore
+            foreach (char c in input)
+            {
+                if (!char.IsLetterOrDigit(c) && c != '_')
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void ShowError(string message)
+        {
+            lblValidation.Text = message;
+            lblValidation.ForeColor = Color.Red;
         }
     }
 }

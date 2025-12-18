@@ -122,6 +122,13 @@ void JoinServerProtocolCore(int index, BYTE head, BYTE* lpMsg, int size)
 
 			break;
 		}
+
+		case 0x17:
+		{
+			GJLauncherRegisterRecv((SDHP_LAUNCHER_REGISTER_RECV*)lpMsg, index);
+
+			break;
+		}
 	}
 }
 
@@ -1128,6 +1135,148 @@ void GJLauncherCheckOnlineRecv(SDHP_LAUNCHER_CHECK_ONLINE_RECV* lpMsg, int index
 	ACCOUNT_INFO AccountInfo;
 
 	pMsg.result = gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false ? 1 : 0;
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GJLauncherRegisterRecv(SDHP_LAUNCHER_REGISTER_RECV* lpMsg, int index)
+{
+	SDHP_LAUNCHER_REGISTER_SEND pMsg;
+
+	pMsg.header.set(0x17, sizeof(pMsg));
+
+	pMsg.result = 1; // Success by default
+
+	// Validate account name (4-10 chars, alphanumeric and underscore only)
+	int accountLen = (int)strlen(lpMsg->account);
+	if (accountLen < 4 || accountLen > 10)
+	{
+		pMsg.result = 2; // Invalid input
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	for (int i = 0; i < accountLen; i++)
+	{
+		char c = lpMsg->account[i];
+		if (!isalnum(c) && c != '_')
+		{
+			pMsg.result = 2; // Invalid input
+
+			gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+			return;
+		}
+	}
+
+	// Validate password (4-10 chars)
+	int passLen = (int)strlen(lpMsg->password);
+	if (passLen < 4 || passLen > 10)
+	{
+		pMsg.result = 2; // Invalid input
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Validate password for SQL injection (no quotes or spaces)
+	if (CheckTextSyntax(lpMsg->password, sizeof(lpMsg->password)) == false)
+	{
+		pMsg.result = 2; // Invalid input
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Validate personal code (4-10 chars, alphanumeric and underscore only)
+	int codeLen = (int)strlen(lpMsg->personalCode);
+	if (codeLen < 4 || codeLen > 10)
+	{
+		pMsg.result = 2; // Invalid input
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	for (int i = 0; i < codeLen; i++)
+	{
+		char c = lpMsg->personalCode[i];
+		if (!isalnum(c) && c != '_')
+		{
+			pMsg.result = 2; // Invalid input
+
+			gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+			return;
+		}
+	}
+
+	// Check if account already exists
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT memb___id FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT memb___id FROM MEMB_INFO WHERE memb___id='%s' COLLATE Latin1_General_BIN", lpMsg->account) != false && gQueryManager.Fetch() != SQL_NO_DATA)
+#else
+	if (gQueryManager.ExecResultQuery("SELECT memb___id FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 0; // Account already exists
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	gQueryManager.Close();
+
+	// Prepare password (encode with MD5 if enabled)
+	char storedPassword[20] = { 0 };
+
+	if (MD5Encryption == 0)
+	{
+		strncpy(storedPassword, lpMsg->password, sizeof(storedPassword) - 1);
+	}
+	else
+	{
+		MD5 MD5Hash;
+		if (MD5Encryption == 1)
+		{
+			MD5Hash.MD5_EncodeString(lpMsg->password, storedPassword, MakeAccountKey(lpMsg->account));
+		}
+		else
+		{
+			MD5Hash.MD5_EncodeString(lpMsg->password, storedPassword, 0);
+		}
+	}
+
+	// Insert new account
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, datetime('now', '+30 days'))", lpMsg->account, storedPassword, lpMsg->personalCode) == false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATEADD(day, 30, GETDATE()))", lpMsg->account, storedPassword, lpMsg->personalCode) == false)
+#else
+	if (gQueryManager.ExecUpdateQuery("INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, AccountLevel, AccountExpireDate) VALUES ('%s', '%s', '%s', '1111111111111', 0, 0, DATE_ADD(NOW(), INTERVAL 30 DAY))", lpMsg->account, storedPassword, lpMsg->personalCode) == false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 3; // Server error
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	gQueryManager.Close();
+
+	LogAdd(LOG_BLUE, "[LauncherRegister] New account registered: '%s' (Name: %s, IP: %s)", lpMsg->account, lpMsg->personalCode, lpMsg->IpAddress);
 
 	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 }

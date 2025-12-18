@@ -194,6 +194,15 @@ struct SDHP_LAUNCHER_CHECK_ONLINE_RECV
 	char account[11];
 };
 
+struct SDHP_LAUNCHER_REGISTER_RECV
+{
+	PBMSG_HEAD header; // C1:17
+	char account[11];
+	char password[11];
+	char personalCode[14];
+	char IpAddress[16];
+};
+
 //**********************************************//
 //********** JoinServer -> Launcher ************//
 //**********************************************//
@@ -257,6 +266,12 @@ struct SDHP_LAUNCHER_CHECK_ONLINE_SEND
 	BYTE result; // 0=Offline, 1=Online
 };
 
+struct SDHP_LAUNCHER_REGISTER_SEND
+{
+	PBMSG_HEAD header; // C1:17
+	BYTE result; // 0=Account exists, 1=Success, 2=Invalid input, 3=Server error
+};
+
 //**********************************************//
 //**********************************************//
 //**********************************************//
@@ -297,3 +312,5 @@ void GJLauncherResetRecv(SDHP_LAUNCHER_RESET_RECV* lpMsg, int index);
 void GJLauncherGrandResetRecv(SDHP_LAUNCHER_GRAND_RESET_RECV* lpMsg, int index);
 
 void GJLauncherCheckOnlineRecv(SDHP_LAUNCHER_CHECK_ONLINE_RECV* lpMsg, int index);
+
+void GJLauncherRegisterRecv(SDHP_LAUNCHER_REGISTER_RECV* lpMsg, int index);

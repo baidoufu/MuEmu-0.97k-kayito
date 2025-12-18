@@ -40,6 +40,7 @@ namespace MuLauncher.Forms
             // 
             // pnlLogin
             // 
+            this.pnlLogin.Controls.Add(this.btnRegister);
             this.pnlLogin.Controls.Add(this.btnLogin);
             this.pnlLogin.Controls.Add(this.txtPassword);
             this.pnlLogin.Controls.Add(this.txtAccount);
@@ -47,8 +48,18 @@ namespace MuLauncher.Forms
             this.pnlLogin.Controls.Add(this.lblAccount);
             this.pnlLogin.Location = new System.Drawing.Point(12, 50);
             this.pnlLogin.Name = "pnlLogin";
-            this.pnlLogin.Size = new System.Drawing.Size(260, 120);
+            this.pnlLogin.Size = new System.Drawing.Size(260, 150);
             this.pnlLogin.TabIndex = 0;
+            // 
+            // btnRegister
+            // 
+            this.btnRegister.Location = new System.Drawing.Point(70, 118);
+            this.btnRegister.Name = "btnRegister";
+            this.btnRegister.Size = new System.Drawing.Size(180, 28);
+            this.btnRegister.TabIndex = 5;
+            this.btnRegister.Text = "Register (注册)";
+            this.btnRegister.UseVisualStyleBackColor = true;
+            this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
             // 
             // btnLogin
             // 
@@ -252,6 +263,7 @@ namespace MuLauncher.Forms
         private System.Windows.Forms.Button btnGrandReset;
         private System.Windows.Forms.Button btnLaunch;
         private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Button btnRegister;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label lblTitle;
     }

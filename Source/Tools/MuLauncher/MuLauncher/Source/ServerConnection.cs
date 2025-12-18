@@ -98,8 +98,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x10; // Head
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] passwordBytes = Encoding.ASCII.GetBytes(password.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] passwordBytes = Encoding.Default.GetBytes(password.PadRight(11, '\0').Substring(0, 11));
                 byte[] ipBytes = Encoding.ASCII.GetBytes("127.0.0.1".PadRight(16, '\0'));
 
                 Array.Copy(accountBytes, 0, packet, 3, 11);
@@ -137,7 +137,7 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x16;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
                 Array.Copy(accountBytes, 0, packet, 3, 11);
 
                 if (!SendPacket(packet))
@@ -182,7 +182,7 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x11;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
                 Array.Copy(accountBytes, 0, packet, 3, 11);
 
                 if (!SendPacket(packet))
@@ -206,8 +206,8 @@ namespace MuLauncher.Source
                 {
                     DataRow row = dt.NewRow();
 
-                    // Name (11 bytes)
-                    row["Name"] = Encoding.ASCII.GetString(response, offset, 11).TrimEnd('\0');
+                    // Name (11 bytes) - Use Default encoding for Chinese/Korean character support
+                    row["Name"] = Encoding.Default.GetString(response, offset, 11).TrimEnd('\0');
                     offset += 11;
 
                     // Ints (4 bytes each)
@@ -258,8 +258,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x12;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
 
                 Array.Copy(accountBytes, 0, packet, 3, 11);
                 Array.Copy(nameBytes, 0, packet, 14, 11);
@@ -300,8 +300,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x13;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
                 byte[] zenBytes = BitConverter.GetBytes(zenCost);
 
                 Array.Copy(accountBytes, 0, packet, 3, 11);
@@ -340,8 +340,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x14;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
                 byte[] levelBytes = BitConverter.GetBytes((ushort)requiredLevel);
                 byte[] pointsBytes = BitConverter.GetBytes(rewardPoints);
 
@@ -382,8 +382,8 @@ namespace MuLauncher.Source
                 packet[1] = (byte)packet.Length;
                 packet[2] = 0x15;
 
-                byte[] accountBytes = Encoding.ASCII.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
-                byte[] nameBytes = Encoding.ASCII.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] nameBytes = Encoding.Default.GetBytes(name.PadRight(11, '\0').Substring(0, 11));
                 byte[] levelBytes = BitConverter.GetBytes((ushort)requiredLevel);
                 byte[] resetsBytes = BitConverter.GetBytes((ushort)requiredResets);
                 byte[] pointsBytes = BitConverter.GetBytes(rewardPoints);
@@ -408,6 +408,48 @@ namespace MuLauncher.Source
             catch (Exception ex)
             {
                 MessageBox.Show($"Error performing grand reset: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Register a new account (protocol 0x17)
+        /// Returns: 0=Account exists, 1=Success, 2=Invalid input, 3=Server error
+        /// </summary>
+        public int RegisterAccount(string account, string password, string personalCode)
+        {
+            try
+            {
+                // C1 size head account[11] password[11] personalCode[14] ipAddress[16]
+                byte[] packet = new byte[3 + 11 + 11 + 14 + 16];
+                packet[0] = 0xC1;
+                packet[1] = (byte)packet.Length;
+                packet[2] = 0x17;
+
+                byte[] accountBytes = Encoding.Default.GetBytes(account.PadRight(11, '\0').Substring(0, 11));
+                byte[] passwordBytes = Encoding.Default.GetBytes(password.PadRight(11, '\0').Substring(0, 11));
+                byte[] personalCodeBytes = Encoding.Default.GetBytes(personalCode.PadRight(14, '\0').Substring(0, 14));
+                byte[] ipBytes = Encoding.ASCII.GetBytes("127.0.0.1".PadRight(16, '\0'));
+
+                Array.Copy(accountBytes, 0, packet, 3, 11);
+                Array.Copy(passwordBytes, 0, packet, 14, 11);
+                Array.Copy(personalCodeBytes, 0, packet, 25, 14);
+                Array.Copy(ipBytes, 0, packet, 39, 16);
+
+                if (!SendPacket(packet))
+                    return 0;
+
+                byte[] response = ReceivePacket();
+                if (response != null && response.Length >= 4 && response[2] == 0x17)
+                {
+                    return response[3];
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error registering account: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 0;
             }
         }
