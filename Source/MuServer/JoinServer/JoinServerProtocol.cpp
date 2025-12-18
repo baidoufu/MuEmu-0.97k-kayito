@@ -785,6 +785,13 @@ void GJLauncherGetCharactersRecv(SDHP_LAUNCHER_GET_CHARACTERS_RECV* lpMsg, int i
 			continue;
 		}
 
+		// Bounds check to prevent buffer overflow
+		WORD currentSize = sizeof(SDHP_LAUNCHER_GET_CHARACTERS_SEND) + (pMsg->count * sizeof(SDHP_LAUNCHER_CHARACTER_INFO));
+		if (currentSize + sizeof(SDHP_LAUNCHER_CHARACTER_INFO) > sizeof(buffer))
+		{
+			break;
+		}
+
 	#if defined(SQLITE)
 		if (gQueryManager.ExecQuery("SELECT Name, cLevel, ResetCount, GrandResetCount, LevelUpPoint, Strength, Dexterity, Vitality, Energy, PkLevel, Money FROM Character WHERE Name='%s'", charNames[i]) == false || gQueryManager.Fetch() == false)
 	#elif !defined(MYSQL)

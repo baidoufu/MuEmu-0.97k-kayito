@@ -13,6 +13,11 @@ namespace MuLauncher.Source
         private NetworkStream _stream;
         private byte[] _buffer = new byte[4096];
 
+        // Constants for protocol
+        private const int CHARACTER_NAME_SIZE = 11;
+        private const int CHARACTER_INT_FIELDS_COUNT = 10; // level, resets, grandResets, points, str, dex, vit, ene, pkLevel, money
+        private const int CHARACTER_INFO_SIZE = CHARACTER_NAME_SIZE + (4 * CHARACTER_INT_FIELDS_COUNT);
+
         public bool Connect()
         {
             try
@@ -196,9 +201,8 @@ namespace MuLauncher.Source
 
                 // Parse character info
                 int offset = 6;
-                int charInfoSize = 11 + (4 * 10); // name[11] + 10 ints (4 bytes each)
 
-                for (int i = 0; i < count && offset + charInfoSize <= response.Length; i++)
+                for (int i = 0; i < count && offset + CHARACTER_INFO_SIZE <= response.Length; i++)
                 {
                     DataRow row = dt.NewRow();
 
