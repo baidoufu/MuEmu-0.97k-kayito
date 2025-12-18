@@ -1182,6 +1182,16 @@ void GJLauncherRegisterRecv(SDHP_LAUNCHER_REGISTER_RECV* lpMsg, int index)
 		return;
 	}
 
+	// Validate password for SQL injection (no quotes or spaces)
+	if (CheckTextSyntax(lpMsg->password, sizeof(lpMsg->password)) == false)
+	{
+		pMsg.result = 2; // Invalid input
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
 	// Validate personal code (4-10 chars, alphanumeric and underscore only)
 	int codeLen = (int)strlen(lpMsg->personalCode);
 	if (codeLen < 4 || codeLen > 10)
