@@ -1272,7 +1272,7 @@ bool gObjFixInventoryPointer(int aIndex)
 	{
 		if (lpObj->Transaction == 1)
 		{
-			return 0;
+			gObjInventoryRollback(aIndex);
 		}
 		else
 		{
@@ -1280,10 +1280,10 @@ bool gObjFixInventoryPointer(int aIndex)
 			{
 				lpObj->Inventory2[n].Clear();
 			}
+
+			gObjSetInventory1Pointer(lpObj);
 		}
 	}
-
-	gObjSetInventory1Pointer(lpObj);
 
 	return 0;
 }
