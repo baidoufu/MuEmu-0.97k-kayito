@@ -72,6 +72,56 @@ void JoinServerProtocolCore(int index, BYTE head, BYTE* lpMsg, int size)
 
 			break;
 		}
+
+		// Launcher protocols (0x10-0x16)
+		case 0x10:
+		{
+			GJLauncherLoginRecv((SDHP_LAUNCHER_LOGIN_RECV*)lpMsg, index);
+
+			break;
+		}
+
+		case 0x11:
+		{
+			GJLauncherGetCharactersRecv((SDHP_LAUNCHER_GET_CHARACTERS_RECV*)lpMsg, index);
+
+			break;
+		}
+
+		case 0x12:
+		{
+			GJLauncherAddPointsRecv((SDHP_LAUNCHER_ADD_POINTS_RECV*)lpMsg, index);
+
+			break;
+		}
+
+		case 0x13:
+		{
+			GJLauncherClearPKRecv((SDHP_LAUNCHER_CLEAR_PK_RECV*)lpMsg, index);
+
+			break;
+		}
+
+		case 0x14:
+		{
+			GJLauncherResetRecv((SDHP_LAUNCHER_RESET_RECV*)lpMsg, index);
+
+			break;
+		}
+
+		case 0x15:
+		{
+			GJLauncherGrandResetRecv((SDHP_LAUNCHER_GRAND_RESET_RECV*)lpMsg, index);
+
+			break;
+		}
+
+		case 0x16:
+		{
+			GJLauncherCheckOnlineRecv((SDHP_LAUNCHER_CHECK_ONLINE_RECV*)lpMsg, index);
+
+			break;
+		}
 	}
 }
 
@@ -582,6 +632,495 @@ void GJRegisterAccountRecv(SDHP_REGISTER_ACCOUNT_RECV* lpMsg, int index)
 	gQueryManager.Close();
 
 	LogAdd(LOG_BLUE, "[RegisterAccount] New account registered: '%s' (IP: %s)", lpMsg->account, lpMsg->IpAddress);
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+// Launcher protocol handlers
+
+void GJLauncherLoginRecv(SDHP_LAUNCHER_LOGIN_RECV* lpMsg, int index)
+{
+	SDHP_LAUNCHER_LOGIN_SEND pMsg;
+
+	pMsg.header.set(0x10, sizeof(pMsg));
+
+	pMsg.result = 1; // Success by default
+
+	if (CheckTextSyntax(lpMsg->account, sizeof(lpMsg->account)) == false)
+	{
+		pMsg.result = 2; // Account not found / invalid
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Check if account is online
+	ACCOUNT_INFO AccountInfo;
+
+	if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
+	{
+		pMsg.result = 3; // Account is online
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Validate password
+	if (MD5Encryption == 0)
+	{
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
+		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s' COLLATE Latin1_General_BIN", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+	#else
+		if (gQueryManager.ExecResultQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+	#endif
+		{
+			gQueryManager.Close();
+
+			pMsg.result = 2; // Account not found
+
+			gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+			return;
+		}
+
+		char password[11] = { 0 };
+
+		gQueryManager.GetAsString("memb__pwd", password, sizeof(password));
+
+		gQueryManager.Close();
+
+		if (strcmp(lpMsg->password, password) != 0)
+		{
+			pMsg.result = 0; // Invalid password
+
+			gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+			return;
+		}
+	}
+	else
+	{
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
+		if (gQueryManager.ExecQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s' COLLATE Latin1_General_BIN", lpMsg->account) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+	#else
+		if (gQueryManager.ExecResultQuery("SELECT memb__pwd FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) == false || gQueryManager.Fetch() == false)
+	#endif
+		{
+			gQueryManager.Close();
+
+			pMsg.result = 2; // Account not found
+
+			gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+			return;
+		}
+
+		BYTE password[16] = { 0 };
+
+		gQueryManager.GetAsBinary("memb__pwd", password, sizeof(password));
+
+		gQueryManager.Close();
+
+		MD5 MD5Hash;
+
+		if ((MD5Encryption == 1)
+		    ? MD5Hash.MD5_CheckValue(lpMsg->password, (char*)password, MakeAccountKey(lpMsg->account)) == false
+		    : MD5Hash.MD5_CheckValue(lpMsg->password, (char*)password) == false)
+		{
+			pMsg.result = 0; // Invalid password
+
+			gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+			return;
+		}
+	}
+
+	LogAdd(LOG_BLUE, "[LauncherLogin] Account '%s' logged in from IP: %s", lpMsg->account, lpMsg->IpAddress);
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GJLauncherGetCharactersRecv(SDHP_LAUNCHER_GET_CHARACTERS_RECV* lpMsg, int index)
+{
+	BYTE buffer[2048] = { 0 };
+
+	SDHP_LAUNCHER_GET_CHARACTERS_SEND* pMsg = (SDHP_LAUNCHER_GET_CHARACTERS_SEND*)buffer;
+
+	pMsg->result = 1;
+	pMsg->count = 0;
+
+	SDHP_LAUNCHER_CHARACTER_INFO* pCharInfo = (SDHP_LAUNCHER_CHARACTER_INFO*)(buffer + sizeof(SDHP_LAUNCHER_GET_CHARACTERS_SEND));
+
+	// Get character names from AccountCharacter table
+	char charNames[5][11] = { 0 };
+
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT GameID1, GameID2, GameID3, GameID4, GameID5 FROM AccountCharacter WHERE Id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT GameID1, GameID2, GameID3, GameID4, GameID5 FROM AccountCharacter WHERE Id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != SQL_NO_DATA)
+#else
+	if (gQueryManager.ExecResultQuery("SELECT GameID1, GameID2, GameID3, GameID4, GameID5 FROM AccountCharacter WHERE Id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+#endif
+	{
+		gQueryManager.GetAsString("GameID1", charNames[0], sizeof(charNames[0]));
+		gQueryManager.GetAsString("GameID2", charNames[1], sizeof(charNames[1]));
+		gQueryManager.GetAsString("GameID3", charNames[2], sizeof(charNames[2]));
+		gQueryManager.GetAsString("GameID4", charNames[3], sizeof(charNames[3]));
+		gQueryManager.GetAsString("GameID5", charNames[4], sizeof(charNames[4]));
+	}
+
+	gQueryManager.Close();
+
+	// Get character info for each character
+	for (int i = 0; i < 5; i++)
+	{
+		if (strlen(charNames[i]) == 0)
+		{
+			continue;
+		}
+
+	#if defined(SQLITE)
+		if (gQueryManager.ExecQuery("SELECT Name, cLevel, ResetCount, GrandResetCount, LevelUpPoint, Strength, Dexterity, Vitality, Energy, PkLevel, Money FROM Character WHERE Name='%s'", charNames[i]) == false || gQueryManager.Fetch() == false)
+	#elif !defined(MYSQL)
+		if (gQueryManager.ExecQuery("SELECT Name, cLevel, ResetCount, GrandResetCount, LevelUpPoint, Strength, Dexterity, Vitality, Energy, PkLevel, Money FROM Character WHERE Name='%s'", charNames[i]) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+	#else
+		if (gQueryManager.ExecResultQuery("SELECT Name, cLevel, ResetCount, GrandResetCount, LevelUpPoint, Strength, Dexterity, Vitality, Energy, PkLevel, Money FROM Character WHERE Name='%s'", charNames[i]) == false || gQueryManager.Fetch() == false)
+	#endif
+		{
+			gQueryManager.Close();
+			continue;
+		}
+
+		gQueryManager.GetAsString("Name", pCharInfo->name, sizeof(pCharInfo->name));
+		pCharInfo->level = gQueryManager.GetAsInteger("cLevel");
+		pCharInfo->resets = gQueryManager.GetAsInteger("ResetCount");
+		pCharInfo->grandResets = gQueryManager.GetAsInteger("GrandResetCount");
+		pCharInfo->points = gQueryManager.GetAsInteger("LevelUpPoint");
+		pCharInfo->strength = gQueryManager.GetAsInteger("Strength");
+		pCharInfo->dexterity = gQueryManager.GetAsInteger("Dexterity");
+		pCharInfo->vitality = gQueryManager.GetAsInteger("Vitality");
+		pCharInfo->energy = gQueryManager.GetAsInteger("Energy");
+		pCharInfo->pkLevel = gQueryManager.GetAsInteger("PkLevel");
+		pCharInfo->money = gQueryManager.GetAsInteger("Money");
+
+		gQueryManager.Close();
+
+		pCharInfo++;
+		pMsg->count++;
+	}
+
+	WORD size = sizeof(SDHP_LAUNCHER_GET_CHARACTERS_SEND) + (pMsg->count * sizeof(SDHP_LAUNCHER_CHARACTER_INFO));
+
+	pMsg->header.set(0x11, size);
+
+	gSocketManager.DataSend(index, buffer, size);
+}
+
+void GJLauncherAddPointsRecv(SDHP_LAUNCHER_ADD_POINTS_RECV* lpMsg, int index)
+{
+	SDHP_LAUNCHER_ADD_POINTS_SEND pMsg;
+
+	pMsg.header.set(0x12, sizeof(pMsg));
+
+	pMsg.result = 1; // Success by default
+
+	// Check if account is online
+	ACCOUNT_INFO AccountInfo;
+
+	if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
+	{
+		pMsg.result = 4; // Account is online
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Validate stat type
+	const char* statColumns[] = { "Strength", "Dexterity", "Vitality", "Energy" };
+
+	if (lpMsg->stat > 3)
+	{
+		pMsg.result = 0; // Failed - invalid stat
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Check available points
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT LevelUpPoint FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT LevelUpPoint FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+#else
+	if (gQueryManager.ExecResultQuery("SELECT LevelUpPoint FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 3; // Character not found
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	int availablePoints = gQueryManager.GetAsInteger("LevelUpPoint");
+
+	gQueryManager.Close();
+
+	if (availablePoints < lpMsg->points)
+	{
+		pMsg.result = 2; // Not enough points
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Update character stats
+#if defined(SQLITE)
+	gQueryManager.ExecQuery("UPDATE Character SET %s = %s + %d, LevelUpPoint = LevelUpPoint - %d WHERE Name='%s'", statColumns[lpMsg->stat], statColumns[lpMsg->stat], lpMsg->points, lpMsg->points, lpMsg->name);
+#elif !defined(MYSQL)
+	gQueryManager.ExecQuery("UPDATE Character SET %s = %s + %d, LevelUpPoint = LevelUpPoint - %d WHERE Name='%s'", statColumns[lpMsg->stat], statColumns[lpMsg->stat], lpMsg->points, lpMsg->points, lpMsg->name);
+#else
+	gQueryManager.ExecUpdateQuery("UPDATE Character SET %s = %s + %d, LevelUpPoint = LevelUpPoint - %d WHERE Name='%s'", statColumns[lpMsg->stat], statColumns[lpMsg->stat], lpMsg->points, lpMsg->points, lpMsg->name);
+#endif
+
+	gQueryManager.Close();
+
+	LogAdd(LOG_BLUE, "[LauncherAddPoints] Character '%s' added %d points to %s", lpMsg->name, lpMsg->points, statColumns[lpMsg->stat]);
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GJLauncherClearPKRecv(SDHP_LAUNCHER_CLEAR_PK_RECV* lpMsg, int index)
+{
+	SDHP_LAUNCHER_CLEAR_PK_SEND pMsg;
+
+	pMsg.header.set(0x13, sizeof(pMsg));
+
+	pMsg.result = 1; // Success by default
+
+	// Check if account is online
+	ACCOUNT_INFO AccountInfo;
+
+	if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
+	{
+		pMsg.result = 4; // Account is online
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Check character money
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT Money FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT Money FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+#else
+	if (gQueryManager.ExecResultQuery("SELECT Money FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 3; // Character not found
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	int money = gQueryManager.GetAsInteger("Money");
+
+	gQueryManager.Close();
+
+	if (money < lpMsg->zenCost)
+	{
+		pMsg.result = 2; // Not enough zen
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Clear PK status
+#if defined(SQLITE)
+	gQueryManager.ExecQuery("UPDATE Character SET PkLevel = 3, PkCount = 0, PkTime = 0, Money = Money - %d WHERE Name='%s'", lpMsg->zenCost, lpMsg->name);
+#elif !defined(MYSQL)
+	gQueryManager.ExecQuery("UPDATE Character SET PkLevel = 3, PkCount = 0, PkTime = 0, Money = Money - %d WHERE Name='%s'", lpMsg->zenCost, lpMsg->name);
+#else
+	gQueryManager.ExecUpdateQuery("UPDATE Character SET PkLevel = 3, PkCount = 0, PkTime = 0, Money = Money - %d WHERE Name='%s'", lpMsg->zenCost, lpMsg->name);
+#endif
+
+	gQueryManager.Close();
+
+	LogAdd(LOG_BLUE, "[LauncherClearPK] Character '%s' cleared PK status for %d zen", lpMsg->name, lpMsg->zenCost);
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GJLauncherResetRecv(SDHP_LAUNCHER_RESET_RECV* lpMsg, int index)
+{
+	SDHP_LAUNCHER_RESET_SEND pMsg;
+
+	pMsg.header.set(0x14, sizeof(pMsg));
+
+	pMsg.result = 1; // Success by default
+
+	// Check if account is online
+	ACCOUNT_INFO AccountInfo;
+
+	if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
+	{
+		pMsg.result = 4; // Account is online
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Check character level
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+#else
+	if (gQueryManager.ExecResultQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 3; // Character not found
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	int level = gQueryManager.GetAsInteger("cLevel");
+
+	gQueryManager.Close();
+
+	if (level < lpMsg->requiredLevel)
+	{
+		pMsg.result = 2; // Level too low
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Perform reset
+#if defined(SQLITE)
+	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#elif !defined(MYSQL)
+	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#else
+	gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#endif
+
+	gQueryManager.Close();
+
+	LogAdd(LOG_BLUE, "[LauncherReset] Character '%s' performed reset", lpMsg->name);
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GJLauncherGrandResetRecv(SDHP_LAUNCHER_GRAND_RESET_RECV* lpMsg, int index)
+{
+	SDHP_LAUNCHER_GRAND_RESET_SEND pMsg;
+
+	pMsg.header.set(0x15, sizeof(pMsg));
+
+	pMsg.result = 1; // Success by default
+
+	// Check if account is online
+	ACCOUNT_INFO AccountInfo;
+
+	if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
+	{
+		pMsg.result = 5; // Account is online
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Check character level and resets
+#if defined(SQLITE)
+	if (gQueryManager.ExecQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
+	if (gQueryManager.ExecQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+#else
+	if (gQueryManager.ExecResultQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#endif
+	{
+		gQueryManager.Close();
+
+		pMsg.result = 4; // Character not found
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	int level = gQueryManager.GetAsInteger("cLevel");
+	int resets = gQueryManager.GetAsInteger("ResetCount");
+
+	gQueryManager.Close();
+
+	if (resets < lpMsg->requiredResets)
+	{
+		pMsg.result = 3; // Resets too low
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	if (level < lpMsg->requiredLevel)
+	{
+		pMsg.result = 2; // Level too low
+
+		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	// Perform grand reset
+#if defined(SQLITE)
+	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#elif !defined(MYSQL)
+	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#else
+	gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#endif
+
+	gQueryManager.Close();
+
+	LogAdd(LOG_BLUE, "[LauncherGrandReset] Character '%s' performed grand reset", lpMsg->name);
+
+	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+}
+
+void GJLauncherCheckOnlineRecv(SDHP_LAUNCHER_CHECK_ONLINE_RECV* lpMsg, int index)
+{
+	SDHP_LAUNCHER_CHECK_ONLINE_SEND pMsg;
+
+	pMsg.header.set(0x16, sizeof(pMsg));
+
+	ACCOUNT_INFO AccountInfo;
+
+	pMsg.result = gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false ? 1 : 0;
 
 	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 }
