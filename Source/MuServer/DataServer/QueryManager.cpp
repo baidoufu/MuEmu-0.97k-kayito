@@ -314,7 +314,13 @@ void CQueryManager::ApplyBindings()
 		}
 		else if (this->m_BindParams[n].type == BIND_BINARY)
 		{
-			sqlite3_bind_blob(this->m_stmt, n + 1, this->m_BindParams[n].buffer, this->m_BindParams[n].size, SQLITE_TRANSIENT);
+			// Convert binary data to hex string format for consistent storage and retrieval
+			// This matches the MSSQL behavior where binary data is stored as hex text
+			int hexSize = this->m_BindParams[n].size * 2 + 1;
+			char* hexBuffer = new char[hexSize];
+			this->ConvertBinaryToString((BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, hexBuffer, hexSize);
+			sqlite3_bind_text(this->m_stmt, n + 1, hexBuffer, this->m_BindParams[n].size * 2, SQLITE_TRANSIENT);
+			delete[] hexBuffer;
 		}
 	}
 
