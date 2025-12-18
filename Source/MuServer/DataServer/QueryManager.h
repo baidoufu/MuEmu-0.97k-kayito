@@ -7,10 +7,17 @@
 #define MAX_COLUMNS 100
 #define MAX_BIND_PARAMS 10
 
+enum SQLiteBindType
+{
+	BIND_UNUSED = 0,
+	BIND_STRING = 1,
+	BIND_BINARY = 2
+};
+
 struct SQLiteBindParam
 {
-	int type;           // 0 = unused, 1 = string, 2 = binary
-	void* buffer;
+	SQLiteBindType type;
+	void* buffer;       // Pointer to caller's buffer - must remain valid until ExecQuery is called
 	int size;
 };
 

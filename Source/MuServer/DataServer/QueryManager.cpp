@@ -283,7 +283,7 @@ void CQueryManager::BindParameterAsString(int ParamNumber, void* InBuffer, int C
 {
 	if (ParamNumber > 0 && ParamNumber <= MAX_BIND_PARAMS)
 	{
-		this->m_BindParams[ParamNumber - 1].type = 1;
+		this->m_BindParams[ParamNumber - 1].type = BIND_STRING;
 		this->m_BindParams[ParamNumber - 1].buffer = InBuffer;
 		this->m_BindParams[ParamNumber - 1].size = ColumnSize;
 	}
@@ -293,7 +293,7 @@ void CQueryManager::BindParameterAsBinary(int ParamNumber, void* InBuffer, int C
 {
 	if (ParamNumber > 0 && ParamNumber <= MAX_BIND_PARAMS)
 	{
-		this->m_BindParams[ParamNumber - 1].type = 2;
+		this->m_BindParams[ParamNumber - 1].type = BIND_BINARY;
 		this->m_BindParams[ParamNumber - 1].buffer = InBuffer;
 		this->m_BindParams[ParamNumber - 1].size = ColumnSize;
 	}
@@ -308,11 +308,11 @@ void CQueryManager::ApplyBindings()
 
 	for (int n = 0; n < MAX_BIND_PARAMS; n++)
 	{
-		if (this->m_BindParams[n].type == 1)
+		if (this->m_BindParams[n].type == BIND_STRING)
 		{
 			sqlite3_bind_text(this->m_stmt, n + 1, (const char*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, SQLITE_TRANSIENT);
 		}
-		else if (this->m_BindParams[n].type == 2)
+		else if (this->m_BindParams[n].type == BIND_BINARY)
 		{
 			sqlite3_bind_blob(this->m_stmt, n + 1, this->m_BindParams[n].buffer, this->m_BindParams[n].size, SQLITE_TRANSIENT);
 		}
