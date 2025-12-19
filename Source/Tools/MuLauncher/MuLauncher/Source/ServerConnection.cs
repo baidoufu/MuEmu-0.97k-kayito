@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Net.Sockets;
@@ -276,10 +276,10 @@ namespace MuLauncher.Source
                 byte statCode;
                 switch (stat)
                 {
-                    case "Strength": statCode = 0; break;
-                    case "Dexterity": statCode = 1; break;
-                    case "Vitality": statCode = 2; break;
-                    case "Energy": statCode = 3; break;
+                    case "力量": statCode = 0; break;
+                    case "敏捷": statCode = 1; break;
+                    case "体力": statCode = 2; break;
+                    case "智力": statCode = 3; break;
                     default: return 0;
                 }
 

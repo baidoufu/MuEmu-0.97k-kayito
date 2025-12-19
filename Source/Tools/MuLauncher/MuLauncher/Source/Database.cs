@@ -214,10 +214,10 @@ namespace MuLauncher.Source
             // The stat parameter MUST match exactly one of the predefined column names
             var validStatColumns = new System.Collections.Generic.Dictionary<string, string>
             {
-                { "Strength", "Strength" },
-                { "Dexterity", "Dexterity" },
-                { "Vitality", "Vitality" },
-                { "Energy", "Energy" }
+                { "力量", "Strength" },
+                { "敏捷", "Dexterity" },
+                { "体力", "Vitality" },
+                { "智力", "Energy" }
             };
 
             if (!validStatColumns.TryGetValue(stat, out string columnName))
