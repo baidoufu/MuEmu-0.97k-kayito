@@ -346,25 +346,35 @@ void CQueryManager::ConvertStringToBinary(char* InBuff, int InSize, BYTE* OutBuf
 
 	memset(OutBuff, 0, OutSize);
 
-	for (int n = 0; n < InSize, size < OutSize; n++)
+	int hexCount = 0;
+
+	for (int n = 0; n < InSize && size < OutSize; n++)
 	{
-		if (InBuff[n] == 0)
+		char c = InBuff[n];
+
+		if (c == 0)
 		{
 			break;
 		}
 
-		if ((n % 2) == 0)
-		{
-			OutBuff[size] = ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0')) * 16;
+		int val = -1;
 
-			size = size + 0;
+		if (c >= '0' && c <= '9') val = c - '0';
+		else if (c >= 'A' && c <= 'F') val = c - 'A' + 10;
+		else if (c >= 'a' && c <= 'f') val = c - 'a' + 10;
+		else continue; // skip any non-hex characters
+
+		if ((hexCount % 2) == 0)
+		{
+			OutBuff[size] = (BYTE)(val << 4);
 		}
 		else
 		{
-			OutBuff[size] = OutBuff[size] | ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0'));
-
-			size = size + 1;
+			OutBuff[size] |= (BYTE)val;
+			size++;
 		}
+
+		hexCount++;
 	}
 }
 
@@ -374,7 +384,7 @@ void CQueryManager::ConvertBinaryToString(BYTE* InBuff, int InSize, char* OutBuf
 
 	memset(OutBuff, 0, OutSize);
 
-	for (int n = 0; n < OutSize, size < InSize; n++)
+	for (int n = 0; n < OutSize && size < InSize; n++)
 	{
 		if ((n % 2) == 0)
 		{
@@ -668,25 +678,35 @@ void CQueryManager::ConvertStringToBinary(char* InBuff, int InSize, BYTE* OutBuf
 
 	memset(OutBuff, 0, OutSize);
 
-	for (int n = 0; n < InSize, size < OutSize; n++)
+	int hexCount = 0;
+
+	for (int n = 0; n < InSize && size < OutSize; n++)
 	{
-		if (InBuff[n] == 0)
+		char c = InBuff[n];
+
+		if (c == 0)
 		{
 			break;
 		}
 
-		if ((n % 2) == 0)
-		{
-			OutBuff[size] = ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0')) * 16;
+		int val = -1;
 
-			size = size + 0;
+		if (c >= '0' && c <= '9') val = c - '0';
+		else if (c >= 'A' && c <= 'F') val = c - 'A' + 10;
+		else if (c >= 'a' && c <= 'f') val = c - 'a' + 10;
+		else continue; // skip any non-hex characters
+
+		if ((hexCount % 2) == 0)
+		{
+			OutBuff[size] = (BYTE)(val << 4);
 		}
 		else
 		{
-			OutBuff[size] = OutBuff[size] | ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0'));
-
-			size = size + 1;
+			OutBuff[size] |= (BYTE)val;
+			size++;
 		}
+
+		hexCount++;
 	}
 }
 
@@ -696,7 +716,7 @@ void CQueryManager::ConvertBinaryToString(BYTE* InBuff, int InSize, char* OutBuf
 
 	memset(OutBuff, 0, OutSize);
 
-	for (int n = 0; n < OutSize, size < InSize; n++)
+	for (int n = 0; n < OutSize && size < InSize; n++)
 	{
 		if ((n % 2) == 0)
 		{
@@ -1132,25 +1152,35 @@ void CQueryManager::ConvertStringToBinary(char* InBuff, int InSize, unsigned cha
 
 	memset(OutBuff, 0, OutSize);
 
-	for (int n = 0; n < InSize, size < OutSize; n++)
+	int hexCount = 0;
+
+	for (int n = 0; n < InSize && size < OutSize; n++)
 	{
-		if (InBuff[n] == 0)
+		char c = InBuff[n];
+
+		if (c == 0)
 		{
 			break;
 		}
 
-		if ((n % 2) == 0)
-		{
-			OutBuff[size] = ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0')) * 16;
+		int val = -1;
 
-			size = size + 0;
+		if (c >= '0' && c <= '9') val = c - '0';
+		else if (c >= 'A' && c <= 'F') val = c - 'A' + 10;
+		else if (c >= 'a' && c <= 'f') val = c - 'a' + 10;
+		else continue; // skip any non-hex characters
+
+		if ((hexCount % 2) == 0)
+		{
+			OutBuff[size] = (unsigned char)(val << 4);
 		}
 		else
 		{
-			OutBuff[size] = OutBuff[size] | ((InBuff[n] >= 'A') ? ((InBuff[n] - 'A') + 10) : (InBuff[n] - '0'));
-
-			size = size + 1;
+			OutBuff[size] |= (unsigned char)val;
+			size++;
 		}
+
+		hexCount++;
 	}
 }
 
@@ -1160,7 +1190,7 @@ void CQueryManager::ConvertBinaryToString(unsigned char* InBuff, int InSize, cha
 
 	memset(OutBuff, 0, OutSize);
 
-	for (int n = 0; n < OutSize, size < InSize; n++)
+	for (int n = 0; n < OutSize && size < InSize; n++)
 	{
 		if ((n % 2) == 0)
 		{

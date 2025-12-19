@@ -613,6 +613,45 @@ void GDCharacterCreateRecv(SDHP_CHARACTER_CREATE_RECV* lpMsg, int index)
 					{
 						gQueryManager.Close();
 						pMsg.result = 1;
+
+						// For SQLite the DefaultClassType stores Inventory as hex literals (0xFFFF...).
+						// Ensure the inserted Character.Inventory contains the correct binary data.
+						char defaultInvStr[16384];
+						memset(defaultInvStr, 0, sizeof(defaultInvStr));
+						// Read Inventory hex from DefaultClassType
+						if (gQueryManager.ExecQuery("SELECT Inventory FROM DefaultClassType WHERE Class=%d", lpMsg->Class) != false && gQueryManager.Fetch() != false)
+						{
+							gQueryManager.GetAsString("Inventory", defaultInvStr, sizeof(defaultInvStr));
+						}
+						gQueryManager.Close();
+
+						// Convert hex string to binary
+						BYTE invBinary[(12 + 64) * ITEM_BYTE_SIZE];
+						memset(invBinary, 0xFF, sizeof(invBinary)); // default to 0xFF
+						if (defaultInvStr[0] != '\0')
+						{
+							// ConvertStringToBinary will parse hex into binary buffer
+							gQueryManager.ConvertStringToBinary(defaultInvStr, (int)strlen(defaultInvStr), invBinary, sizeof(invBinary));
+							// If conversion produced all zeros (unlikely), keep 0xFF fallback
+							bool allZero = true;
+							for (size_t z = 0; z < sizeof(invBinary); z++)
+							{
+								if (invBinary[z] != 0x00)
+								{
+									allZero = false;
+									break;
+								}
+							}
+							if (allZero)
+							{
+								memset(invBinary, 0xFF, sizeof(invBinary));
+							}
+						}
+
+						// Update the inserted Character record with the correct binary Inventory
+						gQueryManager.BindParameterAsBinary(1, invBinary, sizeof(invBinary));
+						gQueryManager.ExecQuery("UPDATE Character SET Inventory=? WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name);
+						gQueryManager.Close();
 					}
 				}
 			}
