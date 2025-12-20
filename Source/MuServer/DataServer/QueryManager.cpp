@@ -65,6 +65,20 @@ void CQueryManager::Disconnect()
 
 	if (this->m_db != NULL)
 	{
+		// Try to checkpoint and truncate WAL so data is merged into the main DB file
+		char* errMsg = NULL;
+		int rc = sqlite3_exec(this->m_db, "PRAGMA wal_checkpoint(TRUNCATE);", NULL, NULL, &errMsg);
+		if (rc != SQLITE_OK)
+		{
+			LogAdd(LOG_RED, "[QueryManager] SQLite WAL checkpoint failed: %s", errMsg ? errMsg : "Unknown error");
+			if (errMsg) sqlite3_free(errMsg);
+		}
+		else
+		{
+			if (errMsg) sqlite3_free(errMsg);
+			LogAdd(LOG_BLUE, "[QueryManager] SQLite WAL checkpoint succeeded: %s", this->m_dbPath);
+		}
+
 		sqlite3_close(this->m_db);
 
 		this->m_db = NULL;
@@ -310,9 +324,13 @@ void CQueryManager::BindParameterAsString(int ParamNumber, void* InBuffer, int C
 {
 	if (ParamNumber > 0 && ParamNumber <= MAX_BIND_PARAMS)
 	{
+
+		// 计算实际字符串长度
+		int actualSize = strlen((char*)InBuffer);// (ColumnSize == -1) ? strlen((char*)InBuffer) : ColumnSize;
+
 		this->m_BindParams[ParamNumber - 1].type = BIND_STRING;
 		this->m_BindParams[ParamNumber - 1].buffer = InBuffer;
-		this->m_BindParams[ParamNumber - 1].size = ColumnSize;
+		this->m_BindParams[ParamNumber - 1].size = actualSize;// ColumnSize;  // 存储实际数据长度（不包括null）
 	}
 }
 

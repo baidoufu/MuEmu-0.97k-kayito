@@ -25,6 +25,39 @@ BOOL CaseSensitive;
 int MD5Encryption;
 
 char GlobalPassword[11];
+// Close database connections and perform WAL checkpoint for SQLite (best-effort)
+static void CloseConnection()
+{
+#if defined(SQLITE)
+	// Try to run PRAGMA wal_checkpoint(TRUNCATE); as a best-effort to truncate WAL before closing
+	try
+	{
+		if (gQueryManager.ExecQuery("PRAGMA wal_checkpoint(TRUNCATE);"))
+		{
+			// Consume any result rows if returned
+			while (gQueryManager.Fetch()) {}
+			gQueryManager.Close();
+		}
+	}
+	catch (...)
+	{
+		// ignore
+	}
+
+	// Finally disconnect the query manager
+	try
+	{
+		gQueryManager.Disconnect();
+	}
+	catch (...) {}
+#else
+	try
+	{
+		gQueryManager.Disconnect();
+	}
+	catch (...) {}
+#endif
+}
 
 int main()
 {
@@ -294,6 +327,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			if (MessageBox(hWnd, "Close JoinServer?", "JoinServer", MB_OKCANCEL) == IDOK)
 			{
+				CloseConnection();
 				DestroyWindow(hWnd);
 			}
 

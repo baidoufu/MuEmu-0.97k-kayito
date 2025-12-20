@@ -63,6 +63,20 @@ void CQueryManager::Disconnect()
 
 	if (this->m_db != NULL)
 	{
+		// Try to checkpoint and truncate WAL so data is merged into the main DB file
+		char* errMsg = NULL;
+		int rc = sqlite3_exec(this->m_db, "PRAGMA wal_checkpoint(TRUNCATE);", NULL, NULL, &errMsg);
+		if (rc != SQLITE_OK)
+		{
+			LogAdd(LOG_RED, "[QueryManager] SQLite WAL checkpoint failed: %s", errMsg ? errMsg : "Unknown error");
+			if (errMsg) sqlite3_free(errMsg);
+		}
+		else
+		{
+			if (errMsg) sqlite3_free(errMsg);
+			LogAdd(LOG_BLUE, "[QueryManager] SQLite WAL checkpoint succeeded: %s", this->m_dbPath);
+		}
+
 		sqlite3_close(this->m_db);
 
 		this->m_db = NULL;
