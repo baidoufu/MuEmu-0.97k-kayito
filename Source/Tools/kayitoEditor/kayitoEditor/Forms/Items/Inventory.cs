@@ -178,8 +178,21 @@ namespace kayito_Editor.Forms
 				MessageBox.Show($"[SQL] {query}\n[Error] {exception.Message}\n[Source] {exception.Source}\n[Trace] {exception.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 		}
+        private byte[] HexStringToByteArray(string hex)
+        {
+            hex = hex.Trim().Replace(" ", "").Replace("0x", "");
 
-		private void Btn_Inventory_Save_Click(object sender, EventArgs e)
+            if (hex.Length % 2 != 0)
+                throw new ArgumentException("十六进制字符串长度必须是偶数");
+
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+            }
+            return bytes;
+        }
+        private void Btn_Inventory_Save_Click(object sender, EventArgs e)
 		{
 			if (Import.Mu_Connection.State != ConnectionState.Open)
 			{
@@ -190,7 +203,34 @@ namespace kayito_Editor.Forms
 
 			try
 			{
-				query = $"UPDATE \"Character\" SET Inventory = 0x{this.m_ItemEquipPanel.GetItemsToHex()}{this.m_ItemBoxPanel.GetItemsToHex()}, Money = {this.Character_Zen.Value} WHERE AccountID = '{this.AccountName}' AND hex(Name) = '{ConvertToGbkHex(this.CharacterName)}";
+#if SQLITE
+                string combinedHex = this.m_ItemEquipPanel.GetItemsToHex() + this.m_ItemBoxPanel.GetItemsToHex();
+                byte[] itemsData = HexStringToByteArray(combinedHex);
+
+                query = $"UPDATE \"Character\" SET Inventory = @items , Money = {this.Character_Zen.Value} WHERE AccountID = '{this.AccountName}' AND hex(Name) = '{ConvertToGbkHex(this.CharacterName)}'";
+                using (SQLiteCommand cmd = new SQLiteCommand(query, Import.Mu_Connection))
+                {
+                    // 绑定二进制参数
+                    cmd.Parameters.Add("@items", DbType.Binary).Value = itemsData;
+                    //cmd.Parameters.Add("@money", DbType.Int32).Value = money;
+                    //cmd.Parameters.Add("@pw", DbType.Int32).Value = pw;
+                    //cmd.Parameters.Add("@accountId", DbType.String).Value = accountId;
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show($"Inventory updated.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Error: Inventory update failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    return;
+                }
+#else
+
+				query = $"UPDATE \"Character\" SET Inventory = 0x{this.m_ItemEquipPanel.GetItemsToHex()}{this.m_ItemBoxPanel.GetItemsToHex()}, Money = {this.Character_Zen.Value} WHERE AccountID = '{this.AccountName}' AND Name = '{this.CharacterName}";
 
 				if (MuOnline.Mu_ExecuteSQL(query))
 				{
@@ -200,7 +240,8 @@ namespace kayito_Editor.Forms
 				{
 					MessageBox.Show($"Error: Inventory update failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
-			}
+#endif
+            }
 			catch (Exception exception)
 			{
 				MessageBox.Show($"[SQL] {query}\n[Error] {exception.Message}\n[Source] {exception.Source}\n[Trace] {exception.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
