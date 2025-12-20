@@ -114,41 +114,41 @@ namespace kayito_Editor.Source
 
 		public static IDictionary<int, string> m_WeaponExeOptions = new Dictionary<int, string>()
 		{
-			{1, "Excellent Damage rate +10%"},
-			{2, "Increase Damage +level/20"},
-			{4, "Increase Damage +2%"},
-			{8, "Increases Attacking(Wizardry)speed +7"},
-			{16, "Increases life rate after hunt +life/8"},
-			{32, "Increases mana rate after hunt +mana/8"},
+			{1, "卓越攻击几率增加 +10%"},
+			{2, "攻击力增加 +等级/20"},
+			{4, "攻击力增加 +2%"},
+			{8, "攻击(魔法)速度增加 +7"},
+			{16, "杀死怪物时所获生命值增加 +生命值/8"},
+			{32, "杀死怪物时所获魔法值增加 +魔法值/8"},
 		};
 
 		public static IDictionary<int, string> m_StaffExeOptions = new Dictionary<int, string>()
 		{
-			{1, "Excellent Damage rate +10%"},
-			{2, "Increase Wizardry Dmg +level/20"},
-			{4, "Increase Wizardry Dmg +1%"},
-			{8, "Increases Attacking(Wizardry)speed +7"},
-			{16, "Increases life rate after hunt +life/8"},
-			{32, "Increases mana rate after hunt +mana/8"},
+			{1, "卓越攻击几率增加 +10%"},
+			{2, "魔法攻击力增加 +等级/20"},
+			{4, "魔法攻击力增加 +1%"},
+			{8, "攻击(魔法)速度增加 +7"},
+			{16, "杀死怪物时所获生命值增加 +生命值/8"},
+			{32, "杀死怪物时所获魔法值增加 +魔法值/8"},
 		};
 
 		public static IDictionary<int, string> m_SetExeOptions = new Dictionary<int, string>()
 		{
-			{1, "Increases zen rate after hunt +30%"},
-			{2, "Defense sucess rate +10%"},
-			{4, "Reflect Damage +5%"},
-			{8, "Damage Decrease +4%"},
-			{16, "Increase Max Mana +4%"},
-			{32, "Increase Max HP +4%"},
+			{1, "杀死怪物时所获金增加 +30%"},
+			{2, "防御成功率 +10%"},
+			{4, "伤害反射 +5%"},
+			{8, "伤害减少 +4%"},
+			{16, "最大魔法值 +4%"},
+			{32, "最大生命值 +4%"},
 		};
 
 		public static IDictionary<int, string> m_WingsExeOption = new Dictionary<int, string>()
 		{
 			{1, "HP +105 increased"},
 			{2, "Mana +105 increased"},
-			{4, "Ignore opponent's defense by 3%"},
-			{8, "Max AG +50 increased"},
-			{16, "Increases Attacking(Wizardry)speed +5"},
+			{4, "3%概率攻击时无视对方防御"},
+			{8, "技能值最大值 +50"},
+			{16, "攻击(魔法)速度增加 +5"},
 			{32, "Enabled: +HP / Disabled: +DMG"},
 		};
 
