@@ -231,8 +231,21 @@ namespace kayito_Editor.Forms
 				MessageBox.Show($"[SQL] {query}\n[Error] {exception.Message}\n[Source] {exception.Source}\n[Trace] {exception.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 		}
+        private byte[] HexStringToByteArray(string hex)
+        {
+            hex = hex.Trim().Replace(" ", "").Replace("0x", "");
 
-		private void Btn_Ware_Save_Click(object sender, EventArgs e)
+            if (hex.Length % 2 != 0)
+                throw new ArgumentException("十六进制字符串长度必须是偶数");
+
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+            }
+            return bytes;
+        }
+        private void Btn_Ware_Save_Click(object sender, EventArgs e)
 		{
 			if (Import.Mu_Connection.State != ConnectionState.Open)
 			{
@@ -243,6 +256,40 @@ namespace kayito_Editor.Forms
 
 			try
 			{
+#if SQLITE
+                byte[] itemsData = HexStringToByteArray(this.m_ItemBoxPanel.GetItemsToHex());
+                if (this.Warehouse_Number.Value != 0)
+                {
+                    query = $"UPDATE ExtWarehouse SET Items = @items, Money = {this.Wareouse_Zen.Value} WHERE AccountID = '{this.AccountName}' AND Number = {this.Warehouse_Number.Value}";
+                }
+                else
+                {
+                    query = $"UPDATE warehouse SET Items = @items, Money = {this.Wareouse_Zen.Value}, pw = {this.Warehouse_Pass.Value} WHERE AccountID = '{this.AccountName}'";
+                }
+
+                using (SQLiteCommand cmd = new SQLiteCommand(query, Import.Mu_Connection))
+                {
+                    // 绑定二进制参数
+                    cmd.Parameters.Add("@items", DbType.Binary).Value = itemsData;
+                    //cmd.Parameters.Add("@money", DbType.Int32).Value = money;
+                    //cmd.Parameters.Add("@pw", DbType.Int32).Value = pw;
+                    //cmd.Parameters.Add("@accountId", DbType.String).Value = accountId;
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show($"Warehouse updated.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Error: warehouse update failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+					return;
+                }
+
+#else
+
 				if (this.Warehouse_Number.Value != 0)
 				{
 					query = $"UPDATE ExtWarehouse SET Items = 0x{this.m_ItemBoxPanel.GetItemsToHex()}, Money = {this.Wareouse_Zen.Value} WHERE AccountID = '{this.AccountName}' AND Number = {this.Warehouse_Number.Value}";
@@ -260,8 +307,10 @@ namespace kayito_Editor.Forms
 				{
 					MessageBox.Show($"Error: warehouse update failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
-			}
-			catch (Exception exception)
+#endif
+
+            }
+            catch (Exception exception)
 			{
 				MessageBox.Show($"[SQL] {query}\n[Error] {exception.Message}\n[Source] {exception.Source}\n[Trace] {exception.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}

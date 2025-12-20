@@ -9,6 +9,7 @@ using System.Data.OleDb;
 using System;
 using System.Data;
 using System.Windows.Forms;
+using System.Text;
 
 namespace kayito_Editor.Forms
 {
@@ -108,8 +109,13 @@ namespace kayito_Editor.Forms
 
 			this.m_ItemBoxPanel.Show();
 		}
-
-		private void LoadInventory()
+        private string ConvertToGbkHex(string utf8String)
+        {
+            // UTF-8 -> GBK 字节 -> 十六进制
+            byte[] gbkBytes = Encoding.GetEncoding("GBK").GetBytes(utf8String);
+            return BitConverter.ToString(gbkBytes).Replace("-", "");
+        }
+        private void LoadInventory()
 		{
 			if (Import.Mu_Connection.State != ConnectionState.Open)
 			{
@@ -120,7 +126,7 @@ namespace kayito_Editor.Forms
 
 			try
 			{
-				query = $"SELECT Inventory, Money FROM \"Character\" WHERE AccountID = '{this.AccountName}' AND Name = '{this.CharacterName}'";
+				query = $"SELECT Inventory, Money FROM \"Character\" WHERE AccountID = '{this.AccountName}' AND hex(Name) = '{ConvertToGbkHex(this.CharacterName)}'";
 
 			#if SQLITE
 				SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
@@ -184,7 +190,7 @@ namespace kayito_Editor.Forms
 
 			try
 			{
-				query = $"UPDATE \"Character\" SET Inventory = 0x{this.m_ItemEquipPanel.GetItemsToHex()}{this.m_ItemBoxPanel.GetItemsToHex()}, Money = {this.Character_Zen.Value} WHERE AccountID = '{this.AccountName}' AND Name = '{this.CharacterName}'";
+				query = $"UPDATE \"Character\" SET Inventory = 0x{this.m_ItemEquipPanel.GetItemsToHex()}{this.m_ItemBoxPanel.GetItemsToHex()}, Money = {this.Character_Zen.Value} WHERE AccountID = '{this.AccountName}' AND hex(Name) = '{ConvertToGbkHex(this.CharacterName)}";
 
 				if (MuOnline.Mu_ExecuteSQL(query))
 				{

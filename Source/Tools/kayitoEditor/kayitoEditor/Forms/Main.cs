@@ -12,6 +12,12 @@ using System.Data;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Text;
+using System.Xml.Linq;
+using System.Diagnostics;
+using System.Linq;
+using System.Collections.Generic;
+using Org.BouncyCastle.Utilities;
 
 namespace kayito_Editor
 {
@@ -111,7 +117,8 @@ namespace kayito_Editor
 				query = $"SELECT Name FROM \"Character\"";
 
 			#if SQLITE
-				SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
+                query = $"SELECT HEX(Name) FROM  \"Character\"";
+                SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
 			#elif MYSQL
 				MySqlDataReader reader = new MySqlCommand(query, Import.Mu_Connection).ExecuteReader();
 			#else
@@ -122,9 +129,21 @@ namespace kayito_Editor
 
 				while (reader.Read())
 				{
-					value = reader.GetValue(0);
+#if SQLITE
+                    
+					// Handle SQLite possibly storing names as bytes in ANSI encoding
+                    object dbVal = reader.GetString(0);
+                    string name = null;
 
-					if (this.Character_List.Items.Contains(value))
+					name = GbkHexToChinese((string)dbVal);
+
+
+                    value = name?.TrimEnd('\0').Trim();
+#else
+					value = reader.GetValue(0);
+#endif
+
+                    if (this.Character_List.Items.Contains(value))
 					{
 						continue;
 					}
@@ -139,8 +158,50 @@ namespace kayito_Editor
 				MessageBox.Show($"[SQL] {query}\n[Error] {exception.Message}\n[Source] {exception.Source}\n[Trace] {exception.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 		}
+        public string GbkHexToChinese(string hexString)
+        {
+            try
+            {
+                // 清理十六进制字符串
+                hexString = hexString.Trim()
+                                     .Replace(" ", "")
+                                     .Replace("0x", "")
+                                     .Replace("\r", "")
+                                     .Replace("\n", "")
+                                     .ToUpper();
 
-		private void Btn_Acc_Reload_Click(object sender, EventArgs e)
+                // 验证长度
+                if (hexString.Length % 2 != 0)
+                {
+                    return $"错误：十六进制长度不是偶数: {hexString.Length}";
+                }
+
+                // 转换为字节数组
+                byte[] gbkBytes = new byte[hexString.Length / 2];
+                for (int i = 0; i < gbkBytes.Length; i++)
+                {
+                    string byteString = hexString.Substring(i * 2, 2);
+                    gbkBytes[i] = Convert.ToByte(byteString, 16);
+                }
+
+                // 使用 GBK 编码解码
+                Encoding gbk = Encoding.GetEncoding("GBK");
+                string result = gbk.GetString(gbkBytes);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return $"转换失败: {ex.Message}";
+            }
+        }
+        private string ConvertToGbkHex(string utf8String)
+        {
+            // UTF-8 -> GBK 字节 -> 十六进制
+            byte[] gbkBytes = Encoding.GetEncoding("GBK").GetBytes(utf8String);
+            return BitConverter.ToString(gbkBytes).Replace("-", "");
+        }
+        private void Btn_Acc_Reload_Click(object sender, EventArgs e)
 		{
 			this.LoadAccounts();
 
@@ -375,7 +436,8 @@ namespace kayito_Editor
 				query = $"SELECT GameID1, GameID2, GameID3, GameID4, GameID5, GameIDC FROM AccountCharacter WHERE Id = '{this.User_Box.Text}'";
 
 			#if SQLITE
-				SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
+                query = $"SELECT HEX(GameID1), HEX(GameID2), HEX(GameID3), HEX(GameID4), HEX(GameID5), HEX(GameIDC) FROM AccountCharacter WHERE Id = '{this.User_Box.Text}'";
+                SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
 			#elif MYSQL
 				MySqlDataReader reader = new MySqlCommand(query, Import.Mu_Connection).ExecuteReader();
 			#else
@@ -388,9 +450,15 @@ namespace kayito_Editor
 
 					for (int i = 0; i < 5; i++)
 					{
-						value = Convert.ToString(reader.GetValue(i));
+#if SQLITE
+                        object dbVal = reader.GetString(i);
 
-						if (value != "")
+                        value = GbkHexToChinese((string)dbVal);
+#else
+						value = Convert.ToString(reader.GetValue(i));
+#endif
+
+                        if (value != "")
 						{
 							this.Name_Box.Items.Add(value);
 						}
@@ -398,7 +466,13 @@ namespace kayito_Editor
 
 					this.Character_Info_Box.Enabled = false;
 
+		#if SQLITE
+					object lc = reader.GetString(5);
+					string lastChar = GbkHexToChinese((string)lc);
+					value = lastChar;
+		#else
 					value = Convert.ToString(reader.GetValue(5));
+		#endif
 
 					if (value != "")
 					{
@@ -621,7 +695,7 @@ namespace kayito_Editor
 			}
 		}
 
-		private void Name_Box_SelectedIndexChanged(object sender, EventArgs e)
+        private void Name_Box_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (Import.Mu_Connection.State != ConnectionState.Open)
 			{
@@ -644,7 +718,7 @@ namespace kayito_Editor
 
 			try
 			{
-				query = $"SELECT cLevel, ResetCount, GrandResetCount, Class, CtlCode, LevelUpPoint, Strength, Dexterity, Vitality, Energy, MapNumber, MapPosX, MapPosY FROM \"Character\" WHERE Name = '{this.Name_Box.Text}'";
+				query = $"SELECT cLevel, ResetCount, GrandResetCount, Class, CtlCode, LevelUpPoint, Strength, Dexterity, Vitality, Energy, MapNumber, MapPosX, MapPosY FROM \"Character\" WHERE hex(Name) = '{ConvertToGbkHex(this.Name_Box.Text)}'";
 
 			#if SQLITE
 				SQLiteDataReader reader = new SQLiteCommand(query, Import.Mu_Connection).ExecuteReader();
@@ -777,7 +851,7 @@ namespace kayito_Editor
 					query = $"SELECT ConnectStat FROM MEMB_STAT WHERE memb___id = '{this.User_Box.Text.Trim()}'";
 
 				#if SQLITE
-					SQLiteDataReader reader = new SQLiteCommand(query, Import.Me_Connection).ExecuteReader();
+                    SQLiteDataReader reader = new SQLiteCommand(query, Import.Me_Connection).ExecuteReader();
 				#elif MYSQL
 					MySqlDataReader reader = new MySqlCommand(query, Import.Me_Connection).ExecuteReader();
 				#else
@@ -800,7 +874,7 @@ namespace kayito_Editor
 
 					reader.Close();
 
-					query = $"UPDATE \"Character\" SET cLevel = {this.Level_Box.Value}, ResetCount = {this.Reset_Box.Text.Trim()}, GrandResetCount = {this.GrandReset_Box.Text.Trim()}, Class = {this.Class_Box.SelectedValue}, CtlCode = {this.Type_Box.SelectedValue}, LevelUpPoint = {this.Point_Box.Text.Trim()}, Strength = {this.Strength_Box.Text.Trim()}, Dexterity = {this.Dexterity_Box.Text.Trim()}, Vitality = {this.Vitality_Box.Text.Trim()}, Energy = {this.Energy_Box.Text.Trim()}, MapNumber = {this.Map_Box.SelectedValue}, MapPosX = {this.PosX_Box.Text.Trim()}, MapPosY = {this.PosY_Box.Text.Trim()} WHERE AccountID = '{this.User_Box.Text.Trim()}' AND Name = '{this.Name_Box.Text.Trim()}'";
+					query = $"UPDATE \"Character\" SET cLevel = {this.Level_Box.Value}, ResetCount = {this.Reset_Box.Text.Trim()}, GrandResetCount = {this.GrandReset_Box.Text.Trim()}, Class = {this.Class_Box.SelectedValue}, CtlCode = {this.Type_Box.SelectedValue}, LevelUpPoint = {this.Point_Box.Text.Trim()}, Strength = {this.Strength_Box.Text.Trim()}, Dexterity = {this.Dexterity_Box.Text.Trim()}, Vitality = {this.Vitality_Box.Text.Trim()}, Energy = {this.Energy_Box.Text.Trim()}, MapNumber = {this.Map_Box.SelectedValue}, MapPosX = {this.PosX_Box.Text.Trim()}, MapPosY = {this.PosY_Box.Text.Trim()} WHERE AccountID = '{this.User_Box.Text.Trim()}' AND hex(Name) = '{ConvertToGbkHex(this.Name_Box.Text.Trim())}'";
 
 					if (MuOnline.Mu_ExecuteSQL(query))
 					{
@@ -843,5 +917,10 @@ namespace kayito_Editor
 
 			this.Opacity = 1.0d;
 		}
-	}
+
+        private void lastCharacter_value_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
 }
