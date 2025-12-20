@@ -8,6 +8,7 @@ using System.Data.OleDb;
 #endif
 using System;
 using System.Windows.Forms;
+using System.Data;
 
 namespace kayito_Editor
 {
@@ -153,12 +154,67 @@ namespace kayito_Editor
 
 		public static void CloseConnection()
 		{
+#if SQLITE
+			// For SQLite: if this process holds the last open connection(s) we control, try to checkpoint/truncate the WAL
+			try
+			{
+				// Determine whether Me_Connection refers to the same connection or is open separately
+				bool muOpen = Import.Mu_Connection != null && Import.Mu_Connection.State == ConnectionState.Open;
+				bool meOpen = Import.Me_Connection != null && Import.Me_Connection.State == ConnectionState.Open;
+				bool meSameAsMu = Import.Me_Connection == Import.Mu_Connection;
+
+				// If Mu connection is open and either Me is not open or Me is the same handle,
+				// then performing checkpoint on Mu_Connection makes sense before closing
+				if (muOpen && (!meOpen || meSameAsMu))
+				{
+					try
+					{
+						using (var cmd = new SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Import.Mu_Connection))
+						{
+							// ExecuteReader is used because some PRAGMA statements return rows
+							using (var rdr = cmd.ExecuteReader())
+							{
+								// consume any result, ignore values
+								while (rdr.Read()) { }
+							}
+						}
+					}
+					catch { /* ignore - best effort checkpoint */ }
+				}
+
+				// If Me connection is open and different from Mu, checkpoint it as well
+				if (meOpen && !meSameAsMu)
+				{
+					try
+					{
+						using (var cmd = new SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Import.Me_Connection))
+						{
+							using (var rdr = cmd.ExecuteReader())
+							{
+								while (rdr.Read()) { }
+							}
+						}
+					}
+					catch { }
+				}
+			}
+			catch { }
+
+			// Finally close the connections if open
+			try { if (Import.Mu_Connection != null && Import.Mu_Connection.State == ConnectionState.Open) Import.Mu_Connection.Close(); } catch { }
+
+			if (Import.USE_ME == 1)
+			{
+				try { if (Import.Me_Connection != null && Import.Me_Connection.State == ConnectionState.Open && Import.Me_Connection != Import.Mu_Connection) Import.Me_Connection.Close(); } catch { }
+			}
+#else
 			Import.Mu_Connection.Close();
 
 			if (Import.USE_ME == 1)
 			{
 				Import.Me_Connection.Close();
 			}
+#endif
 		}
 	}
 }
