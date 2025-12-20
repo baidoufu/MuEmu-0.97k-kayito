@@ -69,22 +69,22 @@ namespace kayito_Editor.Source
 
 		public static IDictionary<int, string> m_ItemSection = new Dictionary<int, string>()
 		{
-			{0, "Swords"},
-			{1, "Axes"},
-			{2, "Maces/Scepters"},
-			{3, "Spears"},
-			{4, "Bows/Crossbows"},
-			{5, "Staffs"},
-			{6, "Shields"},
-			{7, "Helms"},
-			{8, "Armors"},
-			{9, "Pants"},
-			{10, "Gloves"},
-			{11, "Boots"},
-			{12, "Wings"},
-			{13, "Pets/Rings/Pendants"},
-			{14, "Consumables/Jewels"},
-			{15, "Scrolls"},
+			{0, "剑类"},
+			{1, "斧类"},
+			{2, "槌类"},
+			{3, "矛类"},
+			{4, "弓/弩"},
+			{5, "法杖"},
+			{6, "盾牌"},
+			{7, "头盔"},
+			{8, "盔甲"},
+			{9, "护腿"},
+			{10, "护手"},
+			{11, "靴子"},
+			{12, "翅膀"},
+			{13, "宠物/戒指/项链"},
+			{14, "宝石/消耗品"},
+			{15, "卷轴"},
 		};
 
 		public static IDictionary<int, string> m_ItemLevel = new Dictionary<int, string>()
@@ -177,7 +177,7 @@ namespace kayito_Editor.Source
 				{
 					token = lpReadScript.GetToken();
 
-					if (token == eTokenResult.TOKEN_END || token == eTokenResult.TOKEN_END_SECTION)
+					if (token == eTokenResult.TOKEN_END || token == eTokenResult.TOKEN_END_SECTION || token == eTokenResult.TOKEN_ERROR)
 					{
 						break;
 					}

@@ -146,90 +146,131 @@ namespace kayito_Editor.Source
 			this.IsEmpty = false;
 		}
 
-		public byte[] GetItemHex()
-		{
-			if (this.IsEmpty == true)
-			{
-				return this.ItemHex;
-			}
+        public byte[] GetItemHex()
+        {
+            if (this.IsEmpty == true)
+            {
+                return this.ItemHex;
+            }
 
-			this.ItemHex[0] = (byte)((this.Section * ItemManager.MAX_ITEM_TYPE + this.Index) & 0xFF);
+            this.ItemHex[0] = (byte)((this.Section * ItemManager.MAX_ITEM_TYPE + this.Index) & 0xFF);
 
-			this.ItemHex[1] = 0;
-			this.ItemHex[1] |= (byte)(this.ItemLevel * 8);
-			this.ItemHex[1] |= (byte)(this.SkillOption * 128);
-			this.ItemHex[1] |= (byte)(this.LuckOption * 4);
-			this.ItemHex[1] |= (byte)(this.AdditionalOption & 3);
+            this.ItemHex[1] = 0;
+            this.ItemHex[1] |= (byte)(this.ItemLevel * 8);
+            this.ItemHex[1] |= (byte)(this.SkillOption * 128);
+            this.ItemHex[1] |= (byte)(this.LuckOption * 4);
+            this.ItemHex[1] |= (byte)(this.AdditionalOption & 3);
 
-			this.ItemHex[2] = (byte)this.ItemDurability;
+            this.ItemHex[2] = (byte)this.ItemDurability;
 
-			if (this.Serial == 0)
-			{
-				string query = null;
+            if (this.Serial == 0)
+            {
+                string query = null;
 
-				try
+                try
+                {
+#if SQLITE
+                    // SQLite: 直接实现 WZ_GetItemSerial 逻辑
+                    query = "SELECT ItemCount FROM GameServerInfo WHERE Number = 0";
+                    SQLiteCommand cmd = new SQLiteCommand(query, Import.Mu_Connection);
+
+                    int result = -1;
+                    object queryResult = cmd.ExecuteScalar();
+
+                    if (queryResult != null && queryResult != DBNull.Value)
+                    {
+                        int itemSerial = System.Convert.ToInt32(queryResult);
+
+                        // 处理最大值
+                        if (itemSerial >= 2147483647)
+                        {
+                            itemSerial = 1;
+                        }
+                        else
+                        {
+                            itemSerial = itemSerial + 1;
+                        }
+
+                        // 更新数据库
+                        string updateQuery = $"UPDATE GameServerInfo SET ItemCount = {itemSerial} WHERE Number = 0";
+                        using (SQLiteCommand updateCmd = new SQLiteCommand(updateQuery, Import.Mu_Connection))
+                        {
+                            updateCmd.ExecuteNonQuery();
+                        }
+
+                        result = itemSerial;
+                    }
+                    else
+                    {
+                        // 如果没有记录，初始化
+                        result = 1;
+                        string insertQuery = "INSERT INTO GameServerInfo (Number, ItemCount) VALUES (0, 1)";
+                        using (SQLiteCommand insertCmd = new SQLiteCommand(insertQuery, Import.Mu_Connection))
+                        {
+                            insertCmd.ExecuteNonQuery();
+                        }
+                    }
+#elif MYSQL
+				query = $"WZ_GetItemSerial";
+				MySqlCommand cmd = new MySqlCommand(query, Import.Mu_Connection);
+				cmd.CommandType = CommandType.StoredProcedure;
+
+				int result = -1;
+				using (MySqlDataReader reader = cmd.ExecuteReader())
 				{
-					query = $"WZ_GetItemSerial";
-
-				#if SQLITE
-					SQLiteCommand cmd = new SQLiteCommand(query, Import.Mu_Connection);
-				#elif MYSQL
-					MySqlCommand cmd = new MySqlCommand(query, Import.Mu_Connection);
-				#else
-					OleDbCommand cmd = new OleDbCommand(query, Import.Mu_Connection);
-				#endif
-
-					cmd.CommandType = CommandType.StoredProcedure;
-
-					int result = -1;
-
-				#if SQLITE
-					using (SQLiteDataReader reader = cmd.ExecuteReader())
-				#elif MYSQL
-					using (MySqlDataReader reader = cmd.ExecuteReader())
-				#else
-					using (OleDbDataReader reader = cmd.ExecuteReader())
-				#endif
+					if (reader.Read())
 					{
-						if (reader.Read())
-						{
-							result = reader.GetInt32(0);
-						}
-
-						reader.Close();
+						result = reader.GetInt32(0);
 					}
-
-					if (result == -1)
-					{
-						this.Serial = 0;
-					}
-					else
-					{
-						this.Serial = (uint)result;
-					}
+					reader.Close();
 				}
-				catch (Exception exception)
+#else
+				query = $"WZ_GetItemSerial";
+				OleDbCommand cmd = new OleDbCommand(query, Import.Mu_Connection);
+				cmd.CommandType = CommandType.StoredProcedure;
+
+				int result = -1;
+				using (OleDbDataReader reader = cmd.ExecuteReader())
 				{
-					MessageBox.Show($"[SQL] {query}\n[Error] {exception.Message}\n[Source] {exception.Source}\n[Trace] {exception.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					if (reader.Read())
+					{
+						result = reader.GetInt32(0);
+					}
+					reader.Close();
 				}
-			}
+#endif
 
-			this.ItemHex[3] = BitManipulation.SET_NUMBERHB(BitManipulation.SET_NUMBERHW(this.Serial));
-			this.ItemHex[4] = BitManipulation.SET_NUMBERLB(BitManipulation.SET_NUMBERHW(this.Serial));
-			this.ItemHex[5] = BitManipulation.SET_NUMBERHB(BitManipulation.SET_NUMBERLW(this.Serial));
-			this.ItemHex[6] = BitManipulation.SET_NUMBERLB(BitManipulation.SET_NUMBERLW(this.Serial));
+                    if (result == -1)
+                    {
+                        this.Serial = 0;
+                    }
+                    else
+                    {
+                        this.Serial = (uint)result;
+                    }
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show($"[SQL] {query}\n[Error] {exception.Message}\n[Source] {exception.Source}\n[Trace] {exception.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
 
-			this.ItemHex[7] = 0;
-			this.ItemHex[7] |= (byte)(((this.Section * ItemManager.MAX_ITEM_TYPE + this.Index) & 256) >> 1);
-			this.ItemHex[7] |= (byte)((this.AdditionalOption > 3) ? 64 : 0);
-			this.ItemHex[7] |= (byte)this.ExcellentOption;
+            this.ItemHex[3] = BitManipulation.SET_NUMBERHB(BitManipulation.SET_NUMBERHW(this.Serial));
+            this.ItemHex[4] = BitManipulation.SET_NUMBERLB(BitManipulation.SET_NUMBERHW(this.Serial));
+            this.ItemHex[5] = BitManipulation.SET_NUMBERHB(BitManipulation.SET_NUMBERLW(this.Serial));
+            this.ItemHex[6] = BitManipulation.SET_NUMBERLB(BitManipulation.SET_NUMBERLW(this.Serial));
 
-			this.ItemHex[8] = 0;
+            this.ItemHex[7] = 0;
+            this.ItemHex[7] |= (byte)(((this.Section * ItemManager.MAX_ITEM_TYPE + this.Index) & 256) >> 1);
+            this.ItemHex[7] |= (byte)((this.AdditionalOption > 3) ? 64 : 0);
+            this.ItemHex[7] |= (byte)this.ExcellentOption;
 
-			this.ItemHex[9] = 0;
-			this.ItemHex[9] |= (byte)(((this.Section * ItemManager.MAX_ITEM_TYPE + this.Index) & ItemManager.GET_ITEM(15, 0)) >> 5);
+            this.ItemHex[8] = 0;
 
-			return this.ItemHex;
-		}
-	}
+            this.ItemHex[9] = 0;
+            this.ItemHex[9] |= (byte)(((this.Section * ItemManager.MAX_ITEM_TYPE + this.Index) & ItemManager.GET_ITEM(15, 0)) >> 5);
+
+            return this.ItemHex;
+        }
+    }
 }
