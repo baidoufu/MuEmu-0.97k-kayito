@@ -275,7 +275,34 @@ void CQueryManager::GetAsBinary(char* ColName, BYTE* OutBuffer, int OutBufferSiz
 	}
 	else
 	{
-		this->ConvertStringToBinary(this->m_SQLData[index], sizeof(this->m_SQLData[index]), OutBuffer, OutBufferSize);
+		//this->ConvertStringToBinary(this->m_SQLData[index], sizeof(this->m_SQLData[index]), OutBuffer, OutBufferSize);
+
+		// 获取 BLOB 数据和大小
+		const void* blobData = sqlite3_column_blob(this->m_stmt, index);
+		int blobSize = sqlite3_column_bytes(this->m_stmt, index);
+
+		// 处理 NULL 或空数据
+		if (blobData == nullptr || blobSize == 0)
+		{
+			OutBufferSize = 0;
+			return ;
+		}
+
+		// 验证输出缓冲区
+		if (OutBuffer == nullptr)
+		{
+			return ; 
+		}
+
+		if (OutBufferSize < blobSize)
+		{
+			// 设置所需的缓冲区大小
+			blobSize = OutBufferSize;
+		}
+
+		// 复制数据到输出缓冲区
+		memcpy(OutBuffer, blobData, blobSize);
+		OutBufferSize = blobSize; // 返回实际复制的字节数
 	}
 }
 
@@ -317,17 +344,22 @@ void CQueryManager::ApplyBindings()
 			// Convert binary data to hex string format for consistent storage and retrieval
 			// This matches the MSSQL behavior where binary data is stored as hex text
 			// Max binary size is limited by m_SQLData buffer (8192 bytes), so hex needs 16384+1 chars
-			char hexBuffer[16385];
-			int hexLen = this->m_BindParams[n].size * 2;
-			if (hexLen + 1 <= (int)sizeof(hexBuffer))
+			//char hexBuffer[16385];
+			//int hexLen = this->m_BindParams[n].size * 2;
+			//if (hexLen + 1 <= (int)sizeof(hexBuffer))
+			//{
+			//	this->ConvertBinaryToString((BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, hexBuffer, hexLen + 1);
+			//	sqlite3_bind_text(this->m_stmt, n + 1, hexBuffer, hexLen, SQLITE_TRANSIENT);
+			//}
+			//else
+			//{
+			//	LogAdd(LOG_RED, "[QueryManager] 二进制数据过大,无法绑定参数 %d (大小: %d, 最大: 8192)", n + 1, this->m_BindParams[n].size);
+			//	sqlite3_bind_null(this->m_stmt, n + 1);
+			//}
+
+			if (this->m_stmt != NULL)
 			{
-				this->ConvertBinaryToString((BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, hexBuffer, hexLen + 1);
-				sqlite3_bind_text(this->m_stmt, n + 1, hexBuffer, hexLen, SQLITE_TRANSIENT);
-			}
-			else
-			{
-				LogAdd(LOG_RED, "[QueryManager] 二进制数据过大,无法绑定参数 %d (大小: %d, 最大: 8192)", n + 1, this->m_BindParams[n].size);
-				sqlite3_bind_null(this->m_stmt, n + 1);
+				sqlite3_bind_blob(this->m_stmt, n + 1, (BYTE*)this->m_BindParams[n].buffer, this->m_BindParams[n].size, SQLITE_TRANSIENT);
 			}
 		}
 	}

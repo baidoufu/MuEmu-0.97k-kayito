@@ -479,7 +479,7 @@ BYTE CGuildManager::AddGuildMember(int index, char* szGuildName, char* szGuildMe
 		return 3;
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE) || defined(MYSQL)
 	if (gQueryManager.ExecQuery("INSERT INTO GuildMember (Name,G_Name,G_Status) VALUES ('%s','%s',%d)", szGuildMember, szGuildName, btStatus) == false)
 #else
 	if (gQueryManager.ExecUpdateQuery("INSERT INTO GuildMember (Name, G_Name, G_Status) VALUES ('%s', '%s', %d)", szGuildMember, szGuildName, btStatus) == false)
@@ -526,7 +526,7 @@ BYTE CGuildManager::DelGuildMember(int index, char* szGuildMember)
 		return 3;
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE) || defined(MYSQL)
 
 	gQueryManager.ExecQuery("DELETE FROM GuildMember WHERE Name='%s'", szGuildMember);
 
@@ -552,7 +552,7 @@ BYTE CGuildManager::SetGuildScore(char* szGuildName, DWORD dwScore)
 		return 0;
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE) || defined(MYSQL)
 	if (gQueryManager.ExecQuery("UPDATE Guild SET G_Score=%d WHERE G_Name='%s'", dwScore, szGuildName) == false)
 #else
 	if (gQueryManager.ExecUpdateQuery("UPDATE Guild SET G_Score=%d WHERE G_Name='%s'", dwScore, szGuildName) == false)
@@ -581,7 +581,7 @@ BYTE CGuildManager::SetGuildNotice(char* szGuildName, char* szNotice)
 		return 0;
 	}
 
-#ifndef MYSQL
+#if defined(SQLITE) || defined(MYSQL)
 
 	gQueryManager.BindParameterAsString(1, szNotice, sizeof(lpGuildInfo->szNotice));
 

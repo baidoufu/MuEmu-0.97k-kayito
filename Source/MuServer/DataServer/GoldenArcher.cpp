@@ -109,7 +109,12 @@ void CGoldenArcher::GDGoldenArcherGetValuesRecv(SDHP_GOLDEN_ARCHER_GET_VALUES_RE
 
 void CGoldenArcher::GDGoldenArcherSaveCoinRecv(SDHP_GOLDEN_ARCHER_SAVE_COIN_RECV* lpMsg)
 {
-#ifndef MYSQL
+#ifndef defined(SQLITE)
+
+	gQueryManager.ExecQuery("UPDATE GoldenArcherCoin SET Renas = %d, Stones = %d WHERE AccountID = '%s'", lpMsg->count[GOLDEN_ARCHER_COIN_RENA], lpMsg->count[GOLDEN_ARCHER_COIN_STONE], lpMsg->account);
+
+	gQueryManager.Close();
+#elif defined(MYSQL)
 
 	gQueryManager.ExecQuery("UPDATE GoldenArcherCoin SET Renas = %d, Stones = %d WHERE AccountID = '%s'", lpMsg->count[GOLDEN_ARCHER_COIN_RENA], lpMsg->count[GOLDEN_ARCHER_COIN_STONE], lpMsg->account);
 
@@ -126,7 +131,7 @@ void CGoldenArcher::GDGoldenArcherSaveCoinRecv(SDHP_GOLDEN_ARCHER_SAVE_COIN_RECV
 
 void CGoldenArcher::GDGoldenArcherSaveLuckyNumberRecv(SDHP_GOLDEN_ARCHER_SAVE_LUCKY_NUMBER_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE) || defined(MYSQL)
 
 	if (strlen(lpMsg->LuckyNumber) > 0)
 	{
@@ -242,7 +247,7 @@ void CGoldenArcher::GDBingoClearRegisteredRecv(SDHP_BINGO_CLEAR_REGISTERED_RECV*
 
 	pMsg.header.set(0x04, 0x05, sizeof(pMsg));
 
-#ifndef MYSQL
+#if defined(SQLITE) || defined(MYSQL)
 	if (gQueryManager.ExecQuery("TRUNCATE TABLE GoldenArcherLuckyNumbers") == false)
 	#else
 	if (gQueryManager.ExecUpdateQuery("TRUNCATE TABLE GoldenArcherLuckyNumbers") == false)

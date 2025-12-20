@@ -210,7 +210,7 @@ void CWarehouse::GDWarehouseItemRecv(SDHP_WAREHOUSE_ITEM_RECV* lpMsg, int index)
 
 void CWarehouse::GDWarehouseItemSaveRecv(SDHP_WAREHOUSE_ITEM_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE) || defined(MYSQL)
 
 	if (lpMsg->WarehouseNumber == 0)
 	{

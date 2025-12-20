@@ -421,7 +421,7 @@ void GDCharacterListRecv(SDHP_CHARACTER_LIST_RECV* lpMsg, int index)
 
 	memset(CharacterName, 0, sizeof(CharacterName));
 
-#ifndef MYSQL
+#if defined(SQLITE) || !defined(MYSQL)
 
 	gQueryManager.ExecQuery("SELECT * FROM AccountCharacter WHERE Id='%s'", lpMsg->account);
 
@@ -476,7 +476,7 @@ void GDCharacterListRecv(SDHP_CHARACTER_LIST_RECV* lpMsg, int index)
 
 			info.Class = (BYTE)gQueryManager.GetAsInteger("Class");
 
-			BYTE Inventory[12][ITEM_BYTE_SIZE];
+			BYTE Inventory[12][ITEM_BYTE_SIZE]{};
 
 			gQueryManager.GetAsBinary("Inventory", Inventory[0], sizeof(Inventory));
 
@@ -616,40 +616,17 @@ void GDCharacterCreateRecv(SDHP_CHARACTER_CREATE_RECV* lpMsg, int index)
 
 						// For SQLite the DefaultClassType stores Inventory as hex literals (0xFFFF...).
 						// Ensure the inserted Character.Inventory contains the correct binary data.
-						char defaultInvStr[16384];
+						BYTE defaultInvStr[INVENTORY_SIZE * ITEM_BYTE_SIZE];
 						memset(defaultInvStr, 0, sizeof(defaultInvStr));
 						// Read Inventory hex from DefaultClassType
 						if (gQueryManager.ExecQuery("SELECT Inventory FROM DefaultClassType WHERE Class=%d", lpMsg->Class) != false && gQueryManager.Fetch() != false)
 						{
-							gQueryManager.GetAsString("Inventory", defaultInvStr, sizeof(defaultInvStr));
+							gQueryManager.GetAsBinary("Inventory", defaultInvStr, sizeof(defaultInvStr));
 						}
 						gQueryManager.Close();
 
-						// Convert hex string to binary
-						BYTE invBinary[(12 + 64) * ITEM_BYTE_SIZE];
-						memset(invBinary, 0xFF, sizeof(invBinary)); // default to 0xFF
-						if (defaultInvStr[0] != '\0')
-						{
-							// ConvertStringToBinary will parse hex into binary buffer
-							gQueryManager.ConvertStringToBinary(defaultInvStr, (int)strlen(defaultInvStr), invBinary, sizeof(invBinary));
-							// If conversion produced all zeros (unlikely), keep 0xFF fallback
-							bool allZero = true;
-							for (size_t z = 0; z < sizeof(invBinary); z++)
-							{
-								if (invBinary[z] != 0x00)
-								{
-									allZero = false;
-									break;
-								}
-							}
-							if (allZero)
-							{
-								memset(invBinary, 0xFF, sizeof(invBinary));
-							}
-						}
-
 						// Update the inserted Character record with the correct binary Inventory
-						gQueryManager.BindParameterAsBinary(1, invBinary, sizeof(invBinary));
+						gQueryManager.BindParameterAsBinary(1, defaultInvStr, sizeof(defaultInvStr));
 						gQueryManager.ExecQuery("UPDATE Character SET Inventory=? WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name);
 						gQueryManager.Close();
 					}
@@ -1167,7 +1144,21 @@ void GDCharacterInfoRecv(SDHP_CHARACTER_INFO_RECV* lpMsg, int index)
 
 void GDCharacterInfoSaveRecv(SDHP_CHARACTER_INFO_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE)
+	//存储无效
+
+	gQueryManager.BindParameterAsBinary(1, lpMsg->Inventory[0], sizeof(lpMsg->Inventory));
+
+	gQueryManager.BindParameterAsBinary(2, lpMsg->Skill[0], sizeof(lpMsg->Skill));
+
+	gQueryManager.BindParameterAsBinary(3, lpMsg->Quest, sizeof(lpMsg->Quest));
+
+	gQueryManager.BindParameterAsBinary(4, lpMsg->Effect[0], sizeof(lpMsg->Effect));
+
+	gQueryManager.ExecQuery("UPDATE Character SET cLevel=%d,Class=%d,LevelUpPoint=%d,Experience=%d,Strength=%d,Dexterity=%d,Vitality=%d,Energy=%d,Inventory=?,MagicList=?,Money=%d,Life=%d,MaxLife=%d,Mana=%d,MaxMana=%d,BP=%d,MaxBP=%d,MapNumber=%d,MapPosX=%d,MapPosY=%d,MapDir=%d,PkCount=%d,PkLevel=%d,PkTime=%d,Quest=?,EffectList=?,FruitAddPoint=%d,FruitSubPoint=%d WHERE AccountID='%s' AND Name='%s'", lpMsg->Level, lpMsg->Class, lpMsg->LevelUpPoint, lpMsg->Experience, lpMsg->Strength, lpMsg->Dexterity, lpMsg->Vitality, lpMsg->Energy, lpMsg->Money, lpMsg->Life, lpMsg->MaxLife, lpMsg->Mana, lpMsg->MaxMana, lpMsg->BP, lpMsg->MaxBP, lpMsg->Map, lpMsg->X, lpMsg->Y, lpMsg->Dir, lpMsg->PKCount, lpMsg->PKLevel, lpMsg->PKTime, lpMsg->FruitAddPoint, lpMsg->FruitSubPoint, lpMsg->account, lpMsg->name);
+
+
+#elif !defined(MYSQL)
 
 	gQueryManager.BindParameterAsBinary(1, lpMsg->Inventory[0], sizeof(lpMsg->Inventory));
 
@@ -1335,7 +1326,10 @@ void GDCreateItemRecv(SDHP_CREATE_ITEM_RECV* lpMsg, int index)
 
 void GDInventoryItemSaveRecv(SDHP_INVENTORY_ITEM_SAVE_RECV* lpMsg)
 {
-#ifndef MYSQL
+#if defined(SQLITE) //可能无效
+	gQueryManager.BindParameterAsBinary(1, lpMsg->Inventory[0], sizeof(lpMsg->Inventory));
+	gQueryManager.ExecQuery("UPDATE Character SET Inventory=? WHERE AccountID='%s' AND Name='%s'", lpMsg->account, lpMsg->name);
+#elif MYSQL
 
 	gQueryManager.BindParameterAsBinary(1, lpMsg->Inventory[0], sizeof(lpMsg->Inventory));
 
