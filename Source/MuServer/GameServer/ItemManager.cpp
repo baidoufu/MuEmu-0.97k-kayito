@@ -310,6 +310,11 @@ int CItemManager::GetItemDurability(int index, int level, int ExceOption)
 		return 1;
 	}
 
+	if (index == GET_ITEM(14, 11)) // Boxs
+	{
+		return 1;
+	}
+
 	if (index == GET_ITEM(13, 18) || index == GET_ITEM(14, 19)) // Invisibility Cloak, Devil's Invitation
 	{
 		return 1;
@@ -2484,6 +2489,19 @@ void CItemManager::CGItemDropRecv(PMSG_ITEM_DROP_RECV* lpMsg, int aIndex)
 	{
 		DataSend(aIndex, (BYTE*)&pMsg, pMsg.header.size);
 
+		return;
+	}
+	if ((lpItem->m_Index < GET_ITEM(12, 0) && lpItem->m_Level > 4) || lpItem->IsExcItem() != 0)
+	{
+		DataSend(aIndex, (BYTE*)&pMsg, pMsg.header.size);
+
+		return;
+	}
+
+	if ((lpItem->m_Index == GET_ITEM(14, 11) && (lpItem->m_Level >= 8 && lpItem->m_Level <= 12) && lpItem->m_Durability > 1)) //Esto hace que no puedan tirar las cajas kundun si tienen stack
+	{
+		//gNotice.GCNoticeSend(aIndex, 1, 0, 0, 0, 0, 0, "First, you must unpack the items to throw them");
+		DataSend(aIndex, (BYTE*)&pMsg, pMsg.header.size);
 		return;
 	}
 
