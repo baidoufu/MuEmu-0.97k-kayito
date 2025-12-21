@@ -773,7 +773,7 @@ void CProtocol::GCConnectClientRecv(PMSG_CONNECT_CLIENT_RECV* lpMsg)
 
 void CProtocol::GCConnectAccountRecv(PMSG_CONNECT_ACCOUNT_RECV* lpMsg)
 {
-	if (lpMsg->result == 5)
+	if (lpMsg->result == 12)//5=封IP
 	{
 		wchar_t msg[160];
 		wsprintfW(msg, L"此硬件ID [%s] 已被封禁。\n\n您不被允许进入服务器。\n\n请联系管理员获取更多详细信息。", lpMsg->HardwareId);

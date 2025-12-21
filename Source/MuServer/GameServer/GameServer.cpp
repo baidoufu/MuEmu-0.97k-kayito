@@ -515,187 +515,187 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 LRESULT CALLBACK UserOnline(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	switch (message)
-	{
-		case WM_INITDIALOG:
-		{
-			HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
+    switch (message)
+    {
+        case WM_INITDIALOG:
+        {
+            HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
 
-			for (int i = OBJECT_START_USER; i < MAX_OBJECT; i++)
-			{
-				if (gObj[i].Connected >= OBJECT_LOGGED && gObj[i].Type == OBJECT_USER)
-				{
-					TCHAR buff[30];
+            for (int i = OBJECT_START_USER; i < MAX_OBJECT; i++)
+            {
+                if (gObj[i].Connected >= OBJECT_LOGGED && gObj[i].Type == OBJECT_USER)
+                {
+                    TCHAR buff[256];
 
-					wsprintf(buff, "%s >> %s >> %s (%s)",
-						gObj[i].Name,
-						gObj[i].Account,
-						gObj[i].ComputerName,
-						gObj[i].UserName
-					);
+                    _stprintf_s(buff, _countof(buff), _T("%s >> %s >> %s (%s)"),
+                        gObj[i].Name,
+                        gObj[i].Account,
+                        gObj[i].ComputerName,
+                        gObj[i].UserName
+                    );
 
-					int pos = (int)SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)buff);
+                    int pos = (int)SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)buff);
 
-					SendMessage(hwndList, LB_SETITEMDATA, pos, (LPARAM)i);
-				}
-			}
+                    SendMessage(hwndList, LB_SETITEMDATA, pos, (LPARAM)i);
+                }
+            }
 
-			SetFocus(hwndList);
+            SetFocus(hwndList);
 
-			return TRUE;
-		}
+            return TRUE;
+        }
 
-		case WM_COMMAND:
-		{
-			switch (LOWORD(wParam))
-			{
-				case IDOK:
-				case IDCANCEL:
-				{
-					EndDialog(hDlg, LOWORD(wParam));
+        case WM_COMMAND:
+        {
+            switch (LOWORD(wParam))
+            {
+                case IDOK:
+                case IDCANCEL:
+                {
+                    EndDialog(hDlg, LOWORD(wParam));
 
-					return TRUE;
-				}
+                    return TRUE;
+                }
 
-				case IDC_LIST1:
-				{
-					switch (HIWORD(wParam))
-					{
-						case LBN_SELCHANGE:
-						{
-							HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
+                case IDC_LIST1:
+                {
+                    switch (HIWORD(wParam))
+                    {
+                        case LBN_SELCHANGE:
+                        {
+                            HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
 
-							int lbItem = (int)SendMessage(hwndList, LB_GETCURSEL, 0, 0);
+                            int lbItem = (int)SendMessage(hwndList, LB_GETCURSEL, 0, 0);
 
-							int i = (int)SendMessage(hwndList, LB_GETITEMDATA, lbItem, 0);
+                            int i = (int)SendMessage(hwndList, LB_GETITEMDATA, lbItem, 0);
 
-							SetDlgItemText(hDlg, IDC_EDIT1, gObj[i].Account);
+                            SetDlgItemText(hDlg, IDC_EDIT1, gObj[i].Account);
 
-							SetDlgItemText(hDlg, IDC_EDIT2, gObj[i].IpAddr);
+                            SetDlgItemText(hDlg, IDC_EDIT2, gObj[i].IpAddr);
 
-							SetDlgItemText(hDlg, IDC_EDIT3, gObj[i].HardwareID);
+                            SetDlgItemText(hDlg, IDC_EDIT3, gObj[i].HardwareID);
 
-							char info[128];
-							wsprintf(info, "%s (%s)", gObj[i].ComputerName, gObj[i].UserName);
-							SetDlgItemText(hDlg, IDC_EDIT9, info);
+                            TCHAR info[128];
+                            _stprintf_s(info, _countof(info), _T("%s (%s)"), gObj[i].ComputerName, gObj[i].UserName);
+                            SetDlgItemText(hDlg, IDC_EDIT9, info);
 
-							if (gObj[i].Name[0] == 0)
-							{
-								SetDlgItemText(hDlg, IDC_EDIT4, "SELECT CHARACTER");
+                            if (gObj[i].Name[0] == 0)
+                            {
+                                SetDlgItemText(hDlg, IDC_EDIT4, _T("SELECT CHARACTER"));
 
-								SetDlgItemText(hDlg, IDC_EDIT5, "SELECT CHARACTER");
+                                SetDlgItemText(hDlg, IDC_EDIT5, _T("SELECT CHARACTER"));
 
-								SetDlgItemText(hDlg, IDC_EDIT6, "");
+                                SetDlgItemText(hDlg, IDC_EDIT6, _T(""));
 
-								SetDlgItemText(hDlg, IDC_EDIT7, "");
-							}
-							else
-							{
-								SetDlgItemText(hDlg, IDC_EDIT4, gObj[i].Name);
+                                SetDlgItemText(hDlg, IDC_EDIT7, _T(""));
+                            }
+                            else
+                            {
+                                SetDlgItemText(hDlg, IDC_EDIT4, gObj[i].Name);
 
-								SetDlgItemText(hDlg, IDC_EDIT5, gMapManager.GetMapName(gObj[i].Map));
+                                SetDlgItemText(hDlg, IDC_EDIT5, gMapManager.GetMapName(gObj[i].Map));
 
-								TCHAR buff[5];
+                                TCHAR coordBuff[16];
 
-								wsprintf(buff, "%d", gObj[i].X);
+                                _stprintf_s(coordBuff, _countof(coordBuff), _T("%d"), gObj[i].X);
 
-								SetDlgItemText(hDlg, IDC_EDIT6, buff);
+                                SetDlgItemText(hDlg, IDC_EDIT6, coordBuff);
 
-								wsprintf(buff, "%d", gObj[i].Y);
+                                _stprintf_s(coordBuff, _countof(coordBuff), _T("%d"), gObj[i].Y);
 
-								SetDlgItemText(hDlg, IDC_EDIT7, buff);
-							}
+                                SetDlgItemText(hDlg, IDC_EDIT7, coordBuff);
+                            }
 
-							return TRUE;
-						}
-					}
+                            return TRUE;
+                        }
+                    }
 
-					return FALSE;
-				}
+                    return FALSE;
+                }
 
-				case IDC_BUTTONDC:
-				{
-					HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
+                case IDC_BUTTONDC:
+                {
+                    HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
 
-					int lbItem = (int)SendMessage(hwndList, LB_GETCURSEL, 0, 0);
+                    int lbItem = (int)SendMessage(hwndList, LB_GETCURSEL, 0, 0);
 
-					int i = (int)SendMessage(hwndList, LB_GETITEMDATA, lbItem, 0);
+                    int i = (int)SendMessage(hwndList, LB_GETITEMDATA, lbItem, 0);
 
-					gObjUserKill(gObj[i].Index);
+                    gObjUserKill(gObj[i].Index);
 
-					SendMessage(hwndList, LB_DELETESTRING, lbItem, 0);
+                    SendMessage(hwndList, LB_DELETESTRING, lbItem, 0);
 
-					SetDlgItemText(hDlg, IDC_EDIT1, "");
+                    SetDlgItemText(hDlg, IDC_EDIT1, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT2, "");
+                    SetDlgItemText(hDlg, IDC_EDIT2, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT3, "");
+                    SetDlgItemText(hDlg, IDC_EDIT3, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT4, "");
+                    SetDlgItemText(hDlg, IDC_EDIT4, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT5, "");
+                    SetDlgItemText(hDlg, IDC_EDIT5, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT6, "");
+                    SetDlgItemText(hDlg, IDC_EDIT6, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT7, "");
+                    SetDlgItemText(hDlg, IDC_EDIT7, _T(""));
 
-					MessageBox(hDlg, "Account disconnected", "Confirm", MB_OK);
+                    MessageBox(hDlg, _T("Account disconnected"), _T("Confirm"), MB_OK);
 
-					return TRUE;
-				}
+                    return TRUE;
+                }
 
-				case IDC_BUTTONRD:
-				{
-					HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
+                case IDC_BUTTONRD:
+                {
+                    HWND hwndList = GetDlgItem(hDlg, IDC_LIST1);
 
-					SendMessage(hwndList, LB_RESETCONTENT, 0, 0);
+                    SendMessage(hwndList, LB_RESETCONTENT, 0, 0);
 
-					for (int i = OBJECT_START_USER; i < MAX_OBJECT; i++)
-					{
-						if (gObj[i].Connected >= OBJECT_LOGGED && gObj[i].Type == OBJECT_USER)
-						{
-							TCHAR buff[30];
+                    for (int i = OBJECT_START_USER; i < MAX_OBJECT; i++)
+                    {
+                        if (gObj[i].Connected >= OBJECT_LOGGED && gObj[i].Type == OBJECT_USER)
+                        {
+                            TCHAR buff[256];
 
-							wsprintf(buff, "%s >> %s >> %s (%s)",
-								gObj[i].Name,
-								gObj[i].Account,
-								gObj[i].ComputerName,
-								gObj[i].UserName
-							);
+                            _stprintf_s(buff, _countof(buff), _T("%s >> %s >> %s (%s)"),
+                                gObj[i].Name,
+                                gObj[i].Account,
+                                gObj[i].ComputerName,
+                                gObj[i].UserName
+                            );
 
 
-							int pos = (int)SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)buff);
+                            int pos = (int)SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)buff);
 
-							SendMessage(hwndList, LB_SETITEMDATA, pos, (LPARAM)i);
-						}
-					}
+                            SendMessage(hwndList, LB_SETITEMDATA, pos, (LPARAM)i);
+                        }
+                    }
 
-					SetDlgItemText(hDlg, IDC_EDIT1, "");
+                    SetDlgItemText(hDlg, IDC_EDIT1, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT2, "");
+                    SetDlgItemText(hDlg, IDC_EDIT2, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT3, "");
+                    SetDlgItemText(hDlg, IDC_EDIT3, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT4, "");
+                    SetDlgItemText(hDlg, IDC_EDIT4, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT5, "");
+                    SetDlgItemText(hDlg, IDC_EDIT5, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT6, "");
+                    SetDlgItemText(hDlg, IDC_EDIT6, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT7, "");
+                    SetDlgItemText(hDlg, IDC_EDIT7, _T(""));
 
-					SetDlgItemText(hDlg, IDC_EDIT9, "");
+                    SetDlgItemText(hDlg, IDC_EDIT9, _T(""));
 
-					//Dialog de Reloaded Users
-					//MessageBox(hDlg, "Reloaded users online", "Confirm", MB_OK);
+                    //Dialog de Reloaded Users
+                    //MessageBox(hDlg, "Reloaded users online", "Confirm", MB_OK);
 
-					return TRUE;
-				}
-			}
-		}
-	}
+                    return TRUE;
+                }
+            }
+        }
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
