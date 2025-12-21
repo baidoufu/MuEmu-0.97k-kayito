@@ -163,6 +163,7 @@ struct PMSG_CONNECT_ACCOUNT_RECV
 {
 	PSBMSG_HEAD header; // C1:F1:01
 	BYTE result;
+	char HardwareId[36];
 };
 
 struct PMSG_CLOSE_CLIENT_RECV

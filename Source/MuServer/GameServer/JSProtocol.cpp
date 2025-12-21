@@ -144,9 +144,9 @@ void JGConnectAccountRecv(SDHP_CONNECT_ACCOUNT_RECV* lpMsg)
 
 	GCConnectAccountSend(lpMsg->index, 1);
 
-	//LogAdd(LOG_USER, "[ObjectManager][%d] AddAccountInfo (%s)(%s)", lpMsg->index, gObj[lpMsg->index].Account, gObj[lpMsg->index].HardwareID);
+	LogAdd(LOG_GREEN, "[ObjectManager][%d] AddAccountInfo [%s] [%s] [%s (%s)]", lpMsg->index, gObj[lpMsg->index].Account, gObj[lpMsg->index].IpAddr, gObj[lpMsg->index].ComputerName, gObj[lpMsg->index].UserName);
 
-	gLog.Output(LOG_CONNECT, "[ObjectManager][%d] AddAccountInfo (%s)(%s)", lpMsg->index, gObj[lpMsg->index].Account, gObj[lpMsg->index].HardwareID);
+	gLog.Output(LOG_CONNECT, "[ObjectManager][%d] AddAccountInfo [%s][%s][%s][%s (%s)]", lpMsg->index, gObj[lpMsg->index].Account, gObj[lpMsg->index].IpAddr, gObj[lpMsg->index].HardwareID, gObj[lpMsg->index].ComputerName, gObj[lpMsg->index].UserName);
 }
 
 void GJDisconnectAccountSend(int aIndex, char* account, char* IpAddress)

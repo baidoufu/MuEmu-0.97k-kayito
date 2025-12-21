@@ -673,9 +673,9 @@ bool CObjectManager::CharacterGameClose(int aIndex)
 
 	GCEventStateSend(lpObj->Index, 0, 3);
 
-	//LogAdd(LOG_USER, "[ObjectManager][%d] DelCharacterInfo (%s)", lpObj->Index, lpObj->Name);
+	LogAdd(LOG_EVENT, "[ObjectManager][%d] DelCharacterInfo [%s] [%s] [%s (%s)]", lpObj->Index, lpObj->Name, lpObj->IpAddr, lpObj->ComputerName, lpObj->UserName);
 
-	gLog.Output(LOG_CONNECT, "[ObjectManager][%d] DelCharacterInfo (%s)", lpObj->Index, lpObj->Name);
+	gLog.Output(LOG_CONNECT, "[ObjectManager][%d] DelCharacterInfo [%s][%s][%s][%s (%s)]", lpObj->Index, lpObj->Name, lpObj->IpAddr, lpObj->HardwareID, lpObj->ComputerName, lpObj->UserName);
 
 	memset(lpObj->Name, 0, sizeof(lpObj->Name));
 

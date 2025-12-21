@@ -1182,6 +1182,7 @@ void CGConnectAccountRecv(PMSG_CONNECT_ACCOUNT_RECV* lpMsg, int aIndex)
 	{
 		GCConnectAccountSend(aIndex, 5);
 
+		gLog.Output(LOG_CONNECT, "[ObjectManager][%d] BannedComputer [%s][%s][%s (%s)]", aIndex, lpObj->IpAddr, lpObj->HardwareID, lpObj->ComputerName, lpObj->UserName);
 		return;
 	}
 

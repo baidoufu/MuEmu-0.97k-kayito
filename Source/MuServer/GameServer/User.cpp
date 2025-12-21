@@ -898,6 +898,10 @@ short gObjAdd(SOCKET socket, char* IpAddress, int aIndex)
 
 	memset(lpObj->HardwareID, 0, sizeof(lpObj->HardwareID));
 
+	memset(lpObj->ComputerName, 0, sizeof(lpObj->ComputerName));
+
+	memset(lpObj->UserName, 0, sizeof(lpObj->UserName));
+
 	gSerialCheck[aIndex].Init();
 
 	gIpManager.InsertIpAddress(lpObj->IpAddr);
@@ -938,9 +942,9 @@ short gObjDel(int aIndex)
 
 		if (lpObj->Account[0] != 0)
 		{
-			//LogAdd(LOG_USER, "[ObjectManager][%d] DelAccountInfo (%s)(%s)", aIndex, lpObj->Account, lpObj->HardwareID);
+			LogAdd(LOG_USER, "[ObjectManager][%d] DelAccountInfo [%s] [%s] [%s (%s)]", aIndex, lpObj->Account, lpObj->IpAddr, lpObj->ComputerName, lpObj->UserName);
 
-			gLog.Output(LOG_CONNECT, "[ObjectManager][%d] DelAccountInfo (%s)(%s)", aIndex, lpObj->Account, lpObj->HardwareID);
+			gLog.Output(LOG_CONNECT, "[ObjectManager][%d] DelAccountInfo [%s][%s][%s][%s (%s)]", aIndex, lpObj->Account, lpObj->IpAddr, lpObj->HardwareID, lpObj->ComputerName, lpObj->UserName);
 		}
 
 		//LogAdd(LOG_USER, "[ObjectManager][%d] DelClient (%s)", aIndex, lpObj->IpAddr);
