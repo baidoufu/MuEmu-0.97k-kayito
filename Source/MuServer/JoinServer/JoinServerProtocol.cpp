@@ -74,56 +74,56 @@ void JoinServerProtocolCore(int index, BYTE head, BYTE* lpMsg, int size)
 		}
 
 		// Launcher protocols (0x10-0x16)
-		case 0x10:
+		case 0x10://登录
 		{
 			GJLauncherLoginRecv((SDHP_LAUNCHER_LOGIN_RECV*)lpMsg, index);
 
 			break;
 		}
 
-		case 0x11:
+		case 0x11://获取角色列表
 		{
 			GJLauncherGetCharactersRecv((SDHP_LAUNCHER_GET_CHARACTERS_RECV*)lpMsg, index);
 
 			break;
 		}
 
-		case 0x12:
+		case 0x12://加点
 		{
 			GJLauncherAddPointsRecv((SDHP_LAUNCHER_ADD_POINTS_RECV*)lpMsg, index);
 
 			break;
 		}
 
-		case 0x13:
+		case 0x13://清除Pk值
 		{
 			GJLauncherClearPKRecv((SDHP_LAUNCHER_CLEAR_PK_RECV*)lpMsg, index);
 
 			break;
 		}
 
-		case 0x14:
+		case 0x14://转生
 		{
 			GJLauncherResetRecv((SDHP_LAUNCHER_RESET_RECV*)lpMsg, index);
 
 			break;
 		}
 
-		case 0x15:
+		case 0x15://转世
 		{
 			GJLauncherGrandResetRecv((SDHP_LAUNCHER_GRAND_RESET_RECV*)lpMsg, index);
 
 			break;
 		}
 
-		case 0x16:
+		case 0x16://在线检查
 		{
 			GJLauncherCheckOnlineRecv((SDHP_LAUNCHER_CHECK_ONLINE_RECV*)lpMsg, index);
 
 			break;
 		}
 
-		case 0x17:
+		case 0x17://注册
 		{
 			GJLauncherRegisterRecv((SDHP_LAUNCHER_REGISTER_RECV*)lpMsg, index);
 
@@ -989,7 +989,9 @@ void GJLauncherResetRecv(SDHP_LAUNCHER_RESET_RECV* lpMsg, int index)
 	pMsg.header.set(0x14, sizeof(pMsg));
 
 	pMsg.result = 1; // Success by default
-
+	BYTE* rawData = (BYTE*)lpMsg;
+	WORD requiredLevel = *(WORD*)(rawData + 25); //转生等级限制 应该取服务端的配置
+	//requiredLevel = rawData[25] | (rawData[26] << 8);
 	// Check if account is online
 	ACCOUNT_INFO AccountInfo;
 
@@ -1024,7 +1026,7 @@ void GJLauncherResetRecv(SDHP_LAUNCHER_RESET_RECV* lpMsg, int index)
 
 	gQueryManager.Close();
 
-	if (level < lpMsg->requiredLevel)
+	if (level < requiredLevel )//ntohs(lpMsg->requiredLevel)
 	{
 		pMsg.result = 2; // Level too low
 
@@ -1086,13 +1088,16 @@ void GJLauncherGrandResetRecv(SDHP_LAUNCHER_GRAND_RESET_RECV* lpMsg, int index)
 
 		return;
 	}
+	BYTE* rawData = (BYTE*)lpMsg;
+	WORD requiredLevel = *(WORD*)(rawData + 25);
+	WORD requiredResets = *(WORD*)(rawData + 27);
 
 	int level = gQueryManager.GetAsInteger("cLevel");
 	int resets = gQueryManager.GetAsInteger("ResetCount");
 
 	gQueryManager.Close();
 
-	if (resets < lpMsg->requiredResets)
+	if (resets < requiredResets)//lpMsg->requiredResets
 	{
 		pMsg.result = 3; // Resets too low
 
@@ -1101,7 +1106,7 @@ void GJLauncherGrandResetRecv(SDHP_LAUNCHER_GRAND_RESET_RECV* lpMsg, int index)
 		return;
 	}
 
-	if (level < lpMsg->requiredLevel)
+	if (level < requiredLevel)//lpMsg->requiredLevel
 	{
 		pMsg.result = 2; // Level too low
 
