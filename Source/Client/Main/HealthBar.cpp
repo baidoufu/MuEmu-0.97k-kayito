@@ -68,10 +68,7 @@ MONSTER_HEALTH_BAR* CHealthBar::GetHealthBar(WORD index, BYTE type)
 
 void CHealthBar::Init()
 {
-	if ((gProtect.m_MainInfo.HealthBarType & 1) == 1)
-	{
-		SetCompleteHook(0xE8, 0x004BC0AE, &this->DrawHealthBar);
-	}
+	SetCompleteHook(0xE8, 0x004BC0AE, &this->DrawHealthBar);
 
 	SetByte(0x004CB739, 0x4F);
 
@@ -82,10 +79,10 @@ void CHealthBar::DrawHealthBar()
 {
 	((void(_cdecl*)())0x004BCA20)();
 
-	/*if (gHealthBar.DeleteHealthBar)
+	if (gHealthBar.DeleteHealthBar && gHealthBar.ShowNameAlways == false)
 	{
 		return;
-	}*/
+	}
 
 	float LifeBarWidth = 70.0f;
 
@@ -108,8 +105,109 @@ void CHealthBar::DrawHealthBar()
 			BYTE type = *(BYTE*)(ViewportAddress + 0x84);
 			if (type == 1)
 			{
-				CreateChat((char*)(ViewportAddress + 0x1C1), "", ViewportAddress, 0, -1);
+				char* name = (char*)(ViewportAddress + 0x1C1); // nombre del player
+
+				// Evitar mostrar un nombre específico
+				if (strcmp(name, "admin") == 0)
+				{
+					continue; // NO mostrar y saltar al siguiente
+				}
+
+				// Mostrar nombre permanentemente
+				CreateChat(name, "", ViewportAddress, 0, -1);
 			}
+		}
+
+		if ((gProtect.m_MainInfo.HealthBarType & 1) == 1)
+		{
+			if (gHealthBar.DeleteHealthBar == false)
+			{
+				MONSTER_HEALTH_BAR* lpHealthBar = gHealthBar.GetHealthBar(*(WORD*)(ViewportAddress + 0x1DC), *(BYTE*)(ViewportAddress + 0x84));
+
+				if (lpHealthBar == 0)
+				{
+					continue;
+				}
+
+				if (*(WORD*)(ViewportAddress + 0x2EB) == 200) //Soccer Ball
+				{
+					continue;
+				}
+
+				vec3_t Angle = { 0.0f, 0.0f, 0.0f };
+
+				Angle[0] = *(float*)(ViewportAddress + 0x10);
+
+				Angle[1] = *(float*)(ViewportAddress + 0x14);
+
+				Angle[2] = *(float*)(ViewportAddress + 0x12C) + *(float*)(ViewportAddress + 0x18) + 100.0f;
+
+				int PosX = 0, PosY = 0;
+
+				Projection(Angle, &PosX, &PosY);
+
+				PosX -= (int)floor((double)LifeBarWidth / 2.0);
+
+				if (IsWorkZone(PosX, PosY, (int)LifeBarWidth, 6))
+				{
+					EnableAlphaTest(true);
+
+					char LifeDisplay[64];
+
+					wsprintf(LifeDisplay, "%s: %d%%", (char*)(ViewportAddress + 0x1C1), lpHealthBar->rateHP);
+
+					SelectObject(m_hFontDC, g_hFont);
+
+					SetBackgroundTextColor = Color4b(0, 0, 0, 128);
+
+					SetTextColor = Color4b(255, 255, 255, 255);
+
+					RenderText(CenterTextPosX(LifeDisplay, PosX + ((int)LifeBarWidth / 2)), PosY - 8, LifeDisplay, 0, RT3_SORT_LEFT, NULL);
+				}
+
+				EnableAlphaTest(true);
+
+				glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+
+				RenderColor((float)PosX, (float)PosY, LifeBarWidth, 6.0f);
+
+				glColor4f(0.8f, 0.0f, 0.0f, 1.0f);
+
+				RenderColor((float)PosX + 2, (float)PosY + 2, ((LifeBarWidth - 4) * lpHealthBar->rateHP) / 100, 2.0f);
+
+				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+				glEnable(GL_TEXTURE_2D);
+
+				DisableAlphaBlend();
+			}
+
+		}
+	}
+
+	// Codigo Original Kayito
+	/*
+	((void(_cdecl*)())0x004BCA20)();
+
+	if (gHealthBar.DeleteHealthBar)
+	{
+		return;
+	}
+
+	float LifeBarWidth = 70.0f;
+
+	for (int n = 0; n < MAX_MAIN_VIEWPORT; n++)
+	{
+		DWORD ViewportAddress = *(DWORD*)(0x07ABF5D0) + (n * 916);
+
+		if (!ViewportAddress)
+		{
+			continue;
+		}
+
+		if (*(BYTE*)(ViewportAddress) == 0)
+		{
+			continue;
 		}
 
 		MONSTER_HEALTH_BAR* lpHealthBar = gHealthBar.GetHealthBar(*(WORD*)(ViewportAddress + 0x1DC), *(BYTE*)(ViewportAddress + 0x84));
@@ -157,14 +255,13 @@ void CHealthBar::DrawHealthBar()
 
 		EnableAlphaTest(true);
 
-		// 注释了生命值条（HP Bar）的绘制代码
-		/*glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+		glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
 
 		RenderColor((float)PosX, (float)PosY, LifeBarWidth, 6.0f);
 
 		glColor4f(0.8f, 0.0f, 0.0f, 1.0f);
 
-		RenderColor((float)PosX + 2, (float)PosY + 2, ((LifeBarWidth - 4) * lpHealthBar->rateHP) / 100, 2.0f);*/
+		RenderColor((float)PosX + 2, (float)PosY + 2, ((LifeBarWidth - 4) * lpHealthBar->rateHP) / 100, 2.0f);
 
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -172,6 +269,7 @@ void CHealthBar::DrawHealthBar()
 
 		DisableAlphaBlend();
 	}
+	*/
 }
 
 __declspec(naked) void CHealthBar::DrawPointingHealthBar()

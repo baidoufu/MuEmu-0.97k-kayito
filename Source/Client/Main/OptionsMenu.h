@@ -44,6 +44,8 @@ private:
 	bool CheckPVPWithoutControl(int PosX, int PosY);
 	void RenderShowNameAlways(float PosX, float PosY);
 	bool CheckShowNameAlways(int PosX, int PosY);
+	void RenderDeleteHPBar(float PosX, float PosY);
+	bool CheckDeleteHPBar(int PosX, int PosY);
 	void RenderAutomaticAttack(float PosX, float PosY);
 	bool CheckAutomaticAttack(int PosX, int PosY);
 	void RenderSoundOnWhisper(float PosX, float PosY);
@@ -63,8 +65,8 @@ private:
 	bool CheckDeleteShadows(int PosX, int PosY);
 	void RenderDeleteObjects(float PosX, float PosY);
 	bool CheckDeleteObjects(int PosX, int PosY);
-	void RenderDeleteFloor(float PosX, float PosY);
-	bool CheckDeleteFloor(int PosX, int PosY);
+	//void RenderDeleteFloor(float PosX, float PosY);
+	//bool CheckDeleteFloor(int PosX, int PosY);
 	void RenderDeleteSkills(float PosX, float PosY);
 	bool CheckDeleteSkills(int PosX, int PosY);
 	void RenderDeleteStaticEffects(float PosX, float PosY);
@@ -75,8 +77,8 @@ private:
 	bool CheckDeleteWings(int PosX, int PosY);
 	void RenderDeleteHPBar(float PosX, float PosY);
 	bool CheckDeleteHPBar(int PosX, int PosY);
-	void RenderDeleteInterface(float PosX, float PosY);
-	bool CheckDeleteInterface(int PosX, int PosY);
+	//void RenderDeleteInterface(float PosX, float PosY);
+	//bool CheckDeleteInterface(int PosX, int PosY);
 
 	void RenderScreen();
 	bool CheckScreen();

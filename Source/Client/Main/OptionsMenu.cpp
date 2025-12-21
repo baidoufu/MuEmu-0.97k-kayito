@@ -27,11 +27,11 @@ COptionsMenu::COptionsMenu()
 	this->ShowNameAlways = false;
 	this->DeleteShadows = (GetPrivateProfileInt("Antilag", "DeleteShadows", 0, ".\\Config.ini") != 0);
 	this->DeleteObjects = (GetPrivateProfileInt("Antilag", "DeleteObjects", 0, ".\\Config.ini") != 0);
-	this->DeleteFloor = (GetPrivateProfileInt("Antilag", "DeleteFloor", 0, ".\\Config.ini") != 0);
+	//this->DeleteFloor = (GetPrivateProfileInt("Antilag", "DeleteFloor", 0, ".\\Config.ini") != 0);
 	this->DeleteSkills = (GetPrivateProfileInt("Antilag", "DeleteSkills", 0, ".\\Config.ini") != 0);
 	this->DeleteStaticEffects = (GetPrivateProfileInt("Antilag", "DeleteStaticEffects", 0, ".\\Config.ini") != 0);
 	this->DeleteDynamicEffects = (GetPrivateProfileInt("Antilag", "DeleteDynamicEffects", 0, ".\\Config.ini") != 0);
-	this->DeleteInterface = (GetPrivateProfileInt("Antilag", "DeleteInterface", 0, ".\\Config.ini") != 0);
+	//this->DeleteInterface = (GetPrivateProfileInt("Antilag", "DeleteInterface", 0, ".\\Config.ini") != 0);
 }
 
 COptionsMenu::~COptionsMenu()
@@ -44,8 +44,10 @@ COptionsMenu::~COptionsMenu()
 	wsprintf(Text, "%d", (this->DeleteObjects) ? 1 : 0);
 	WritePrivateProfileString("Antilag", "DeleteObjects", Text, ".\\Config.ini");
 
+	/*
 	wsprintf(Text, "%d", (this->DeleteFloor) ? 1 : 0);
 	WritePrivateProfileString("Antilag", "DeleteFloor", Text, ".\\Config.ini");
+	*/
 
 	wsprintf(Text, "%d", (this->DeleteSkills) ? 1 : 0);
 	WritePrivateProfileString("Antilag", "DeleteSkills", Text, ".\\Config.ini");
@@ -56,8 +58,10 @@ COptionsMenu::~COptionsMenu()
 	wsprintf(Text, "%d", (this->DeleteDynamicEffects) ? 1 : 0);
 	WritePrivateProfileString("Antilag", "DeleteDynamicEffects", Text, ".\\Config.ini");
 
+	/*
 	wsprintf(Text, "%d", (this->DeleteInterface) ? 1 : 0);
 	WritePrivateProfileString("Antilag", "DeleteInterface", Text, ".\\Config.ini");
+	*/
 }
 
 void COptionsMenu::Init()
@@ -339,6 +343,9 @@ void COptionsMenu::RenderGeneral()
 	this->RenderShowNameAlways(PosX, PosY);
 	PosY += ((float)this->BoxHeight + 7.0f);
 
+	this->RenderDeleteHPBar(PosX, PosY);
+	PosY += ((float)this->BoxHeight + 7.0f);
+
 	this->RenderAutomaticAttack(PosX, PosY);
 	PosY += ((float)this->BoxHeight + 7.0f);
 
@@ -384,6 +391,13 @@ bool COptionsMenu::CheckGeneral()
 	PosY += (this->BoxHeight + 7);
 
 	if (this->CheckShowNameAlways(PosX, PosY))
+	{
+		return true;
+	}
+
+	PosY += (this->BoxHeight + 7);
+
+	if (this->CheckDeleteHPBar(PosX, PosY))
 	{
 		return true;
 	}
@@ -647,6 +661,42 @@ bool COptionsMenu::CheckShowNameAlways(int PosX, int PosY)
 			{
 				gHealthBar.ShowNameAlways = 0;
 			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+void COptionsMenu::RenderDeleteHPBar(float PosX, float PosY)
+{
+	this->RenderBox(PosX, PosY, (float)this->BoxWidth, (float)this->BoxHeight);
+
+	char Text[64] = { 0 };
+
+	sprintf_s(Text, "%s: %s", GlobalText[934], gHealthBar.DeleteHealthBar ? "On" : "Off");
+
+	EnableAlphaTest(true);
+
+	RenderText((int)PosX, CenterTextPosY(Text, ((int)PosY + (this->BoxHeight / 2))), Text, REAL_WIDTH(this->BoxWidth), RT3_SORT_CENTER, NULL);
+}
+
+bool COptionsMenu::CheckDeleteHPBar(int PosX, int PosY)
+{
+	if (IsWorkZone(PosX, PosY, this->BoxWidth, this->BoxHeight))
+	{
+		if (MouseLButton && MouseLButtonPush)
+		{
+			MouseLButtonPush = false;
+
+			MouseUpdateTime = 0;
+
+			MouseUpdateTimeMax = 6;
+
+			PlayBuffer(25, 0, 0);
+
+			gHealthBar.DeleteHealthBar ^= 1;
 		}
 
 		return true;
@@ -1039,6 +1089,7 @@ void COptionsMenu::ApplyAntilagDefaults()
 		SetByte(0x004FD800, 0x83);
 	}
 
+	/*
 	if (this->DeleteFloor)
 	{
 		SetByte(0x004F9AC0, 0xC3);
@@ -1047,6 +1098,7 @@ void COptionsMenu::ApplyAntilagDefaults()
 	{
 		SetByte(0x004F9AC0, 0x51);
 	}
+	*/
 
 	if (this->DeleteSkills)
 	{
@@ -1083,6 +1135,7 @@ void COptionsMenu::ApplyAntilagDefaults()
 		SetByte(0x00478C00, 0x83); // RenderParticles
 	}
 
+	/*
 	if (this->DeleteInterface)
 	{
 		SetByte(0x00525483, 0x84); // Skip Move Interface
@@ -1103,6 +1156,7 @@ void COptionsMenu::ApplyAntilagDefaults()
 
 		SetByte(0x0047FCE0, 0x83); // Skip Render Notices
 	}
+	*/
 }
 
 void COptionsMenu::RenderAntilag()
@@ -1123,8 +1177,8 @@ void COptionsMenu::RenderAntilag()
 	this->RenderDeleteObjects(PosX, PosY);
 	PosY += ((float)this->BoxHeight + 7.0f);
 
-	this->RenderDeleteFloor(PosX, PosY);
-	PosY += ((float)this->BoxHeight + 7.0f);
+	//this->RenderDeleteFloor(PosX, PosY);
+	//PosY += ((float)this->BoxHeight + 7.0f);
 
 	this->RenderDeleteSkills(PosX, PosY);
 	PosY += ((float)this->BoxHeight + 7.0f);
@@ -1138,11 +1192,8 @@ void COptionsMenu::RenderAntilag()
 	this->RenderDeleteWings(PosX, PosY);
 	PosY += ((float)this->BoxHeight + 7.0f);
 
-	this->RenderDeleteHPBar(PosX, PosY);
-	PosY += ((float)this->BoxHeight + 7.0f);
-
-	this->RenderDeleteInterface(PosX, PosY);
-	PosY += ((float)this->BoxHeight + 7.0f);
+	//this->RenderDeleteInterface(PosX, PosY);
+	//PosY += ((float)this->BoxHeight + 7.0f);
 
 	this->RenderBack(PosX, PosY);
 }
@@ -1165,12 +1216,14 @@ bool COptionsMenu::CheckAntilag()
 		return true;
 	}
 
+	/*
 	PosY += (this->BoxHeight + 7);
 
 	if (this->CheckDeleteFloor(PosX, PosY))
 	{
 		return true;
 	}
+	*/
 
 	PosY += (this->BoxHeight + 7);
 
@@ -1200,19 +1253,14 @@ bool COptionsMenu::CheckAntilag()
 		return true;
 	}
 
-	PosY += (this->BoxHeight + 7);
-
-	if (this->CheckDeleteHPBar(PosX, PosY))
-	{
-		return true;
-	}
-
+	/*
 	PosY += (this->BoxHeight + 7);
 
 	if (this->CheckDeleteInterface(PosX, PosY))
 	{
 		return true;
 	}
+	*/
 
 	PosY += (this->BoxHeight + 7);
 
@@ -1335,6 +1383,7 @@ bool COptionsMenu::CheckDeleteObjects(int PosX, int PosY)
 	return false;
 }
 
+/*
 void COptionsMenu::RenderDeleteFloor(float PosX, float PosY)
 {
 	this->RenderBox(PosX, PosY, (float)this->BoxWidth, (float)this->BoxHeight);
@@ -1347,7 +1396,9 @@ void COptionsMenu::RenderDeleteFloor(float PosX, float PosY)
 
 	RenderText((int)PosX, CenterTextPosY(Text, ((int)PosY + (this->BoxHeight / 2))), Text, REAL_WIDTH(this->BoxWidth), RT3_SORT_CENTER, NULL);
 }
+*/
 
+/*
 bool COptionsMenu::CheckDeleteFloor(int PosX, int PosY)
 {
 	if (IsWorkZone(PosX, PosY, this->BoxWidth, this->BoxHeight))
@@ -1379,6 +1430,7 @@ bool COptionsMenu::CheckDeleteFloor(int PosX, int PosY)
 
 	return false;
 }
+*/
 
 void COptionsMenu::RenderDeleteSkills(float PosX, float PosY)
 {
@@ -1559,42 +1611,7 @@ bool COptionsMenu::CheckDeleteWings(int PosX, int PosY)
 	return false;
 }
 
-void COptionsMenu::RenderDeleteHPBar(float PosX, float PosY)
-{
-	this->RenderBox(PosX, PosY, (float)this->BoxWidth, (float)this->BoxHeight);
-
-	char Text[64] = { 0 };
-
-	sprintf_s(Text, "%s: %s", GlobalText[934], gHealthBar.DeleteHealthBar ? "On" : "Off");
-
-	EnableAlphaTest(true);
-
-	RenderText((int)PosX, CenterTextPosY(Text, ((int)PosY + (this->BoxHeight / 2))), Text, REAL_WIDTH(this->BoxWidth), RT3_SORT_CENTER, NULL);
-}
-
-bool COptionsMenu::CheckDeleteHPBar(int PosX, int PosY)
-{
-	if (IsWorkZone(PosX, PosY, this->BoxWidth, this->BoxHeight))
-	{
-		if (MouseLButton && MouseLButtonPush)
-		{
-			MouseLButtonPush = false;
-
-			MouseUpdateTime = 0;
-
-			MouseUpdateTimeMax = 6;
-
-			PlayBuffer(25, 0, 0);
-
-			gHealthBar.DeleteHealthBar ^= 1;
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
+/*
 void COptionsMenu::RenderDeleteInterface(float PosX, float PosY)
 {
 	this->RenderBox(PosX, PosY, (float)this->BoxWidth, (float)this->BoxHeight);
@@ -1607,7 +1624,9 @@ void COptionsMenu::RenderDeleteInterface(float PosX, float PosY)
 
 	RenderText((int)PosX, CenterTextPosY(Text, ((int)PosY + (this->BoxHeight / 2))), Text, REAL_WIDTH(this->BoxWidth), RT3_SORT_CENTER, NULL);
 }
+*/
 
+/*
 bool COptionsMenu::CheckDeleteInterface(int PosX, int PosY)
 {
 	if (IsWorkZone(PosX, PosY, this->BoxWidth, this->BoxHeight))
@@ -1651,6 +1670,7 @@ bool COptionsMenu::CheckDeleteInterface(int PosX, int PosY)
 
 	return false;
 }
+*/
 
 void COptionsMenu::RenderScreen()
 {
