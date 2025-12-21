@@ -499,7 +499,7 @@ void CMiniMap::UpdateMouseMiniMap()
 
 void CMiniMap::RenderMiniMap()
 {
-	this->VisualRange = 8 * (8 - this->ZoomLevel);
+	this->VisualRange = 17 * (8 - this->ZoomLevel);
 
 	this->MaxSize = 128.0f;
 
@@ -511,10 +511,10 @@ void CMiniMap::RenderMiniMap()
 
 	this->CharPosY = *(float*)(Hero + 0x14) / 100.0f;
 
-	this->MapOffsetX = min(max((this->CharPosX - this->VisualRange), 0), 256.0f - (this->VisualRange * 2));
+	this->MapOffsetX = min(max((this->CharPosX - this->VisualRange), 0), 256.0f - (this->VisualRange * 2)) + 6;
 	this->MapOffsetX /= 256.0f;
 
-	this->MapOffsetY = min(max(((256.0f - this->CharPosY) - this->VisualRange), 0), 256.0f - (this->VisualRange * 2));
+	this->MapOffsetY = min(max(((256.0f - this->CharPosY) - this->VisualRange), 0), 256.0f - (this->VisualRange * 2)) + 9;
 	this->MapOffsetY /= 256.0f;
 
 	this->RenderMiniMapBackground();

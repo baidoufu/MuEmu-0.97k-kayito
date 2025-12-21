@@ -93,7 +93,7 @@ LRESULT WINAPI CWindow::MyWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 {
 	switch (msg)
 	{
-		case WM_LBUTTONDOWN:
+		/*case WM_LBUTTONDOWN://鼠标左键按下
 		{
 			if (MouseRButton || MouseRButtonPush)
 			{
@@ -129,7 +129,7 @@ LRESULT WINAPI CWindow::MyWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPa
 			MouseRButton = true;
 
 			return DefWindowProc(hwnd, msg, wParam, lParam);
-		}
+		}*/
 
 		case WM_NPROTECT_EXIT_TWO: // Fix disconnect when minimize
 		{

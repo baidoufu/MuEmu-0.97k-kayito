@@ -149,7 +149,7 @@ LRESULT Controller::Keyboard(int nCode, WPARAM wParam, LPARAM lParam)
 							MouseRButton = false;
 						}
 
-						CreateNotice(((gController.AutoClick) ? "Autoclick Enabled" : "Autoclick Disabled"), 1);
+						CreateNotice(((gController.AutoClick) ? "自动攻击 已启用" : "自动攻击 已禁用"), 1);
 					}
 
 					break;

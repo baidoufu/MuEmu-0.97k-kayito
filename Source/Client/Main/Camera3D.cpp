@@ -15,7 +15,7 @@ CCamera3D::CCamera3D()
 
 	this->m_Zoom.MinPercent = 50.0f;
 
-	this->m_Zoom.MaxPercent = 200.0f;
+	this->m_Zoom.MaxPercent = 110.0f;
 
 	this->m_Zoom.Precision = 2.0f;
 
@@ -282,17 +282,17 @@ void CCamera3D::Move(MOUSEHOOKSTRUCTEX* lpMouse)
 
 void CCamera3D::SetCurrentValue()
 {
-	SetFloat((DWORD)this->m_Address.ClipX[0], (1272 + (abs(*this->m_Address.PosZ - 150) * 3) + 1000));
+	SetFloat((DWORD)this->m_Address.ClipX[0], (1272 + (abs(*this->m_Address.PosZ - 150) * 3) + 2100));
 
-	SetFloat((DWORD)this->m_Address.ClipX[1], (1272 + (abs(*this->m_Address.PosZ - 150) * 3) + 1000));
+	SetFloat((DWORD)this->m_Address.ClipX[1], (1272 + (abs(*this->m_Address.PosZ - 150) * 3) + 2100));
 
 	SetFloat((DWORD)this->m_Address.ClipY[0], (-672 - (abs(*this->m_Address.PosZ - 150) * 3) - 3000));
 
 	SetFloat((DWORD)this->m_Address.ClipY[1], (-672 - (abs(*this->m_Address.PosZ - 150) * 3) - 3000));
 
-	SetFloat((DWORD)this->m_Address.ClipZ, (1190 + (abs(*this->m_Address.PosZ - 150) * 3) + 3000));
+	SetFloat((DWORD)this->m_Address.ClipZ, (1190 + (abs(*this->m_Address.PosZ - 150) * 3) + 4000));
 
-	SetFloat((DWORD)this->m_Address.ClipGL, (2000 + (abs(*this->m_Address.PosZ - 150) * 3) + 1500));
+	SetFloat((DWORD)this->m_Address.ClipGL, (2000 + (abs(*this->m_Address.PosZ - 150) * 3) + 2300));
 }
 
 void CCamera3D::SetDefaultValue()

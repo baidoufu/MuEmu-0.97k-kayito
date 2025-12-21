@@ -481,7 +481,7 @@ void CPrintPlayer::RenderCharInfo_Level(int StartPosX, int StartPosY)
 		RenderBitmap(245, fPosX, fPosY, 75.0f, 21.0f, (75.0f / 128.0f), (0.0f / 32.0f), (-75.0f / 128.0f), (21.0f / 32.0f), true, true);
 
 		// Render Resets Text
-		sprintf_s(Buffer, sizeof(Buffer), "Resets: %d", this->ViewReset);
+		sprintf_s(Buffer, sizeof(Buffer), "×ªÉú: %d", this->ViewReset);
 		RenderText((int)fPosX, CenterTextPosY(Buffer, (int)fPosY + 10), Buffer, REAL_WIDTH(75), RT3_SORT_CENTER, NULL);
 	}
 

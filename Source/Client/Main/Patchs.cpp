@@ -189,6 +189,17 @@ void CPatchs::Init()
 	SetCompleteHook(0xE9, 0x0043FD70, &this->CalcFPS);
 
 	SetCompleteHook(0xE9, 0x00501C26, &this->FixPigeons);
+
+
+	SetDword(0x0051032C + 1, GL_NEAREST); // Cursor
+	SetDword(0x00510346 + 1, GL_NEAREST); // CursorPush
+	SetDword(0x00510360 + 1, GL_NEAREST); // CursorAttack
+	SetDword(0x0051037D + 1, GL_NEAREST); // CursorGet
+	SetDword(0x00510397 + 1, GL_NEAREST); // CursorTalk
+	SetDword(0x005103B1 + 1, GL_NEAREST); // CursorRepair
+	SetDword(0x005103CE + 1, GL_NEAREST); // CursorLeanAgainst
+	SetDword(0x005103E8 + 1, GL_NEAREST); // CursorSitDown
+	SetDword(0x00510402 + 1, GL_NEAREST); // CursorDontMove
 }
 
 DWORD CPatchs::ReduceCPU()

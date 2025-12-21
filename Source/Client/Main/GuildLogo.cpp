@@ -28,7 +28,7 @@ void CGuildLogo::DrawGuildLogo(int x, int y, DWORD c)
 		{
 			CreateGuildMark(*(WORD*)(character + 0x1DA), true); // CreateGuildMark
 
-			RenderBitmap(0x22, ((float)x - 21.0f), (float)y, 16.0f, 16.0f, 0.0f, 0.0f, 1.0f, 1.0f, true, true); // RenderBitmap
+			RenderBitmap(0x22, ((float)x - 13.0f), (float)y, 12.0f, 12.0f, 0.0f, 0.0f, 1.0f, 1.0f, true, true); // RenderBitmap
 		}
 	}
 
