@@ -9,127 +9,163 @@
 #include "SocketManagerUdp.h"
 #include "Util.h"
 
+// Add local storage for command config read from GameServer data file
+static int g_JS_CommandResetLevel[4] = { 0 };
+static int g_JS_CommandGrandResetLevel[4] = { 0 };
+static int g_JS_CommandGrandResetReset[4] = { 0 };
+static int ClearPK = 0;
+static bool g_JS_CommandInfoLoaded = false;
+
+static void JS_LoadCommandInfo()
+{
+    if (g_JS_CommandInfoLoaded != false)
+    {
+        return;
+    }
+
+    const char* section = "GameServerInfo";
+    const char* path = "..\\GameServer\\DATA\\GameServerInfo - Command.dat"; // relative to JoinServer
+
+    g_JS_CommandResetLevel[0] = GetPrivateProfileInt(section, "CommandResetLevel_AL0", 0, path);
+    g_JS_CommandResetLevel[1] = GetPrivateProfileInt(section, "CommandResetLevel_AL1", 0, path);
+    g_JS_CommandResetLevel[2] = GetPrivateProfileInt(section, "CommandResetLevel_AL2", 0, path);
+    g_JS_CommandResetLevel[3] = GetPrivateProfileInt(section, "CommandResetLevel_AL3", 0, path);
+
+    g_JS_CommandGrandResetLevel[0] = GetPrivateProfileInt(section, "CommandGrandResetLevel_AL0", 0, path);
+    g_JS_CommandGrandResetLevel[1] = GetPrivateProfileInt(section, "CommandGrandResetLevel_AL1", 0, path);
+    g_JS_CommandGrandResetLevel[2] = GetPrivateProfileInt(section, "CommandGrandResetLevel_AL2", 0, path);
+    g_JS_CommandGrandResetLevel[3] = GetPrivateProfileInt(section, "CommandGrandResetLevel_AL3", 0, path);
+
+    g_JS_CommandGrandResetReset[0] = GetPrivateProfileInt(section, "CommandGrandResetReset_AL0", 0, path);
+    g_JS_CommandGrandResetReset[1] = GetPrivateProfileInt(section, "CommandGrandResetReset_AL1", 0, path);
+    g_JS_CommandGrandResetReset[2] = GetPrivateProfileInt(section, "CommandGrandResetReset_AL2", 0, path);
+    g_JS_CommandGrandResetReset[3] = GetPrivateProfileInt(section, "CommandGrandResetReset_AL3", 0, path);
+
+	ClearPK = GetPrivateProfileInt(section, "ClearPK", 0, path);
+    g_JS_CommandInfoLoaded = true;
+}
+
 void JoinServerProtocolCore(int index, BYTE head, BYTE* lpMsg, int size)
 {
-	ConsoleProtocolLog(CON_PROTO_TCP_RECV, lpMsg, size);
+    ConsoleProtocolLog(CON_PROTO_TCP_RECV, lpMsg, size);
 
-	gServerManager[index].m_PacketTime = GetTickCount();
+    gServerManager[index].m_PacketTime = GetTickCount();
 
-	switch (head)
-	{
-		case 0x00:
-		{
-			GJServerInfoRecv((SDHP_SERVER_INFO_RECV*)lpMsg, index);
+    switch (head)
+    {
+        case 0x00:
+        {
+            GJServerInfoRecv((SDHP_SERVER_INFO_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x01:
-		{
-			GJConnectAccountRecv((SDHP_CONNECT_ACCOUNT_RECV*)lpMsg, index);
+        case 0x01:
+        {
+            GJConnectAccountRecv((SDHP_CONNECT_ACCOUNT_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x02:
-		{
-			GJDisconnectAccountRecv((SDHP_DISCONNECT_ACCOUNT_RECV*)lpMsg, index);
+        case 0x02:
+        {
+            GJDisconnectAccountRecv((SDHP_DISCONNECT_ACCOUNT_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x03:
-		{
-			GJAccountLevelRecv((SDHP_ACCOUNT_LEVEL_RECV*)lpMsg, index);
+        case 0x03:
+        {
+            GJAccountLevelRecv((SDHP_ACCOUNT_LEVEL_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x04:
-		{
-			GJAccountLevelSaveRecv((SDHP_ACCOUNT_LEVEL_SAVE_RECV*)lpMsg, index);
+        case 0x04:
+        {
+            GJAccountLevelSaveRecv((SDHP_ACCOUNT_LEVEL_SAVE_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x06:
-		{
-			GJServerUserInfoRecv((SDHP_SERVER_USER_INFO_RECV*)lpMsg, index);
+        case 0x06:
+        {
+            GJServerUserInfoRecv((SDHP_SERVER_USER_INFO_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x07:
-		{
-			GJAccountCountRecv((SDHP_COUNT_ONLINE_USER_RECV*)lpMsg, index);
+        case 0x07:
+        {
+            GJAccountCountRecv((SDHP_COUNT_ONLINE_USER_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x08:
-		{
-			GJRegisterAccountRecv((SDHP_REGISTER_ACCOUNT_RECV*)lpMsg, index);
+        case 0x08:
+        {
+            GJRegisterAccountRecv((SDHP_REGISTER_ACCOUNT_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		// Launcher protocols (0x10-0x16)
-		case 0x10://登录
-		{
-			GJLauncherLoginRecv((SDHP_LAUNCHER_LOGIN_RECV*)lpMsg, index);
+        // Launcher protocols (0x10-0x16)
+        case 0x10://登录
+        {
+            GJLauncherLoginRecv((SDHP_LAUNCHER_LOGIN_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x11://获取角色列表
-		{
-			GJLauncherGetCharactersRecv((SDHP_LAUNCHER_GET_CHARACTERS_RECV*)lpMsg, index);
+        case 0x11://获取角色列表
+        {
+            GJLauncherGetCharactersRecv((SDHP_LAUNCHER_GET_CHARACTERS_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x12://加点
-		{
-			GJLauncherAddPointsRecv((SDHP_LAUNCHER_ADD_POINTS_RECV*)lpMsg, index);
+        case 0x12://加点
+        {
+            GJLauncherAddPointsRecv((SDHP_LAUNCHER_ADD_POINTS_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x13://清除Pk值
-		{
-			GJLauncherClearPKRecv((SDHP_LAUNCHER_CLEAR_PK_RECV*)lpMsg, index);
+        case 0x13://清除Pk值
+        {
+            GJLauncherClearPKRecv((SDHP_LAUNCHER_CLEAR_PK_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x14://转生
-		{
-			GJLauncherResetRecv((SDHP_LAUNCHER_RESET_RECV*)lpMsg, index);
+        case 0x14://转生
+        {
+            GJLauncherResetRecv((SDHP_LAUNCHER_RESET_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x15://转世
-		{
-			GJLauncherGrandResetRecv((SDHP_LAUNCHER_GRAND_RESET_RECV*)lpMsg, index);
+        case 0x15://转世
+        {
+            GJLauncherGrandResetRecv((SDHP_LAUNCHER_GRAND_RESET_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x16://在线检查
-		{
-			GJLauncherCheckOnlineRecv((SDHP_LAUNCHER_CHECK_ONLINE_RECV*)lpMsg, index);
+        case 0x16://在线检查
+        {
+            GJLauncherCheckOnlineRecv((SDHP_LAUNCHER_CHECK_ONLINE_RECV*)lpMsg, index);
 
-			break;
-		}
+            break;
+        }
 
-		case 0x17://注册
-		{
-			GJLauncherRegisterRecv((SDHP_LAUNCHER_REGISTER_RECV*)lpMsg, index);
+        case 0x17://注册
+        {
+            GJLauncherRegisterRecv((SDHP_LAUNCHER_REGISTER_RECV*)lpMsg, index);
 
-			break;
-		}
-	}
+            break;
+        }
+    }
 }
 
 void JoinServerLiveProc()
@@ -736,15 +772,27 @@ void GJLauncherLoginRecv(SDHP_LAUNCHER_LOGIN_RECV* lpMsg, int index)
 
 		MD5 MD5Hash;
 
-		if ((MD5Encryption == 1)
-		    ? MD5Hash.MD5_CheckValue(lpMsg->password, (char*)password, MakeAccountKey(lpMsg->account)) == false
-		    : MD5Hash.MD5_CheckValue(lpMsg->password, (char*)password) == false)
+		if (MD5Encryption == 1)
 		{
-			pMsg.result = 0; // Invalid password
+			if (MD5Hash.MD5_CheckValue(lpMsg->password, (char*)password, MakeAccountKey(lpMsg->account)) == false)
+			{
+				pMsg.result = 0; // Invalid password
 
-			gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+				gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 
-			return;
+				return;
+			}
+		}
+		else
+		{
+			if (MD5Hash.MD5_CheckValue(lpMsg->password, (char*)password) == false)
+			{
+				pMsg.result = 0; // Invalid password
+
+				gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+				return;
+			}
 		}
 	}
 
@@ -917,6 +965,10 @@ void GJLauncherAddPointsRecv(SDHP_LAUNCHER_ADD_POINTS_RECV* lpMsg, int index)
 
 void GJLauncherClearPKRecv(SDHP_LAUNCHER_CLEAR_PK_RECV* lpMsg, int index)
 {
+	if (ClearPK == 0)
+	{
+		return;
+	}
 	SDHP_LAUNCHER_CLEAR_PK_SEND pMsg;
 
 	pMsg.header.set(0x13, sizeof(pMsg));
@@ -984,138 +1036,200 @@ void GJLauncherClearPKRecv(SDHP_LAUNCHER_CLEAR_PK_RECV* lpMsg, int index)
 
 void GJLauncherResetRecv(SDHP_LAUNCHER_RESET_RECV* lpMsg, int index)
 {
-	SDHP_LAUNCHER_RESET_SEND pMsg;
+    JS_LoadCommandInfo(); // ensure config loaded
 
-	pMsg.header.set(0x14, sizeof(pMsg));
+    SDHP_LAUNCHER_RESET_SEND pMsg;
 
-	pMsg.result = 1; // Success by default
-	BYTE* rawData = (BYTE*)lpMsg;
-	WORD requiredLevel = *(WORD*)(rawData + 25); //转生等级限制 应该取服务端的配置
-	//requiredLevel = rawData[25] | (rawData[26] << 8);
-	// Check if account is online
-	ACCOUNT_INFO AccountInfo;
+    pMsg.header.set(0x14, sizeof(pMsg));
 
-	if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
-	{
-		pMsg.result = 4; // Account is online
+    pMsg.result = 1; // Success by default
 
-		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
-
-		return;
-	}
-
-	// Check character level
+    // Determine account level from database to select ALx configuration
+    int accountLevel = 0;
 #if defined(SQLITE)
-	if (gQueryManager.ExecQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+    if (gQueryManager.ExecQuery("SELECT AccountLevel FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+    {
+        accountLevel = gQueryManager.GetAsInteger("AccountLevel");
+    }
+    gQueryManager.Close();
 #elif !defined(MYSQL)
-	if (gQueryManager.ExecQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+    if (gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'", lpMsg->account) != false && gQueryManager.Fetch() != SQL_NO_DATA)
+    {
+        accountLevel = gQueryManager.GetAsInteger("AccountLevel");
+        gQueryManager.Close();
+    }
+    else
+    {
+        gQueryManager.Close();
+    }
 #else
-	if (gQueryManager.ExecResultQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
-#endif
-	{
-		gQueryManager.Close();
-
-		pMsg.result = 3; // Character not found
-
-		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
-
-		return;
-	}
-
-	int level = gQueryManager.GetAsInteger("cLevel");
-
-	gQueryManager.Close();
-
-	if (level < requiredLevel )//ntohs(lpMsg->requiredLevel)
-	{
-		pMsg.result = 2; // Level too low
-
-		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
-
-		return;
-	}
-
-	// Perform reset
-#if defined(SQLITE)
-	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
-#elif !defined(MYSQL)
-	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
-#else
-	gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+    if (gQueryManager.ExecResultQuery("CALL WZ_GetAccountLevel('%s')", lpMsg->account) != false && gQueryManager.Fetch() != false)
+    {
+        accountLevel = gQueryManager.GetAsInteger("AccountLevel");
+    }
+    gQueryManager.Close();
 #endif
 
-	gQueryManager.Close();
+    if (accountLevel < 0 || accountLevel > 3) accountLevel = 0;
 
-	LogAdd(LOG_BLUE, "[LauncherReset] Character '%s' performed reset", lpMsg->name);
+    // Use server-side configured required level based on account level
+    WORD requiredLevel = (WORD)g_JS_CommandResetLevel[accountLevel];
 
-	gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+    // Check if account is online
+    ACCOUNT_INFO AccountInfo;
+
+    if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
+    {
+        pMsg.result = 4; // Account is online
+
+        gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+        return;
+    }
+
+    // Check character level
+#if defined(SQLITE)
+    if (gQueryManager.ExecQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
+    if (gQueryManager.ExecQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+#else
+    if (gQueryManager.ExecResultQuery("SELECT cLevel FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#endif
+    {
+        gQueryManager.Close();
+
+        pMsg.result = 3; // Character not found
+
+        gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+        return;
+    }
+
+    int level = gQueryManager.GetAsInteger("cLevel");
+
+    gQueryManager.Close();
+
+    if (level < requiredLevel)
+    {
+        pMsg.result = 2; // Level too low
+
+        gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+        return;
+    }
+
+    // Perform reset
+#if defined(SQLITE)
+    gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#elif !defined(MYSQL)
+    gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#else
+    gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+#endif
+
+    gQueryManager.Close();
+
+    LogAdd(LOG_BLUE, "[LauncherReset] Character '%s' performed reset", lpMsg->name);
+
+    gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 }
 
 void GJLauncherGrandResetRecv(SDHP_LAUNCHER_GRAND_RESET_RECV* lpMsg, int index)
 {
-	SDHP_LAUNCHER_GRAND_RESET_SEND pMsg;
+    JS_LoadCommandInfo(); // ensure config loaded
 
-	pMsg.header.set(0x15, sizeof(pMsg));
+    SDHP_LAUNCHER_GRAND_RESET_SEND pMsg;
 
-	pMsg.result = 1; // Success by default
+    pMsg.header.set(0x15, sizeof(pMsg));
 
-	// Check if account is online
-	ACCOUNT_INFO AccountInfo;
+    pMsg.result = 1; // Success by default
 
-	if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
-	{
-		pMsg.result = 5; // Account is online
+    // Check if account is online
+    ACCOUNT_INFO AccountInfo;
 
-		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+    if (gAccountManager.GetAccountInfo(&AccountInfo, lpMsg->account) != false)
+    {
+        pMsg.result = 5; // Account is online
 
-		return;
-	}
+        gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 
-	// Check character level and resets
+        return;
+    }
+
+    // Determine account level from database to select ALx configuration
+    int accountLevel = 0;
 #if defined(SQLITE)
-	if (gQueryManager.ExecQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+    if (gQueryManager.ExecQuery("SELECT AccountLevel FROM MEMB_INFO WHERE memb___id='%s'", lpMsg->account) != false && gQueryManager.Fetch() != false)
+    {
+        accountLevel = gQueryManager.GetAsInteger("AccountLevel");
+    }
+    gQueryManager.Close();
 #elif !defined(MYSQL)
-	if (gQueryManager.ExecQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+    if (gQueryManager.ExecQuery("EXEC WZ_GetAccountLevel '%s'", lpMsg->account) != false && gQueryManager.Fetch() != SQL_NO_DATA)
+    {
+        accountLevel = gQueryManager.GetAsInteger("AccountLevel");
+        gQueryManager.Close();
+    }
+    else
+    {
+        gQueryManager.Close();
+    }
 #else
-	if (gQueryManager.ExecResultQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+    if (gQueryManager.ExecResultQuery("CALL WZ_GetAccountLevel('%s')", lpMsg->account) != false && gQueryManager.Fetch() != false)
+    {
+        accountLevel = gQueryManager.GetAsInteger("AccountLevel");
+    }
+    gQueryManager.Close();
 #endif
-	{
-		gQueryManager.Close();
 
-		pMsg.result = 4; // Character not found
+    if (accountLevel < 0 || accountLevel > 3) accountLevel = 0;
 
-		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+    // Check character level and resets
+#if defined(SQLITE)
+    if (gQueryManager.ExecQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#elif !defined(MYSQL)
+    if (gQueryManager.ExecQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == SQL_NO_DATA)
+#else
+    if (gQueryManager.ExecResultQuery("SELECT cLevel, ResetCount FROM Character WHERE Name='%s'", lpMsg->name) == false || gQueryManager.Fetch() == false)
+#endif
+    {
+        gQueryManager.Close();
 
-		return;
-	}
-	BYTE* rawData = (BYTE*)lpMsg;
-	WORD requiredLevel = *(WORD*)(rawData + 25);
-	WORD requiredResets = *(WORD*)(rawData + 27);
+        pMsg.result = 4; // Character not found
 
-	int level = gQueryManager.GetAsInteger("cLevel");
-	int resets = gQueryManager.GetAsInteger("ResetCount");
+        gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 
-	gQueryManager.Close();
+        return;
+    }
 
-	if (resets < requiredResets)//lpMsg->requiredResets
-	{
-		pMsg.result = 3; // Resets too low
+    int level = gQueryManager.GetAsInteger("cLevel");
+    int resets = gQueryManager.GetAsInteger("ResetCount");
 
-		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+    gQueryManager.Close();
 
-		return;
-	}
+    // Use server-side configured required level and resets based on account level
+    WORD requiredLevel = (WORD)g_JS_CommandGrandResetLevel[accountLevel];
+    WORD requiredResets = (WORD)g_JS_CommandGrandResetReset[accountLevel];
 
-	if (level < requiredLevel)//lpMsg->requiredLevel
-	{
-		pMsg.result = 2; // Level too low
+    if (resets < requiredResets)
+    {
+        pMsg.result = 3; // Resets too low
 
-		gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+        gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 
-		return;
-	}
+        return;
+    }
 
-	// Perform grand reset
+    if (level < requiredLevel)
+    {
+        pMsg.result = 2; // Level too low
+
+        gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
+
+        return;
+    }
+
+    // Perform grand reset
 #if defined(SQLITE)
 	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
 #elif !defined(MYSQL)
