@@ -75,8 +75,6 @@ private:
 	bool CheckDeleteDynamicEffects(int PosX, int PosY);
 	void RenderDeleteWings(float PosX, float PosY);
 	bool CheckDeleteWings(int PosX, int PosY);
-	void RenderDeleteHPBar(float PosX, float PosY);
-	bool CheckDeleteHPBar(int PosX, int PosY);
 	//void RenderDeleteInterface(float PosX, float PosY);
 	//bool CheckDeleteInterface(int PosX, int PosY);
 

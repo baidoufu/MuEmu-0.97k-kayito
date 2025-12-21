@@ -342,6 +342,8 @@ struct OBJECTSTRUCT
 	SOCKET Socket;
 	char IpAddr[16];
 	char HardwareID[36];
+	char ComputerName[64];
+	char UserName[64];
 	BYTE ClassCode;
 	BYTE ClassFlag;
 	DWORD AutoSaveTime;

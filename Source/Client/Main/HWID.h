@@ -10,6 +10,8 @@ public:
 
 	bool GetComputerHardwareId();
 
+	bool GetComputerUserAndPcName();
+
 	char* GetEncryptedString(BYTE* string, int size);
 
 	void SendHwid();
@@ -17,6 +19,8 @@ public:
 private:
 
 	char m_ComputerHardwareId[36];
+	char m_ComputerName[64];
+	char m_UserName[64];
 };
 
 extern cHwid gHwid;

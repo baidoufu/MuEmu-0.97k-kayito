@@ -103,18 +103,8 @@ struct PMSG_SET_HWID_RECV
 {
 	PSBMSG_HEAD head; // C1:F1:05
 	char HardwareId[36];
-};
-
-struct PMSG_REGISTER_ACCOUNT_RECV
-{
-#pragma pack(1)
-	PSBMSG_HEAD header; // C3:F1:06
-	char account[10];
-	char password[10];
-	DWORD TickCount;
-	BYTE ClientVersion[5];
-	BYTE ClientSerial[16];
-#pragma pack()
+	char ComputerName[64];
+	char UserName[64];
 };
 
 struct PMSG_CHARACTER_CREATE_RECV
@@ -370,17 +360,12 @@ struct PMSG_CONNECT_ACCOUNT_SEND
 {
 	PSBMSG_HEAD header; // C1:F1:01
 	BYTE result;
+	char HardwareId[36];
 };
 
 struct PMSG_CLOSE_CLIENT_SEND
 {
 	PSBMSG_HEAD header; // C1:F1:02
-	BYTE result;
-};
-
-struct PMSG_REGISTER_ACCOUNT_SEND
-{
-	PSBMSG_HEAD header; // C1:F1:06
 	BYTE result;
 };
 
@@ -658,10 +643,6 @@ void CGCloseClientRecv(PMSG_CLOSE_CLIENT_RECV* lpMsg, int aIndex);
 void CGSetLangRecv(PMSG_SET_LANG_RECV* lpMsg, int aIndex);
 
 void CGSetHwidRecv(PMSG_SET_HWID_RECV* lpMsg, int aIndex);
-
-void CGRegisterAccountRecv(PMSG_REGISTER_ACCOUNT_RECV* lpMsg, int aIndex);
-
-void GCRegisterAccountSend(int aIndex, BYTE result);
 
 void CGCharacterListRecv(int aIndex);
 

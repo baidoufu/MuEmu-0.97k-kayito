@@ -527,7 +527,12 @@ LRESULT CALLBACK UserOnline(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 				{
 					TCHAR buff[30];
 
-					wsprintf(buff, "%s >>> %s", gObj[i].Account, gObj[i].Name);
+					wsprintf(buff, "%s >> %s >> %s (%s)",
+						gObj[i].Name,
+						gObj[i].Account,
+						gObj[i].ComputerName,
+						gObj[i].UserName
+					);
 
 					int pos = (int)SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)buff);
 
@@ -569,6 +574,10 @@ LRESULT CALLBACK UserOnline(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 							SetDlgItemText(hDlg, IDC_EDIT2, gObj[i].IpAddr);
 
 							SetDlgItemText(hDlg, IDC_EDIT3, gObj[i].HardwareID);
+
+							char info[128];
+							wsprintf(info, "%s (%s)", gObj[i].ComputerName, gObj[i].UserName);
+							SetDlgItemText(hDlg, IDC_EDIT9, info);
 
 							if (gObj[i].Name[0] == 0)
 							{
@@ -647,7 +656,13 @@ LRESULT CALLBACK UserOnline(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 						{
 							TCHAR buff[30];
 
-							wsprintf(buff, "%s >>> %s", gObj[i].Account, gObj[i].Name);
+							wsprintf(buff, "%s >> %s >> %s (%s)",
+								gObj[i].Name,
+								gObj[i].Account,
+								gObj[i].ComputerName,
+								gObj[i].UserName
+							);
+
 
 							int pos = (int)SendMessage(hwndList, LB_ADDSTRING, 0, (LPARAM)buff);
 
@@ -669,7 +684,10 @@ LRESULT CALLBACK UserOnline(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 
 					SetDlgItemText(hDlg, IDC_EDIT7, "");
 
-					MessageBox(hDlg, "Reloaded users online", "Confirm", MB_OK);
+					SetDlgItemText(hDlg, IDC_EDIT9, "");
+
+					//Dialog de Reloaded Users
+					//MessageBox(hDlg, "Reloaded users online", "Confirm", MB_OK);
 
 					return TRUE;
 				}

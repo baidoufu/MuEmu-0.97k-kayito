@@ -7,10 +7,12 @@ cHwid gHwid;
 cHwid::cHwid()
 {
 	memset(this->m_ComputerHardwareId, 0, sizeof(this->m_ComputerHardwareId));
+	memset(this->m_ComputerName, 0, sizeof(this->m_ComputerName));
+	memset(this->m_UserName, 0, sizeof(this->m_UserName));
 
-	if (this->GetComputerHardwareId() == 0)
+	if (this->GetComputerHardwareId() == 0 || this->GetComputerUserAndPcName() == 0)
 	{
-		MessageBoxA(NULL, "Failed getting HWID", "Error", MB_OK);
+		MessageBoxA(NULL, "Failed getting HWID / Computer Name", "Error", MB_OK);
 
 		ExitProcess(0);
 	}
@@ -51,6 +53,27 @@ bool cHwid::GetComputerHardwareId()
 	return 1;
 }
 
+bool cHwid::GetComputerUserAndPcName()
+{
+	DWORD size;
+
+	// Nombre de PC
+	size = sizeof(this->m_ComputerName);
+	if (!GetComputerNameA(this->m_ComputerName, &size))
+	{
+		strcpy(this->m_ComputerName, "UNKNOWN_PC");
+	}
+
+	// Nombre de usuario
+	size = sizeof(this->m_UserName);
+	if (!GetUserNameA(this->m_UserName, &size))
+	{
+		strcpy(this->m_UserName, "UNKNOWN_USER");
+	}
+
+	return true;
+}
+
 char* cHwid::GetEncryptedString(BYTE* string, int size)
 {
 	static char buff[256];
@@ -72,6 +95,10 @@ void cHwid::SendHwid()
 	pMsg.header.setE(0xF1, 0x05, sizeof(pMsg));
 
 	memcpy(pMsg.HardwareId, this->m_ComputerHardwareId, sizeof(pMsg.HardwareId));
+
+	memcpy(pMsg.ComputerName, this->m_ComputerName, sizeof(pMsg.ComputerName));
+
+	memcpy(pMsg.UserName, this->m_UserName, sizeof(pMsg.UserName));
 
 	gProtocol.DataSend((BYTE*)&pMsg, pMsg.header.size);
 }
