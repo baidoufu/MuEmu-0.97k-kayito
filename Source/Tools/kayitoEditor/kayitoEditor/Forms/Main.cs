@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
 using Org.BouncyCastle.Utilities;
+using System.IO;
 
 namespace kayito_Editor
 {
@@ -39,6 +40,10 @@ namespace kayito_Editor
 
 		private void Main_Load(object sender, EventArgs e)
 		{
+#if SQLITE
+			// If using SQLite and no path configured or file missing, prompt the user to select the DB file(s).
+			PromptSqliteDatabasePathsIfNeeded();
+#endif
 			//Conexión a la db
 			new MuOnline();
 
@@ -50,6 +55,54 @@ namespace kayito_Editor
 
 			ItemOption.ReadItemOptionTxt();
 		}
+
+#if SQLITE
+		private void PromptSqliteDatabasePathsIfNeeded()
+		{
+			try
+			{
+				// Prompt for MU DB path if not set or file not found
+				if (string.IsNullOrWhiteSpace(Import.MU_DB_PATH) || !File.Exists(Import.MU_DB_PATH))
+				{
+					using (OpenFileDialog ofd = new OpenFileDialog())
+					{
+						ofd.Title = "Select MU SQLite database file";
+						ofd.Filter = "SQLite DB|*.db;*.sqlite;*.sqlite3|All files|*.*";
+						ofd.CheckFileExists = true;
+						ofd.RestoreDirectory = true;
+						if (ofd.ShowDialog(this) == DialogResult.OK)
+						{
+							Import.MU_DB_PATH = ofd.FileName;
+						}
+						else
+						{
+							// User cancelled - leave as is (MuOnline constructor will fail if required)
+						}
+					}
+				}
+
+				// If USE_ME configured and ME path missing, prompt for ME DB as well
+				if (Import.USE_ME == 1 && (string.IsNullOrWhiteSpace(Import.ME_DB_PATH) || !File.Exists(Import.ME_DB_PATH)))
+				{
+					using (OpenFileDialog ofd = new OpenFileDialog())
+					{
+						ofd.Title = "Select ME SQLite database file";
+						ofd.Filter = "SQLite DB|*.db;*.sqlite;*.sqlite3|All files|*.*";
+						ofd.CheckFileExists = true;
+						ofd.RestoreDirectory = true;
+						if (ofd.ShowDialog(this) == DialogResult.OK)
+						{
+							Import.ME_DB_PATH = ofd.FileName;
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Failed to select SQLite database file(s): {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+#endif
 
 		private void Main_Close(object sender, FormClosedEventArgs e)
 		{
@@ -918,9 +971,5 @@ namespace kayito_Editor
 			this.Opacity = 1.0d;
 		}
 
-        private void lastCharacter_value_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
