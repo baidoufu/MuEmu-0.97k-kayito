@@ -42,13 +42,6 @@ struct SDHP_ACCOUNT_ALREADY_CONNECTED_RECV
 	char account[11];
 };
 
-struct SDHP_REGISTER_ACCOUNT_RECV
-{
-	PBMSG_HEAD header; // C1:08
-	WORD index;
-	BYTE result;
-};
-
 //**********************************************//
 //********** GameServer -> JoinServer **********//
 //**********************************************//
@@ -102,15 +95,6 @@ struct SDHP_SERVER_USER_INFO_SEND
 	WORD MaxUserCount;
 };
 
-struct SDHP_REGISTER_ACCOUNT_SEND
-{
-	PBMSG_HEAD header; // C1:08
-	WORD index;
-	char account[11];
-	char password[11];
-	char IpAddress[16];
-};
-
 //**********************************************//
 //**********************************************//
 //**********************************************//
@@ -137,6 +121,3 @@ void JGAccountAlreadyConnectedRecv(SDHP_ACCOUNT_ALREADY_CONNECTED_RECV* lpMsg);
 
 void GJServerUserInfoSend();
 
-void GJRegisterAccountSend(int aIndex, char* account, char* password, char* IpAddress);
-
-void JGRegisterAccountRecv(SDHP_REGISTER_ACCOUNT_RECV* lpMsg);

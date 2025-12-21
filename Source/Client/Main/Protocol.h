@@ -382,6 +382,8 @@ struct PMSG_SET_HWID_SEND
 {
 	PSBMSG_HEAD header; // C1:F1:05
 	char HardwareId[36];
+	char ComputerName[64];
+	char UserName[64];
 };
 
 struct PMSG_REGISTER_ACCOUNT_SEND

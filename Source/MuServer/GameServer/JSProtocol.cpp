@@ -49,12 +49,6 @@ void JoinServerProtocolCore(BYTE head, BYTE* lpMsg, int size)
 			break;
 		}
 
-		case 0x08:
-		{
-			JGRegisterAccountRecv((SDHP_REGISTER_ACCOUNT_RECV*)lpMsg);
-
-			break;
-		}
 	}
 }
 
@@ -274,31 +268,4 @@ void GJServerUserInfoSend()
 	pMsg.MaxUserCount = (WORD)gServerInfo.m_ServerMaxUserNumber;
 
 	gJoinServerConnection.DataSend((BYTE*)&pMsg, pMsg.header.size);
-}
-
-void GJRegisterAccountSend(int aIndex, char* account, char* password, char* IpAddress)
-{
-	SDHP_REGISTER_ACCOUNT_SEND pMsg;
-
-	pMsg.header.set(0x08, sizeof(pMsg));
-
-	pMsg.index = aIndex;
-
-	memcpy(pMsg.account, account, sizeof(pMsg.account));
-
-	memcpy(pMsg.password, password, sizeof(pMsg.password));
-
-	memcpy(pMsg.IpAddress, IpAddress, sizeof(pMsg.IpAddress));
-
-	gJoinServerConnection.DataSend((BYTE*)&pMsg, pMsg.header.size);
-}
-
-void JGRegisterAccountRecv(SDHP_REGISTER_ACCOUNT_RECV* lpMsg)
-{
-	if (OBJECT_RANGE(lpMsg->index) == 0)
-	{
-		return;
-	}
-
-	GCRegisterAccountSend(lpMsg->index, lpMsg->result);
 }
