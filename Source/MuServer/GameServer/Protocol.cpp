@@ -997,7 +997,7 @@ void CGMoveRecv(PMSG_MOVE_RECV* lpMsg, int aIndex)
 		return;
 	}
 
-	if ((GetTickCount() - lpObj->LastMoveTime) < 100)
+	if ((GetTickCount() - lpObj->LastMoveTime) < 50)
 	{
 		return;
 	}

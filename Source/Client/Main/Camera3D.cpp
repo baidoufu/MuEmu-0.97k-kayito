@@ -13,9 +13,9 @@ CCamera3D::CCamera3D()
 	this->m_CursorX = 0;
 	this->m_CursorY = 0;
 
-	this->m_Zoom.MinPercent = 50.0f;
+	this->m_Zoom.MinPercent = 40.0f;
 
-	this->m_Zoom.MaxPercent = 110.0f;
+	this->m_Zoom.MaxPercent = 160.0f;
 
 	this->m_Zoom.Precision = 2.0f;
 
@@ -56,7 +56,7 @@ void CCamera3D::Init()
 	SetDword(0x00511360 + 2, 0x005528CC);
 	SetDword(0x0051136C + 2, 0x005528CC);
 
-	SetFloat((DWORD)this->m_Address.Zoom, 50.0f);
+	//SetFloat((DWORD)this->m_Address.Zoom, 50.0f);
 
 	SetCompleteHook(0xE9, 0x005120C0, &this->MyRenderNumber);
 
