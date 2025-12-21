@@ -29,6 +29,9 @@ CInvasionManager::CInvasionManager()
 		lpInfo->TickCount = GetTickCount();
 
 		this->CleanMonster(lpInfo);
+
+		//InfoBoss
+		lpInfo->MonsterSpawnLog.clear();
 	}
 }
 
@@ -133,6 +136,9 @@ void CInvasionManager::Load(char* path)
 		this->m_InvasionInfo[n].RespawnInfo[19].clear();
 
 		this->m_InvasionInfo[n].MonsterInfo.clear();
+
+		//InfoBoss
+		this->m_InvasionInfo[n].MonsterSpawnLog.clear();
 	}
 
 	try
@@ -373,6 +379,9 @@ void CInvasionManager::SetState_BLANK(INVASION_INFO* lpInfo)
 
 void CInvasionManager::SetState_EMPTY(INVASION_INFO* lpInfo)
 {
+	//InfoBoss
+	lpInfo->MonsterSpawnLog.clear();
+
 	this->ClearMonster(lpInfo);
 
 	this->CheckSync(lpInfo);
@@ -640,6 +649,13 @@ void CInvasionManager::SetMonster(INVASION_INFO* lpInfo, INVASION_RESPWAN_INFO* 
 			LogAdd(LOG_EVENT, "[入侵管理器] (%s) Boss位置 (地图: %d, X: %d, Y: %d)", lpInfo->InvasionName, lpObj->Map, lpObj->X, lpObj->Y);
 		}
 
+		//InfoBoss
+		this->LogMonsterSpawn(lpInfo, index, lpMonsterInfo->MonsterClass);
+		if (lpObj->Class == lpInfo->BossIndex)
+		{
+			LogAdd(LOG_EVENT, "[入侵管理器] (%s) Boss 坐标 (Map: %d, X: %d, Y: %d", lpInfo->InvasionName, lpObj->Map, lpObj->X, lpObj->Y);
+		}
+
 		if (gServerInfo.m_FlyingDragonsOnlyBossMapSpawn != 0)
 		{
 			if (lpObj->Class == lpInfo->BossIndex)
@@ -675,6 +691,21 @@ void CInvasionManager::MonsterDieProc(LPOBJ lpObj, LPOBJ lpTarget)
 		if (this->GetMonster(lpInfo, lpObj->Index) == 0)
 		{
 			continue;
+		}
+
+		//InfoBoss
+		for (auto it = lpInfo->MonsterSpawnLog.begin(); it != lpInfo->MonsterSpawnLog.end(); )
+		{
+			if (it->IndexGs == lpObj->Index)
+			{
+				LogAdd(LOG_EVENT, "[入侵管理器] (%s) Removed SpawnLog: IndexGs=%d, Class=%d", lpInfo->InvasionName, it->IndexGs, it->MonsterClass);
+				it = lpInfo->MonsterSpawnLog.erase(it);
+				break;
+			}
+			else
+			{
+				++it;
+			}
 		}
 
 		if (lpObj->Class == lpInfo->BossIndex)
@@ -733,3 +764,63 @@ void CInvasionManager::StartInvasion(int InvasionIndex)
 
 	this->Init();
 }
+
+
+//InfoBoss
+void CInvasionManager::SendMonsterCountToClient(int aIndex)
+{
+	BYTE send[4096];
+
+	PMSG_BOSS_INFO_LIST_SEND pMsg;
+	pMsg.header.set(0xF3, 0xE7, 0);
+	int size = sizeof(pMsg);
+	pMsg.count = 0;
+
+	std::map<std::pair<int, int>, int> bossMap; // key: {IndexInvasion, MonsterClass}, value: Quantity
+
+	for (int i = 0; i < MAX_INVASION; ++i)
+	{
+		if (this->m_InvasionInfo[i].State != INVASION_STATE_START)
+			continue;
+
+		for (const auto& log : this->m_InvasionInfo[i].MonsterSpawnLog)
+		{
+			if (OBJECT_RANGE(log.IndexGs))
+			{
+				bossMap[{i, log.MonsterClass}]++;
+			}
+		}
+	}
+
+	BOSS_INFO info;
+
+	for (auto it = bossMap.begin(); it != bossMap.end() && pMsg.count < 50; ++it)
+	{
+		info.IndexInvasion = (BYTE)it->first.first;
+		info.MonsterClass = it->first.second;
+		info.Quantity = (BYTE)it->second;
+		memcpy(&send[size], &info, sizeof(info));
+		size += sizeof(info);
+		pMsg.count++;
+	}
+
+	if (pMsg.count > 0)
+	{
+		pMsg.header.size[0] = SET_NUMBERHB(size);
+		pMsg.header.size[1] = SET_NUMBERLB(size);
+		memcpy(send, &pMsg, sizeof(pMsg));
+		DataSend(aIndex, send, size);
+	}
+}
+
+void CInvasionManager::LogMonsterSpawn(INVASION_INFO* lpInfo, int index, int monsterClass)
+{
+	INVASION_MONSTER_SPAWN_LOG log;
+
+	log.IndexGs = index;
+
+	log.MonsterClass = monsterClass;
+
+	lpInfo->MonsterSpawnLog.push_back(log);
+}
+// End BossInfo

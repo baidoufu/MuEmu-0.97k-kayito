@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "Protocol.h"
 #include "ChaosMix.h"
 #include "EventTimer.h"
@@ -449,6 +449,15 @@ bool CProtocol::TranslateProtocol(BYTE head, BYTE* lpMsg, int Size)
 
 					return true;
 				}
+
+				//InfoBoss
+				case 0xE7:
+				{
+					gEventTimer.GCEventBossInfoRecv((PMSG_BOSS_INFO_LIST_RECV*)lpMsg);
+
+					return true;
+				}
+				//End InfoBoss
 			}
 
 			break;
@@ -766,9 +775,9 @@ void CProtocol::GCConnectAccountRecv(PMSG_CONNECT_ACCOUNT_RECV* lpMsg)
 {
 	if (lpMsg->result == 5)
 	{
-		char msg[160];
-		wsprintf(msg, "此硬件ID [%s] 已被封禁。\n\n您不被允许进入服务器。\n\n请联系管理员获取更多详细信息。", lpMsg->HardwareId);
-		MessageBoxA(NULL, msg, "硬件ID已被封禁", MB_OK);
+		wchar_t msg[160];
+		wsprintfW(msg, L"此硬件ID [%s] 已被封禁。\n\n您不被允许进入服务器。\n\n请联系管理员获取更多详细信息。", lpMsg->HardwareId);
+		MessageBoxW(NULL, msg, L"硬件ID已被封禁", MB_OK);
 		ExitProcess(0);
 	}
 	gReconnect.ReconnectOnConnectAccount(lpMsg->result);

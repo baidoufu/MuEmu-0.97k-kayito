@@ -24,6 +24,9 @@ CEventTimeManager::~CEventTimeManager()
 
 void CEventTimeManager::GCEventTimeSend(int aIndex)
 {
+	//InfoBoss
+	gInvasionManager.SendMonsterCountToClient(aIndex);
+
 	BYTE send[4096];
 
 	PMSG_EVENT_TIME_SEND pMsg;

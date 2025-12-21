@@ -19,6 +19,22 @@ struct PMSG_EVENT_TIME
 	DWORD time;
 };
 
+//InfoBoss
+struct BOSS_INFO
+{
+	BYTE IndexInvasion;
+	int MonsterClass;
+	BYTE Quantity;
+};
+
+struct PMSG_BOSS_INFO_LIST_RECV
+{
+	PSWMSG_HEAD header;
+	BYTE count;
+
+};
+//End InfoBoss
+
 //**********************************************//
 //**********************************************//
 //**********************************************//
@@ -49,6 +65,9 @@ public:
 
 	void GCEventTimeRecv(PMSG_EVENT_TIME_RECV* lpMsg);
 
+	// InfoBoss
+	void GCEventBossInfoRecv(PMSG_BOSS_INFO_LIST_RECV* lpMsg);
+
 private:
 
 	void RenderFrame();
@@ -78,6 +97,12 @@ private:
 	float MainEndX;
 
 	std::vector<PMSG_EVENT_TIME> m_EventTimeInfo;
+
+	//InfoBoss
+	std::vector<BOSS_INFO> m_EventBossInfo;
+
+	DWORD LastRecvBossInfo;
+	//End InfoBoss
 };
 
 extern CEventTimer gEventTimer;

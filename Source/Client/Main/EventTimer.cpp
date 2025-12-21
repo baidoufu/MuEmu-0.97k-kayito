@@ -109,7 +109,16 @@ void CEventTimer::UpdateMouse()
 
 void CEventTimer::RenderFrame()
 {
-	this->MainHeight = this->MainBaseHeight + (this->m_EventTimeInfo.size() * 12.0f);
+	//InfoBoss
+	int heightBossInfo = 0;
+
+	if (!this->m_EventBossInfo.empty()) {
+
+		heightBossInfo = 12 + this->m_EventBossInfo.size() * 13.0f;
+	}
+
+	this->MainHeight = this->MainBaseHeight + (this->m_EventTimeInfo.size() * 12.0f) + heightBossInfo;
+	//End InfoBoss
 
 	this->MainHeight = (this->MainHeight > 430.0f) ? 430.0f : this->MainHeight;
 
@@ -218,6 +227,45 @@ void CEventTimer::RenderEventsTime()
 			PosY += 12;
 		}
 	}
+
+	//InfoBoss
+	if (GetTickCount() - LastRecvBossInfo > 2000) {
+
+		this->m_EventBossInfo.clear();
+
+	}
+	if (!this->m_EventBossInfo.empty())
+	{
+		PosY += 3;
+
+		SetTextColor = Color4b(255, 204, 26, 255);
+
+		SelectObject(m_hFontDC, g_hFontBold);
+
+		RenderText((int)this->MainPosX + 5, PosY, "Boss Infomation", REAL_WIDTH((int)(this->MainWidth - 10.0f)), RT3_SORT_CENTER, NULL);
+
+		PosY += 12;
+
+		for (auto& bossInfo : this->m_EventBossInfo)
+		{
+			char monsterInfo[128];
+
+			char Title[64];
+
+			sprintf_s(Title, sizeof(Title), "[ %s ]", getMonsterName(bossInfo.MonsterClass));
+
+			sprintf_s(monsterInfo, "Live (%d)", bossInfo.Quantity);
+
+			SetTextColor = Color4b(255, 255, 255, 255);
+			RenderText((int)this->MainPosX + 5, PosY, Title, REAL_WIDTH((int)(this->MainWidth - 10.0f)), RT3_SORT_LEFT, NULL);
+
+			SetTextColor = Color4b(0, 255, 0, 255);
+			RenderText((int)this->MainEndX - GetTextWidth(monsterInfo), PosY, monsterInfo, 0, RT3_SORT_LEFT, NULL);
+
+			PosY += 12;
+		}
+	}
+	//END InfoBoss
 
 	SelectObject(m_hFontDC, g_hFont);
 
@@ -339,3 +387,31 @@ void CEventTimer::GCEventTimeRecv(PMSG_EVENT_TIME_RECV* lpMsg)
 		this->m_EventTimeInfo.push_back(info);
 	}
 }
+
+
+//InfoBoss
+void CEventTimer::GCEventBossInfoRecv(PMSG_BOSS_INFO_LIST_RECV* lpMsg)
+{
+	this->m_EventBossInfo.clear();
+
+	BYTE* buffer = (BYTE*)lpMsg + sizeof(PMSG_BOSS_INFO_LIST_RECV);
+	BOSS_INFO* info = (BOSS_INFO*)buffer;
+
+	for (int i = 0; i < lpMsg->count; ++i)
+	{
+		if (info[i].MonsterClass >= 0 && info[i].Quantity >= 0 && info[i].IndexInvasion < 30)
+		{
+			gConsole.Write("Nhan IndexInvasion %d, MonsterClass %d || %d",
+				info[i].IndexInvasion, info[i].MonsterClass, info[i].Quantity);
+			this->m_EventBossInfo.push_back(info[i]);
+		}
+		else
+		{
+			gConsole.Write("Invalid data: IndexInvasion=%d, MonsterClass=%d, Quantity=%d",
+				info[i].IndexInvasion, info[i].MonsterClass, info[i].Quantity);
+		}
+	}
+	LastRecvBossInfo = GetTickCount();
+}
+
+//END InfoBoss

@@ -39,6 +39,26 @@ struct INVASION_MONSTER_INFO
 	int RegenTime;
 };
 
+//InfoBoss
+struct INVASION_MONSTER_SPAWN_LOG
+{
+	int IndexGs;
+	int MonsterClass;
+};
+
+struct BOSS_INFO {
+	BYTE IndexInvasion;
+	int MonsterClass;
+	BYTE Quantity;
+};
+
+struct PMSG_BOSS_INFO_LIST_SEND
+{
+	PSWMSG_HEAD header;
+	BYTE count;
+};
+//InfoBoss
+
 struct INVASION_INFO
 {
 	int Index;
@@ -60,6 +80,8 @@ struct INVASION_INFO
 	std::vector<INVASION_START_TIME> StartTime;
 	std::vector<INVASION_RESPWAN_INFO> RespawnInfo[MAX_INVASION_RESPAWN_GROUP];
 	std::vector<INVASION_MONSTER_INFO> MonsterInfo;
+	//InfoBoss
+	std::vector<INVASION_MONSTER_SPAWN_LOG> MonsterSpawnLog;
 };
 
 class CInvasionManager
@@ -118,7 +140,13 @@ public:
 
 	void StartInvasion(int InvasionIndex);
 
+	//BossInfo
+	void SendMonsterCountToClient(int aIndex);
+
 private:
+
+	//BossInfo
+	void LogMonsterSpawn(INVASION_INFO* lpInfo, int index, int monsterClass);
 
 	INVASION_INFO m_InvasionInfo[MAX_INVASION];
 };
