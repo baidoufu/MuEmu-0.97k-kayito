@@ -93,7 +93,7 @@ extern "C" _declspec(dllexport) void _cdecl EntryProc()
 
 	gOptionsMenu.Init();
 
-	gMapFog.Init(gProtect.m_MainInfo.MapFogInfo);
+	//gMapFog.Init(gProtect.m_MainInfo.MapFogInfo);
 
 	gMiniMap.Init();
 

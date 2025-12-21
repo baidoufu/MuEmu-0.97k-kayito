@@ -30,6 +30,7 @@ public:
 public:
 
 	bool DeleteHealthBar;
+	bool ShowNameAlways;
 
 private:
 

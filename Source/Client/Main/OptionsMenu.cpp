@@ -24,6 +24,7 @@ COptionsMenu::COptionsMenu()
 	this->MainPosY = 60.0f;
 
 	this->PVPWithoutControl = false;
+	this->ShowNameAlways = false;
 	this->DeleteShadows = (GetPrivateProfileInt("Antilag", "DeleteShadows", 0, ".\\Config.ini") != 0);
 	this->DeleteObjects = (GetPrivateProfileInt("Antilag", "DeleteObjects", 0, ".\\Config.ini") != 0);
 	this->DeleteFloor = (GetPrivateProfileInt("Antilag", "DeleteFloor", 0, ".\\Config.ini") != 0);
@@ -335,6 +336,9 @@ void COptionsMenu::RenderGeneral()
 	this->RenderPVPWithoutControl(PosX, PosY);
 	PosY += ((float)this->BoxHeight + 7.0f);
 
+	this->RenderShowNameAlways(PosX, PosY);
+	PosY += ((float)this->BoxHeight + 7.0f);
+
 	this->RenderAutomaticAttack(PosX, PosY);
 	PosY += ((float)this->BoxHeight + 7.0f);
 
@@ -373,6 +377,13 @@ bool COptionsMenu::CheckGeneral()
 	}
 
 	if (this->CheckPVPWithoutControl(PosX, PosY))
+	{
+		return true;
+	}
+
+	PosY += (this->BoxHeight + 7);
+
+	if (this->CheckShowNameAlways(PosX, PosY))
 	{
 		return true;
 	}
@@ -590,6 +601,51 @@ bool COptionsMenu::CheckPVPWithoutControl(int PosX, int PosY)
 				MemoryCpy(0x0048322F, replace, sizeof(replace));
 
 				MemoryCpy(0x0044B532, replace, sizeof(replace));
+			}
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+void COptionsMenu::RenderShowNameAlways(float PosX, float PosY)
+{
+	this->RenderBox(PosX, PosY, (float)this->BoxWidth, (float)this->BoxHeight);
+
+	char Text[64] = { 0 };
+
+	sprintf_s(Text, "%s: %s", GlobalText[937], this->ShowNameAlways ? "On" : "Off");
+
+	EnableAlphaTest(true);
+
+	RenderText((int)PosX, CenterTextPosY(Text, ((int)PosY + (this->BoxHeight / 2))), Text, REAL_WIDTH(this->BoxWidth), RT3_SORT_CENTER, NULL);
+}
+
+bool COptionsMenu::CheckShowNameAlways(int PosX, int PosY)
+{
+	if (IsWorkZone(PosX, PosY, this->BoxWidth, this->BoxHeight))
+	{
+		if (MouseLButton && MouseLButtonPush)
+		{
+			MouseLButtonPush = false;
+
+			MouseUpdateTime = 0;
+
+			MouseUpdateTimeMax = 6;
+
+			PlayBuffer(25, 0, 0);
+
+			this->ShowNameAlways ^= 1u;
+
+			if (this->ShowNameAlways)
+			{
+				gHealthBar.ShowNameAlways = 1;
+			}
+			else
+			{
+				gHealthBar.ShowNameAlways = 0;
 			}
 		}
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "HealthBar.h"
+#include "OptionsMenu.h"
 #include "Protect.h"
 
 CHealthBar gHealthBar;
@@ -81,10 +82,10 @@ void CHealthBar::DrawHealthBar()
 {
 	((void(_cdecl*)())0x004BCA20)();
 
-	if (gHealthBar.DeleteHealthBar)
+	/*if (gHealthBar.DeleteHealthBar)
 	{
 		return;
-	}
+	}*/
 
 	float LifeBarWidth = 70.0f;
 
@@ -100,6 +101,15 @@ void CHealthBar::DrawHealthBar()
 		if (*(BYTE*)(ViewportAddress) == 0)
 		{
 			continue;
+		}
+
+		if (gHealthBar.ShowNameAlways) // Mostrar nombre de jugadores sin apuntar
+		{
+			BYTE type = *(BYTE*)(ViewportAddress + 0x84);
+			if (type == 1)
+			{
+				CreateChat((char*)(ViewportAddress + 0x1C1), "", ViewportAddress, 0, -1);
+			}
 		}
 
 		MONSTER_HEALTH_BAR* lpHealthBar = gHealthBar.GetHealthBar(*(WORD*)(ViewportAddress + 0x1DC), *(BYTE*)(ViewportAddress + 0x84));
@@ -147,13 +157,14 @@ void CHealthBar::DrawHealthBar()
 
 		EnableAlphaTest(true);
 
-		glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+		// 注释了生命值条（HP Bar）的绘制代码
+		/*glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
 
 		RenderColor((float)PosX, (float)PosY, LifeBarWidth, 6.0f);
 
 		glColor4f(0.8f, 0.0f, 0.0f, 1.0f);
 
-		RenderColor((float)PosX + 2, (float)PosY + 2, ((LifeBarWidth - 4) * lpHealthBar->rateHP) / 100, 2.0f);
+		RenderColor((float)PosX + 2, (float)PosY + 2, ((LifeBarWidth - 4) * lpHealthBar->rateHP) / 100, 2.0f);*/
 
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 

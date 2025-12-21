@@ -42,6 +42,8 @@ private:
 	bool CheckLanguage(int PosX, int PosY);
 	void RenderPVPWithoutControl(float PosX, float PosY);
 	bool CheckPVPWithoutControl(int PosX, int PosY);
+	void RenderShowNameAlways(float PosX, float PosY);
+	bool CheckShowNameAlways(int PosX, int PosY);
 	void RenderAutomaticAttack(float PosX, float PosY);
 	bool CheckAutomaticAttack(int PosX, int PosY);
 	void RenderSoundOnWhisper(float PosX, float PosY);
@@ -122,6 +124,7 @@ private:
 
 	/* General */
 	bool PVPWithoutControl;
+	bool ShowNameAlways;
 
 	/* Antilag */
 	bool DeleteShadows;

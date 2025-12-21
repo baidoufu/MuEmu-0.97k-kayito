@@ -20,29 +20,29 @@ CMapFog::~CMapFog()
 
 void CMapFog::Init(MAP_FOG_INFO* info)
 {
-        for (int i = 0; i < MAX_MAPS; i++)
+        /*for (int i = 0; i < MAX_MAPS; i++)
         {
                 this->SetInfo(info[i]);
-        }
+        }*/
 }
 
 void CMapFog::SetInfo(MAP_FOG_INFO info)
 {
-        if (info.MapNumber < 0 || info.MapNumber >= MAX_MAPS)
+        /*if (info.MapNumber < 0 || info.MapNumber >= MAX_MAPS)
         {
                 return;
         }
 
-        this->m_MapFog[info.MapNumber] = info;
+        this->m_MapFog[info.MapNumber] = info;*/
 }
 
 void CMapFog::Init()
 {
-        SetByte(0x00525ADD, 1); // FogEnable = true;
+        //SetByte(0x00525ADD, 1); // FogEnable = true;
 
-        SetCompleteHook(0xE9, 0x00511B66, &this->glEnableFog);
+        //SetCompleteHook(0xE9, 0x00511B66, &this->glEnableFog);
 
-        SetDword(0x0055233C, (DWORD)&this->glClearColorFog);
+        //SetDword(0x0055233C, (DWORD)&this->glClearColorFog);
 }
 
 MAP_FOG_INFO* CMapFog::GetInfoByIndex(int MapNumber)
