@@ -4,6 +4,7 @@ using System.Data;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace MuLauncher.Source
 {
@@ -12,6 +13,11 @@ namespace MuLauncher.Source
         private TcpClient _client;
         private NetworkStream _stream;
         private byte[] _buffer = new byte[4096];
+
+        // Reconnect settings
+        public bool AutoReconnect { get; set; } = true;
+        public int AutoReconnectAttempts { get; set; } = 3;
+        public int AutoReconnectDelayMs { get; set; } = 1000;
 
         // Constants for protocol
         private const int CHARACTER_NAME_SIZE = 11;
@@ -36,6 +42,37 @@ namespace MuLauncher.Source
             }
         }
 
+        /// <summary>
+        /// Attempt to reconnect using the configured attempt count and delay.
+        /// </summary>
+        /// <returns>True if connected, false otherwise.</returns>
+        public bool Reconnect()
+        {
+            return Reconnect(AutoReconnectAttempts, AutoReconnectDelayMs);
+        }
+
+        /// <summary>
+        /// Attempt to reconnect a number of times with a delay.
+        /// </summary>
+        public bool Reconnect(int attempts, int delayMs)
+        {
+            try
+            {
+                Disconnect();
+
+                for (int i = 0; i < Math.Max(1, attempts); i++)
+                {
+                    if (Connect())
+                        return true;
+
+                    Thread.Sleep(Math.Max(0, delayMs));
+                }
+            }
+            catch { }
+
+            return false;
+        }
+
         public void Disconnect()
         {
             try
@@ -55,7 +92,19 @@ namespace MuLauncher.Source
 
         private bool SendPacket(byte[] data)
         {
-            if (!IsConnected) return false;
+            if (!IsConnected)
+            {
+                if (AutoReconnect)
+                {
+                    if (!Reconnect())
+                        return false;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
             try
             {
                 _stream.Write(data, 0, data.Length);
@@ -63,13 +112,42 @@ namespace MuLauncher.Source
             }
             catch
             {
+                // Try one reconnect-and-retry if enabled
+                if (AutoReconnect)
+                {
+                    if (Reconnect())
+                    {
+                        try
+                        {
+                            if (IsConnected)
+                            {
+                                _stream.Write(data, 0, data.Length);
+                                return true;
+                            }
+                        }
+                        catch { }
+                    }
+                }
+
                 return false;
             }
         }
 
         private byte[] ReceivePacket()
         {
-            if (!IsConnected) return null;
+            if (!IsConnected)
+            {
+                if (AutoReconnect)
+                {
+                    if (!Reconnect())
+                        return null;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
             try
             {
                 int bytesRead = _stream.Read(_buffer, 0, _buffer.Length);
@@ -80,7 +158,14 @@ namespace MuLauncher.Source
                     return result;
                 }
             }
-            catch { }
+            catch
+            {
+                // On read error try to reconnect so subsequent operations may succeed
+                if (AutoReconnect)
+                {
+                    Reconnect();
+                }
+            }
             return null;
         }
 
