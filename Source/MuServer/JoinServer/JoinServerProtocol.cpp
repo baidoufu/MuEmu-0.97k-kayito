@@ -10,9 +10,12 @@
 #include "Util.h"
 
 // Add local storage for command config read from GameServer data file
-static int g_JS_CommandResetLevel[4] = { 0 };
-static int g_JS_CommandGrandResetLevel[4] = { 0 };
-static int g_JS_CommandGrandResetReset[4] = { 0 };
+static int g_JS_CommandResetLevel[4] = { 0 };//转生所需等级
+static int g_JS_CommandResetPoint[4] = { 0 };//转生给予点数
+static int g_JS_CommandGrandResetLevel[4] = { 0 };//转世所需等级
+static int g_JS_CommandGrandResetReset[4] = { 0 };//转生多少才能转世
+static int g_JS_CommandGrandResetPoint[4] = { 0 };//转世给予点数
+
 static int ClearPK = 0;
 static bool g_JS_CommandInfoLoaded = false;
 
@@ -31,6 +34,11 @@ static void JS_LoadCommandInfo()
     g_JS_CommandResetLevel[2] = GetPrivateProfileInt(section, "CommandResetLevel_AL2", 0, path);
     g_JS_CommandResetLevel[3] = GetPrivateProfileInt(section, "CommandResetLevel_AL3", 0, path);
 
+	g_JS_CommandResetPoint[0] = GetPrivateProfileInt(section, "CommandResetPoint_AL0", 0, path);
+	g_JS_CommandResetPoint[1] = GetPrivateProfileInt(section, "CommandResetPoint_AL1", 0, path);
+	g_JS_CommandResetPoint[2] = GetPrivateProfileInt(section, "CommandResetPoint_AL2", 0, path);
+	g_JS_CommandResetPoint[3] = GetPrivateProfileInt(section, "CommandResetPoint_AL3", 0, path);
+
     g_JS_CommandGrandResetLevel[0] = GetPrivateProfileInt(section, "CommandGrandResetLevel_AL0", 0, path);
     g_JS_CommandGrandResetLevel[1] = GetPrivateProfileInt(section, "CommandGrandResetLevel_AL1", 0, path);
     g_JS_CommandGrandResetLevel[2] = GetPrivateProfileInt(section, "CommandGrandResetLevel_AL2", 0, path);
@@ -41,7 +49,12 @@ static void JS_LoadCommandInfo()
     g_JS_CommandGrandResetReset[2] = GetPrivateProfileInt(section, "CommandGrandResetReset_AL2", 0, path);
     g_JS_CommandGrandResetReset[3] = GetPrivateProfileInt(section, "CommandGrandResetReset_AL3", 0, path);
 
-	ClearPK = GetPrivateProfileInt(section, "ClearPK", 0, path);
+	g_JS_CommandGrandResetPoint[0] = GetPrivateProfileInt(section, "CommandGrandResetPoint_AL0", 0, path);
+	g_JS_CommandGrandResetPoint[1] = GetPrivateProfileInt(section, "CommandGrandResetPoint_AL1", 0, path);
+	g_JS_CommandGrandResetPoint[2] = GetPrivateProfileInt(section, "CommandGrandResetPoint_AL2", 0, path);
+	g_JS_CommandGrandResetPoint[3] = GetPrivateProfileInt(section, "CommandGrandResetPoint_AL3", 0, path);
+
+    ClearPK = GetPrivateProfileInt(section, "ClearPK", 0, path);
     g_JS_CommandInfoLoaded = true;
 }
 
@@ -1075,6 +1088,9 @@ void GJLauncherResetRecv(SDHP_LAUNCHER_RESET_RECV* lpMsg, int index)
     // Use server-side configured required level based on account level
     WORD requiredLevel = (WORD)g_JS_CommandResetLevel[accountLevel];
 
+    // Use server-side configured reward points based on account level (do NOT trust client-sent lpMsg->rewardPoints)
+    int serverRewardPoints = g_JS_CommandResetPoint[accountLevel];
+
     // Check if account is online
     ACCOUNT_INFO AccountInfo;
 
@@ -1118,18 +1134,18 @@ void GJLauncherResetRecv(SDHP_LAUNCHER_RESET_RECV* lpMsg, int index)
         return;
     }
 
-    // Perform reset
+    // Perform reset using server-side reward points
 #if defined(SQLITE)
-    gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+    gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", serverRewardPoints, lpMsg->name);
 #elif !defined(MYSQL)
-    gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+    gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", serverRewardPoints, lpMsg->name);
 #else
-    gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+    gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = ResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", serverRewardPoints, lpMsg->name);
 #endif
 
     gQueryManager.Close();
 
-    LogAdd(LOG_BLUE, "[LauncherReset] Character '%s' performed reset", lpMsg->name);
+    LogAdd(LOG_BLUE, "[LauncherReset] Character '%s' performed reset (reward %d points)", lpMsg->name, serverRewardPoints);
 
     gSocketManager.DataSend(index, (BYTE*)&pMsg, pMsg.header.size);
 }
@@ -1228,14 +1244,14 @@ void GJLauncherGrandResetRecv(SDHP_LAUNCHER_GRAND_RESET_RECV* lpMsg, int index)
 
         return;
     }
-
+	int serverRewardPoints = g_JS_CommandGrandResetPoint[accountLevel];
     // Perform grand reset
 #if defined(SQLITE)
-	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", serverRewardPoints, lpMsg->name);
 #elif !defined(MYSQL)
-	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+	gQueryManager.ExecQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", serverRewardPoints, lpMsg->name);
 #else
-	gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", lpMsg->rewardPoints, lpMsg->name);
+	gQueryManager.ExecUpdateQuery("UPDATE Character SET cLevel = 1, Experience = 0, ResetCount = 0, GrandResetCount = GrandResetCount + 1, LevelUpPoint = LevelUpPoint + %d, Strength = 25, Dexterity = 25, Vitality = 25, Energy = 25, MapNumber = 0, MapPosX = 125, MapPosY = 125 WHERE Name='%s'", serverRewardPoints, lpMsg->name);
 #endif
 
 	gQueryManager.Close();

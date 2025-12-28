@@ -526,6 +526,12 @@ bool CCommandManager::ManagementCore(LPOBJ lpObj, char* message)
 
 			break;
 		}
+		case COMMAND_Clear_Stats:
+		{
+			//洗点, 
+			this->CommandClearStats(lpObj, argument);
+			break;
+		}
 	}
 
 	lpObj->Money -= CommandData.Money[lpObj->AccountLevel];
@@ -1070,35 +1076,35 @@ void CCommandManager::DGCommandResetRecv(SDHP_COMMAND_RESET_RECV* lpMsg)
 
 	lpObj->CommandManagerTransaction = 0;
 
-	if (lpMsg->ResetDay >= ((DWORD)gServerInfo.m_CommandResetLimitDay[lpObj->AccountLevel]))
+	if (lpMsg->ResetDay >= ((DWORD)gServerInfo.m_CommandResetLimitDay[lpObj->AccountLevel]))//Daily reset limit 每日重置次数
 	{
 		gNotice.GCNoticeSend(lpObj->Index, 1, gMessage.GetTextMessage(78, lpObj->Lang), gServerInfo.m_CommandResetLimitDay[lpObj->AccountLevel]);
 
 		return;
 	}
 
-	if (lpMsg->ResetWek >= ((DWORD)gServerInfo.m_CommandResetLimitWek[lpObj->AccountLevel]))
+	if (lpMsg->ResetWek >= ((DWORD)gServerInfo.m_CommandResetLimitWek[lpObj->AccountLevel]))//每周重置次数
 	{
 		gNotice.GCNoticeSend(lpObj->Index, 1, gMessage.GetTextMessage(79, lpObj->Lang), gServerInfo.m_CommandResetLimitWek[lpObj->AccountLevel]);
 
 		return;
 	}
 
-	if (lpMsg->ResetMon >= ((DWORD)gServerInfo.m_CommandResetLimitMon[lpObj->AccountLevel]))
+	if (lpMsg->ResetMon >= ((DWORD)gServerInfo.m_CommandResetLimitMon[lpObj->AccountLevel]))//每月重置次数
 	{
 		gNotice.GCNoticeSend(lpObj->Index, 1, gMessage.GetTextMessage(80, lpObj->Lang), gServerInfo.m_CommandResetLimitMon[lpObj->AccountLevel]);
 
 		return;
 	}
 
-	lpObj->Money -= gResetTable.GetResetMoney(lpObj);
+	lpObj->Money -= gResetTable.GetResetMoney(lpObj);//Reset cost 重置花费
 
 	GCMoneySend(lpObj->Index, lpObj->Money);
-
+	//重置后等级
 	lpObj->Level = ((gServerInfo.m_CommandResetStartLevel[lpObj->AccountLevel] == -1) ? (lpObj->Level - gServerInfo.m_CommandResetStartLevel[lpObj->AccountLevel]) : gServerInfo.m_CommandResetStartLevel[lpObj->AccountLevel]);
 
 	lpObj->Experience = gLevelExperience[lpObj->Level - 1];
-
+	//重生次数
 	lpObj->Reset += gBonusManager.GetBonusValue(lpObj, BONUS_INDEX_RESET_AMOUNT, gServerInfo.m_CommandResetCount[lpObj->AccountLevel], -1, -1, -1, -1);
 
 	lpMsg->ResetDay += gBonusManager.GetBonusValue(lpObj, BONUS_INDEX_RESET_AMOUNT, gServerInfo.m_CommandResetCount[lpObj->AccountLevel], -1, -1, -1, -1);
@@ -1150,7 +1156,7 @@ void CCommandManager::DGCommandResetRecv(SDHP_COMMAND_RESET_RECV* lpMsg)
 		gObjectManager.CharacterCalcAttribute(lpObj->Index);
 	}
 
-	if (gServerInfo.m_CommandResetStats[lpObj->AccountLevel] != 0)
+	if (gServerInfo.m_CommandResetStats[lpObj->AccountLevel] != 0)//点数重新计算
 	{
 		int point = gResetTable.GetResetPoint(lpObj);
 
@@ -1164,13 +1170,13 @@ void CCommandManager::DGCommandResetRecv(SDHP_COMMAND_RESET_RECV* lpMsg)
 
 		point += lpObj->FruitAddPoint;
 
-		if (gServerInfo.m_CommandGrandResetStats[lpObj->AccountLevel] != 0)
+		if (gServerInfo.m_CommandGrandResetStats[lpObj->AccountLevel] != 0)//Clear character stats 清除角色属性
 		{
-			int grpoint = gServerInfo.m_CommandGrandResetPoint[lpObj->AccountLevel] * lpObj->GrandReset;
+			int grpoint = gServerInfo.m_CommandGrandResetPoint[lpObj->AccountLevel] * lpObj->GrandReset;//使用"/grandreset"（转世）后获得的点数
 
-			grpoint = (grpoint * gServerInfo.m_CommandGrandResetPointRate[lpObj->Class]) / 100;
+			grpoint = (grpoint * gServerInfo.m_CommandGrandResetPointRate[lpObj->Class]) / 100;//使用"/grandreset"（转世）后获得的点数百分比
 
-			grpoint += (lpObj->Level - 1) * gServerInfo.m_LevelUpPoint[lpObj->Class];
+			grpoint += (lpObj->Level - 1) * gServerInfo.m_LevelUpPoint[lpObj->Class];//每级获得的点数
 
 			grpoint += ((gQuest.CheckQuestListState(lpObj, 2, QUEST_FINISH) == 0) ? 0 : ((lpObj->Level > 220) ? ((lpObj->Level - 220) * gServerInfo.m_PlusStatPoint) : 0));
 
@@ -2061,4 +2067,80 @@ void CCommandManager::CommandGMMakeMob(LPOBJ lpObj, char* arg)
 	gNotice.GCNoticeSend(lpObj->Index, 1, gMessage.GetTextMessage(102, lpObj->Lang));
 
 	gLog.Output(LOG_COMMAND, "[CommandMakeMob][%s][%s] - (Monster: %d, Qtd: %d)", lpObj->Account, lpObj->Name, monster, qtd);
+}
+
+void CCommandManager::CommandClearStats(LPOBJ lpObj, char* arg)
+{
+	// 使用转生/转世的点数重算逻辑为参考：
+	// 1. 计算当前应有的总可分配点数：来自 ResetTable/GetResetPoint + 等级给与的点数 + 任务/果实等
+	// 2. 将角色当前属性置为初始默认值
+	// 3. 将可分配点数设置为计算值
+	// 4. 通知客户端并保存
+
+	if (lpObj->Interface.use != 0 || lpObj->State == OBJECT_DELCMD || lpObj->DieRegen != 0 || lpObj->Teleport != 0)
+	{
+		gNotice.GCNoticeSend(lpObj->Index, 1, gMessage.GetTextMessage(75, lpObj->Lang));
+
+		return;
+	}
+
+	if (gServerInfo.m_CommandResetStats[lpObj->AccountLevel] == 0 && gServerInfo.m_CommandGrandResetStats[lpObj->AccountLevel] == 0)
+	{
+		// 如果服务器没有启用洗点功能，则拒绝
+		gNotice.GCNoticeSend(lpObj->Index, 1, gMessage.GetTextMessage(57, lpObj->Lang));
+
+		return;
+	}
+
+	// 计算基础点数（参考 Reset / GrandReset 中的算法）
+	int point = gResetTable.GetResetPoint(lpObj);
+
+	point = (point * gServerInfo.m_CommandResetPointRate[lpObj->Class]) / 100;
+
+	point += (lpObj->Level - 1) * gServerInfo.m_LevelUpPoint[lpObj->Class];
+
+	point += ((gQuest.CheckQuestListState(lpObj, 2, QUEST_FINISH) == 0) ? 0 : ((lpObj->Level > 220) ? ((lpObj->Level - 220) * gServerInfo.m_PlusStatPoint) : 0));
+
+	point += gQuest.GetQuestRewardLevelUpPoint(lpObj);
+
+	point += lpObj->FruitAddPoint;
+
+	// 如果服务器为 grand-reset 提供额外点数比例，则也将其考虑进来，按玩家当前的 grandreset 次数
+	if (gServerInfo.m_CommandGrandResetStats[lpObj->AccountLevel] != 0)
+	{
+		int grpoint = gServerInfo.m_CommandGrandResetPoint[lpObj->AccountLevel] * lpObj->GrandReset;
+
+		grpoint = (grpoint * gServerInfo.m_CommandGrandResetPointRate[lpObj->Class]) / 100;
+
+		grpoint += (lpObj->Level - 1) * gServerInfo.m_LevelUpPoint[lpObj->Class];
+
+		grpoint += ((gQuest.CheckQuestListState(lpObj, 2, QUEST_FINISH) == 0) ? 0 : ((lpObj->Level > 220) ? ((lpObj->Level - 220) * gServerInfo.m_PlusStatPoint) : 0));
+
+		grpoint += gQuest.GetQuestRewardLevelUpPoint(lpObj);
+
+		grpoint += lpObj->FruitAddPoint;
+
+		point += grpoint;
+	}
+
+	// 将当前属性重置为初始默认值
+	lpObj->LevelUpPoint = point;
+
+	lpObj->Strength = gDefaultClassInfo.m_DefaultClassInfo[lpObj->Class].Strength;
+
+	lpObj->Dexterity = gDefaultClassInfo.m_DefaultClassInfo[lpObj->Class].Dexterity;
+
+	lpObj->Vitality = gDefaultClassInfo.m_DefaultClassInfo[lpObj->Class].Vitality;
+
+	lpObj->Energy = gDefaultClassInfo.m_DefaultClassInfo[lpObj->Class].Energy;
+
+	gObjectManager.CharacterCalcAttribute(lpObj->Index);
+
+	GCNewCharacterInfoSend(lpObj);
+
+	GDCharacterInfoSaveSend(lpObj->Index);
+
+	gNotice.GCNoticeSend(lpObj->Index, 1, gMessage.GetTextMessage(72, lpObj->Lang), 0, lpObj->LevelUpPoint);
+
+	gLog.Output(LOG_COMMAND, "[CommandClearStats][%s][%s] - (NewPoints: %d)", lpObj->Account, lpObj->Name, lpObj->LevelUpPoint);
 }

@@ -5,36 +5,37 @@
 
 enum eCommandNumber
 {
-	COMMAND_MOVE = 0,
-	COMMAND_POST = 1,
-	COMMAND_ADD_STR = 2,
-	COMMAND_ADD_DEX = 3,
-	COMMAND_ADD_VIT = 4,
-	COMMAND_ADD_ENE = 5,
-	COMMAND_RESET = 6,
-	COMMAND_GRAND_RESET = 7,
-	COMMAND_PK_CLEAR = 8,
-	COMMAND_ADD_MONEY = 9,
-	COMMAND_SUB_MONEY = 10,
-	COMMAND_CHANGE = 11,
-	COMMAND_WARE = 12,
-	COMMAND_ONLINES = 13,
-	COMMAND_GUILD_WAR = 14,
-	COMMAND_BATTLE_SOCCER = 15,
-	COMMAND_REQUEST = 16,
-	COMMAND_GM_GLOBAL = 17,
-	COMMAND_GM_MOVE = 18,
-	COMMAND_GM_MOVEALL = 19,
-	COMMAND_GM_CHASE = 20,
-	COMMAND_GM_BRING = 21,
-	COMMAND_GM_DISCONNECT = 22,
-	COMMAND_GM_FIREWORKS = 23,
-	COMMAND_GM_DROP = 24,
-	COMMAND_GM_MAKE = 25,
-	COMMAND_GM_MAKESET = 26,
-	COMMAND_GM_CLEARINV = 27,
-	COMMAND_GM_SKIN = 28,
-	COMMAND_GM_MAKEMOB = 29,
+	COMMAND_MOVE = 0,				// 移动
+	COMMAND_POST = 1,				// 邮件
+	COMMAND_ADD_STR = 2,			// 增加力量
+	COMMAND_ADD_DEX = 3,			// 增加敏捷
+	COMMAND_ADD_VIT = 4,			// 增加体力
+	COMMAND_ADD_ENE = 5,			// 增加能量
+	COMMAND_RESET = 6,				// 重置（普通重置）
+	COMMAND_GRAND_RESET = 7,		// 大师重置（转世）
+	COMMAND_PK_CLEAR = 8,			// 清除PK值
+	COMMAND_ADD_MONEY = 9,			// 增加金钱
+	COMMAND_SUB_MONEY = 10,			// 减少金钱
+	COMMAND_CHANGE = 11,			// 职业变更
+	COMMAND_WARE = 12,				// 仓库
+	COMMAND_ONLINES = 13,			// 在线人数
+	COMMAND_GUILD_WAR = 14,			// 公会战争
+	COMMAND_BATTLE_SOCCER = 15,		// 战场足球
+	COMMAND_REQUEST = 16,			// 请求/申请
+	COMMAND_GM_GLOBAL = 17,			// GM全局公告
+	COMMAND_GM_MOVE = 18,			// GM移动
+	COMMAND_GM_MOVEALL = 19,		// GM移动所有人
+	COMMAND_GM_CHASE = 20,			// GM追踪玩家
+	COMMAND_GM_BRING = 21,			// GM召唤玩家
+	COMMAND_GM_DISCONNECT = 22,		// GM断开连接
+	COMMAND_GM_FIREWORKS = 23,		// GM烟花效果
+	COMMAND_GM_DROP = 24,			// GM掉落物品
+	COMMAND_GM_MAKE = 25,			// GM制造物品
+	COMMAND_GM_MAKESET = 26,		// GM制造套装
+	COMMAND_GM_CLEARINV = 27,		// GM清理背包
+	COMMAND_GM_SKIN = 28,			// GM皮肤/外观
+	COMMAND_GM_MAKEMOB = 29,		// GM生成怪物
+	COMMAND_Clear_Stats = 30,		//洗点
 };
 
 //**********************************************//
@@ -52,7 +53,7 @@ struct SDHP_GLOBAL_POST_RECV
 
 struct SDHP_COMMAND_RESET_RECV
 {
-	PSBMSG_HEAD header; // C1:05:04 | C1:05:05
+	PSBMSG_HEAD header; // C1:05:04 | C1:05:05  转生 | 转世
 	WORD index;
 	char account[11];
 	char name[11];
@@ -220,6 +221,8 @@ public:
 	void CommandGMSkin(LPOBJ lpObj, char* arg);
 
 	void CommandGMMakeMob(LPOBJ lpObj, char* arg);
+
+	void CommandClearStats(LPOBJ lpObj, char* arg);
 
 private:
 
